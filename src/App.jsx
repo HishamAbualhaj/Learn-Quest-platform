@@ -1,7 +1,8 @@
-import  Login from './components/login'
+import Login from './components/login';
+import  Signup from './components/Signup'
 
 function App() {
-  return <Login></Login>;
+  return <Signup></Signup>;
 }
 
 export default App;

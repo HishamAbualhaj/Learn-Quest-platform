@@ -3,16 +3,17 @@
 @tailwind utilities;
 
 body {
-  font-family: "Poppins", serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 input {
   @apply py-2 pl-2 bg-transparent;
 }
 input:focus {
-  @apply outline-none;
+  box-shadow: 0 0 5px #888;
+  @apply outline-none border-[#888];
 }
 input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(0.5); 
-    padding-right: 20px;
+  filter: invert(0.5);
+  padding-right: 20px;
 }
