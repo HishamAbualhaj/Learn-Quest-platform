@@ -5,11 +5,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        // dark mode
         dark: "#12131A",
-        lightDark: "#1d1e26",
-        darkText: "#B6BEC9",
+        lightDark: "#1D1E26",
+        textDark: "rgba(255, 255, 255, 0.78)",
+        loginDark: "#292B33",
+        borderDark: "rgba(255, 255, 255, 0.12)",
+        hoverDark: "rgba(255, 255, 255, 0.06)",
+        // light mode 
         lightText: "rgba(0, 9, 51, 0.65)",
-        login: "#292B33",
         btn: "#4c64D9",
         lightBtn: "#A3B2FF",
       },
