@@ -6,6 +6,12 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #555 #1e1e2f;
+}
+
 input {
   @apply py-2 pl-2 bg-transparent;
 }
@@ -16,4 +22,19 @@ input:focus {
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
   padding-right: 20px;
+}
+
+/* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px; 
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e2f; 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 5px;
+  border: 2px solid transparent;
 }
