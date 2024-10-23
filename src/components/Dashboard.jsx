@@ -181,8 +181,8 @@ function Dashboard() {
         </div>
 
         <div className="xl:px-16 sm:px-10 px-5 mt-12">
-          {/* <Users /> */}
-          <Courses />
+          <Users />
+          {/* <Courses /> */}
         </div>
       </div>
     </div>
