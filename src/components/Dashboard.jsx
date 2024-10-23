@@ -9,6 +9,8 @@ import {
   faCircleExclamation,
   faHeadset,
   faChevronDown,
+  faBars,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
@@ -53,9 +55,13 @@ function Dashboard() {
       icon: faCircleExclamation,
     },
   ];
+
   let [activeStatus, setActiveStatus] = useState("users");
 
-  let [width, setWidth] = useState(false);
+  // by default its not resized
+  let [resize, setResize] = useState(true);
+
+  let [isTranslate, setIsTranslate] = useState(false);
 
   function setActive(e) {
     let currentTab = e.currentTarget
@@ -67,15 +73,17 @@ function Dashboard() {
   let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 bg-hoverDark`;
   return (
     <div className="flex h-[100vh]">
-      <div className={`border-r border-borderDark bg-lightDark w-fit`}>
+      <div
+        className={`border-r border-borderDark bg-lightDark w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition ${
+          isTranslate ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <div
-          className={
-            width
-              ? "flex items-center justify-center"
-              : "flex items-center justify-between px-4 gap-2"
-          }
+          className={`xl:flex items-center justify-center hidden ${
+            !resize ? "" : "px-4 gap-2"
+          }`}
         >
-          {width ? (
+          {!resize ? (
             ""
           ) : (
             <div className="text-white text-2xl py-5 font-bold flex gap-1">
@@ -85,15 +93,14 @@ function Dashboard() {
 
           <FontAwesomeIcon
             onClick={() => {
-              width ? setWidth(false) : setWidth(true);
+              setResize(!resize);
             }}
             className="cursor-pointer text-white  border-gray-400/90 px-2 py-5  rounded transition hover:bg-gray-400/20"
-            rotation={width ? 270 : 90}
+            rotation={!resize ? 270 : 90}
             icon={faChevronDown}
           />
-          {/* <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} /> */}
         </div>
-        <div className="tabs-container flex flex-col gap-4">
+        <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
             <div
               key={tab.key}
@@ -105,10 +112,10 @@ function Dashboard() {
               <div
                 className={`flex py-2 px-5 text-lg relative items-center gap-3 ${
                   activeStatus == tab.name ? active : ""
-                } ${width ? "justify-center" : ""}`}
+                } ${!resize ? "justify-center" : ""}`}
               >
                 <FontAwesomeIcon className="text-gray-300" icon={tab.icon} />
-                {width ? (
+                {!resize ? (
                   ""
                 ) : (
                   <div className="text-gray-300 data capitalize">
@@ -123,16 +130,28 @@ function Dashboard() {
 
       <div className="flex-1 bg-dark">
         <div className="text-white py-3 border-b px-8 bg-black/20 border-borderDark">
-          <div className="flex justify-between items-center gap-3">
-            <div className="text-white uppercase">
-              admin dashboard management
+          <div className="flex items-center justify-between">
+            <FontAwesomeIcon
+              onClick={() => {
+                console.log("Clicked");
+                setIsTranslate(!isTranslate);
+              }}
+              className="text-2xl cursor-pointer xl:hidden"
+              icon={faBars}
+            />
+            <div className="flex justify-between xl:flex-1 items-center gap-3">
+              <div className="text-white uppercase max-sm:hidden">
+                admin dashboard management
+              </div>
+              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer bg-gray-500/70 hover:bg-gray-800 hover:text-white transition text-center">
+                <a href="">
+                  <FontAwesomeIcon icon={faRightFromBracket} />
+                </a>
+              </h1>
             </div>
-            <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer bg-gray-500/70 hover:bg-gray-800 hover:text-white transition">
-              <a href="">Log out</a>
-            </h1>
           </div>
         </div>
-        <Users></Users>
+        <Users setIsTranslate={setIsTranslate}></Users>
       </div>
     </div>
   );
