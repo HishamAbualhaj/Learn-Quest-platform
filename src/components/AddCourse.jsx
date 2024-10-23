@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -37,17 +37,7 @@ export default function AddCourse({ setAddCoursePopup }) {
     },
   ]);
 
-  // useEffect(()=> {
-  //   let videos = [
-  //     {
-  //       key: 1,
-  //       id: 2,
-  //     },
-  //   ];
-  // },[])
-
   function addVideo() {
-    let lastVideo = videos.at(-1);
     const newObj = {
       id: +(Math.random() * 1_000_000_000 + Math.random() * 1_000).toFixed(0),
     };
@@ -66,7 +56,7 @@ export default function AddCourse({ setAddCoursePopup }) {
         className="bg-black/50 w-full h-full absolute top-0 left-0"
       ></div>
       <div className="bg-lightDark rounded-sm  md:w-[650px] w-full h-[850px] overflow-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
-      <div className="text-center text-white text-xl py-5 border-b border-borderDark flex justify-between px-4">
+        <div className="text-center text-white text-xl py-5 border-b border-borderDark flex justify-between px-4">
           Add Course Details
           <FontAwesomeIcon
             onClick={() => {

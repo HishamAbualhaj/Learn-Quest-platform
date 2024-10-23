@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AddCourse from "./AddCourse";
 import EditCourse from "./EditCourse";
+import DeleteCourse from "./DeleteCourse";
 function Courses() {
   const courses = [
     {
@@ -124,6 +125,7 @@ function Courses() {
       </div>
       {addCoursePopup && <AddCourse setAddCoursePopup={setAddCoursePopup} />}
       {editCoursePopup && <EditCourse seteditCoursePopup={seteditCoursePopup} id={idCourse} />}
+      {deleteCoursePopup && <DeleteCourse setdeleteCoursePopup={setdeleteCoursePopup} id={idCourse}/>}
       <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto px-5">
         <table className="text-gray-300 w-full">
           <thead>
