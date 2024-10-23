@@ -1,6 +1,10 @@
+import { useState } from "react";
+import AddCourse from "./AddCourse";
+
 function Courses() {
   const courses = [
     {
+      key: 1,
       name: "JavaScript Essentials",
       type: "Programming",
       price: 50,
@@ -9,6 +13,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 2,
       name: "Advanced CSS & Sass",
       type: "Design",
       price: 40,
@@ -17,6 +22,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 3,
       name: "Python for Data Science",
       type: "Data Science",
       price: 70,
@@ -25,6 +31,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 4,
       name: "React Development Bootcamp",
       type: "Programming",
       price: 100,
@@ -33,6 +40,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 5,
       name: "UI/UX Design Fundamentals",
       type: "Design",
       price: 45,
@@ -41,6 +49,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 6,
       name: "Machine Learning with Python",
       type: "Data Science",
       price: 85,
@@ -49,6 +58,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 7,
       name: "Full Stack Web Development",
       type: "Programming",
       price: 120,
@@ -57,6 +67,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 8,
       name: "Digital Marketing 101",
       type: "Marketing",
       price: 30,
@@ -65,6 +76,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 9,
       name: "Intro to Cybersecurity",
       type: "Security",
       price: 60,
@@ -73,6 +85,7 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
     {
+      key: 10,
       name: "Cloud Computing with AWS",
       type: "Cloud Computing",
       price: 90,
@@ -81,6 +94,10 @@ function Courses() {
       action: ["Edit", "Delete"],
     },
   ];
+
+  const [addCoursePopup, setAddCoursePopup] = useState(false);
+  const [editCoursePopup, seteditCoursePopup] = useState(false);
+  const [deleteCoursePopup, setdeleteCoursePopup] = useState(false);
 
   return (
     <>
@@ -93,17 +110,22 @@ function Courses() {
             Track courses and manage them
           </div>
         </div>
-
-        <div className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer">
-          Add course
+        <div
+          onClick={() => {
+            setAddCoursePopup(!addCoursePopup);
+          }}
+          className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer"
+        >
+          Add Course
         </div>
       </div>
+      {addCoursePopup && <AddCourse setAddCoursePopup={setAddCoursePopup} />}
       <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto px-5">
         <table className="text-gray-300 w-full">
           <thead>
             <tr className="border-t border-b border-borderDark">
               <td className="py-4 font-bold">Name</td>
-              <td className="font-bold">Type</td>
+              <td className="font-bold">Category</td>
               <td className="whitespace-nowrap font-bold">Price</td>
               <td className="font-bold">Lessons</td>
               <td className="whitespace-nowrap xl:pr-0 pr-8 font-bold">

@@ -12,10 +12,12 @@ body {
   scrollbar-color: #555 #1e1e2f;
 }
 
-input {
+input,
+textarea {
   @apply py-2 pl-2 bg-transparent;
 }
-input:focus {
+input:focus,
+textarea:focus {
   box-shadow: 0 0 5px #888;
   @apply outline-none border-[#888];
 }
@@ -26,11 +28,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 10px; 
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e1e2f; 
+  background: #1e1e2f;
 }
 
 ::-webkit-scrollbar-thumb {

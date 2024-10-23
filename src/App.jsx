@@ -1,6 +1,6 @@
-import Login from './components/login';
-import  Signup from './components/Signup'
-import Dashboard from './components/Dashboard'
+import Login from "./components/login";
+import Signup from "./components/Signup";
+import Dashboard from "./components/Dashboard";
 function App() {
   return <Dashboard></Dashboard>;
 }
