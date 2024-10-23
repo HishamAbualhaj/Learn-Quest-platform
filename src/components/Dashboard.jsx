@@ -171,7 +171,7 @@ function Dashboard() {
               <div className="text-white uppercase max-sm:hidden">
                 admin dashboard management
               </div>
-              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer bg-purple-600 hover:bg-gray-800 hover:text-white transition text-center">
+              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition text-center">
                 <a href="">
                   <FontAwesomeIcon icon={faRightFromBracket} />
                 </a>

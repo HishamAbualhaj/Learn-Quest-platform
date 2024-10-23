@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AddCourse from "./AddCourse";
-
+import EditCourse from "./EditCourse";
 function Courses() {
   const courses = [
     {
@@ -99,6 +99,9 @@ function Courses() {
   const [editCoursePopup, seteditCoursePopup] = useState(false);
   const [deleteCoursePopup, setdeleteCoursePopup] = useState(false);
 
+
+  const [idCourse,setIdCourse] = useState(null);
+
   return (
     <>
       <div className="flex items-center justify-between ">
@@ -120,6 +123,7 @@ function Courses() {
         </div>
       </div>
       {addCoursePopup && <AddCourse setAddCoursePopup={setAddCoursePopup} />}
+      {editCoursePopup && <EditCourse seteditCoursePopup={seteditCoursePopup} id={idCourse} />}
       <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto px-5">
         <table className="text-gray-300 w-full">
           <thead>
@@ -154,13 +158,21 @@ function Courses() {
                 <td className="whitespace-nowrap">{course.date}</td>
                 <td className="whitespace-nowrap p-2 flex flex-col gap-2">
                   <div
-                    id="1"
+                  onClick={() => {
+                    seteditCoursePopup(!editCoursePopup);
+                    setIdCourse(course.key)
+                  }}
+                    id={course.key}
                     className="cursor-pointer bg-gray-500/70 py-2 px-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
                   >
                     {course.action[0]}
                   </div>
                   <div
-                    id="1"
+                   onClick={() => {
+                    setdeleteCoursePopup(!deleteCoursePopup);
+                    setIdCourse(course.key)
+                  }}
+                    id={course.key}
                     className="cursor-pointer bg-red-500/70 py-2 px-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
                   >
                     {course.action[1]}
