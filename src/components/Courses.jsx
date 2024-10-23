@@ -105,7 +105,7 @@ function Courses() {
 
   return (
     <>
-      <div className="flex items-center justify-between ">
+      <div className="flex items-center justify-between sm:flex-row flex-col">
         <div>
           <div className="text-white font-semibold text-4xl px-5">
             Course Panel
@@ -118,7 +118,7 @@ function Courses() {
           onClick={() => {
             setAddCoursePopup(!addCoursePopup);
           }}
-          className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer"
+          className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer sm:mt-0 mt-5 max-sm:w-full text-center"
         >
           Add Course
         </div>
