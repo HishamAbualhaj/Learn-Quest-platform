@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Users({setIsTranslate }) {
+function Users() {
   const users = [
     {
       key: 1,
@@ -102,37 +102,8 @@ function Users({setIsTranslate }) {
       action: "Delete",
     },
   ];
-
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    
-    // checking if we are in small screens
-    if (windowWidth <= 1280) {
-      setIsTranslate(false);
-    } else {
-      setIsTranslate(true);
-    }
-
-    // each time we resize screen,
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      if (windowWidth <= 1280) {
-        setIsTranslate(false);
-      } else {
-        setIsTranslate(true);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [windowWidth]);
-
   return (
-    <div className="xl:px-16 sm:px-10 px-5 mt-12">
+    <>
       <div className="text-white font-semibold text-4xl px-5">Hello, Admin</div>
       <div className="text-gray-400 mt-2 px-5">
         Last Login was yesterday at 2:46 pm
@@ -141,12 +112,12 @@ function Users({setIsTranslate }) {
         <table className="text-gray-300 w-full">
           <thead>
             <tr className="border-t border-b border-borderDark">
-              <td className="py-4">User</td>
-              <td>Email</td>
-              <td className="whitespace-nowrap">Date joined</td>
-              <td>Status</td>
-              <td className="whitespace-nowrap xl:pr-0 pr-8">Course joined</td>
-              <td>Action</td>
+              <td className="py-4 font-bold">User</td>
+              <td className="font-bold">Email</td>
+              <td className="whitespace-nowrap font-bold">Date joined</td>
+              <td className="font-bold">Status</td>
+              <td className="whitespace-nowrap xl:pr-0 pr-8 font-bold">Course joined</td>
+              <td  className="font-bold">Action</td>
             </tr>
           </thead>
 
@@ -176,7 +147,7 @@ function Users({setIsTranslate }) {
                 <td className="whitespace-nowrap">
                   <div
                     id="1"
-                    className="cursor-pointer bg-gray-500/70 py-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
+                    className="cursor-pointer bg-red-500/70 py-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
                   >
                     {user.action}
                   </div>
@@ -186,7 +157,7 @@ function Users({setIsTranslate }) {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -13,12 +13,13 @@ import {
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Users from "./Users";
+import Courses from "./Courses";
 
 function Dashboard() {
-  let tabs = [
+  const tabs = [
     {
       key: 1,
       name: "users",
@@ -56,15 +57,43 @@ function Dashboard() {
     },
   ];
 
-  let [activeStatus, setActiveStatus] = useState("users");
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const [activeStatus, setActiveStatus] = useState("users");
 
   // by default its not resized
-  let [resize, setResize] = useState(true);
+  const [resize, setResize] = useState(true);
 
-  let [isTranslate, setIsTranslate] = useState(false);
+  const [isTranslate, setIsTranslate] = useState(false);
+
+  // Handling side effect for screen resize
+  useEffect(() => {
+    // checking if we are in small screens
+    if (windowWidth <= 1280) {
+      setIsTranslate(false);
+    } else {
+      setIsTranslate(true);
+    }
+
+    // each time we resize screen,
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      if (windowWidth <= 1280) {
+        setIsTranslate(false);
+      } else {
+        setIsTranslate(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [windowWidth]);
 
   function setActive(e) {
-    let currentTab = e.currentTarget
+    const currentTab = e.currentTarget
       .querySelector(".data")
       .textContent.toLowerCase();
     setActiveStatus(currentTab);
@@ -86,7 +115,7 @@ function Dashboard() {
           {!resize ? (
             ""
           ) : (
-            <div className="text-white text-2xl py-5 font-bold flex gap-1">
+            <div className="text-white text-2xl py-[18px] font-bold flex gap-1">
               LEARN <div className="text-purple-600">QUEST</div>
             </div>
           )}
@@ -95,7 +124,7 @@ function Dashboard() {
             onClick={() => {
               setResize(!resize);
             }}
-            className="cursor-pointer text-white  border-gray-400/90 px-2 py-5  rounded transition hover:bg-gray-400/20"
+            className="cursor-pointer text-white border-gray-400/90 px-2 py-[26px] rounded transition hover:bg-gray-400/20"
             rotation={!resize ? 270 : 90}
             icon={faChevronDown}
           />
@@ -133,7 +162,6 @@ function Dashboard() {
           <div className="flex items-center justify-between">
             <FontAwesomeIcon
               onClick={() => {
-                console.log("Clicked");
                 setIsTranslate(!isTranslate);
               }}
               className="text-2xl cursor-pointer xl:hidden"
@@ -143,7 +171,7 @@ function Dashboard() {
               <div className="text-white uppercase max-sm:hidden">
                 admin dashboard management
               </div>
-              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer bg-gray-500/70 hover:bg-gray-800 hover:text-white transition text-center">
+              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer bg-purple-600 hover:bg-gray-800 hover:text-white transition text-center">
                 <a href="">
                   <FontAwesomeIcon icon={faRightFromBracket} />
                 </a>
@@ -151,7 +179,11 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        <Users setIsTranslate={setIsTranslate}></Users>
+
+        <div className="xl:px-16 sm:px-10 px-5 mt-12">
+          {/* <Users /> */}
+          <Courses />
+        </div>
       </div>
     </div>
   );
