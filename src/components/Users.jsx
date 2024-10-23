@@ -91,57 +91,67 @@ function Users() {
       action: "Delete",
     },
     {
-        key: 11,
-        name: "Khaled",
-        email: "khaled.mohammed@gmail.com",
-        date: "15 Nov 2024",
-        status: "Inactive",
-        courses: "3",
-        action: "Delete",
-      },
+      key: 11,
+      name: "Khaled",
+      email: "khaled.mohammed@gmail.com",
+      date: "15 Nov 2024",
+      status: "Inactive",
+      courses: "3",
+      action: "Delete",
+    },
   ];
 
   return (
-    <div className="px-16 mt-12">
+    <div className="xl:px-16 px-10 mt-12">
       <div className="text-white font-semibold text-4xl px-5">Hello, Admin</div>
       <div className="text-gray-400 mt-2 px-5">
         Last Login was yesterday at 2:46 pm
       </div>
       <div className="w-full mt-10 h-[650px] overflow-auto px-5">
-        <table className="text-gray-300 w-full ">
-          <tr className="border-t border-b border-borderDark">
-            <td className="py-4">User</td>
-            <td>Email</td>
-            <td>Date joined</td>
-            <td>Status</td>
-            <td>Course joined</td>
-            <td>Action</td>
-          </tr>
-
-          {users.map((user) => (
-            <tr key={user.key} className="border-t border-b border-borderDark">
-              <td className="py-4">{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.date}</td>
-              <td className="">
-                <div
-                  className={
-                    user.status === "Active"
-                      ? "text-green-300 bg-green-400/20 w-fit rounded-lg py-2 px-3"
-                      : "text-red-300 bg-red-400/20 w-fit rounded-lg py-2 px-3"
-                  }
-                >
-                  {user.status}
-                </div>
-              </td>
-              <td>{user.courses}</td>
-              <td className="">
-                <div id="1" className="cursor-pointer bg-gray-500/70 py-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition">
-                  {user.action}
-                </div>
-              </td>
+        <table className="text-gray-300 w-full">
+          <thead>
+            <tr className="border-t border-b border-borderDark">
+              <td className="py-4">User</td>
+              <td>Email</td>
+              <td>Date joined</td>
+              <td>Status</td>
+              <td>Course joined</td>
+              <td>Action</td>
             </tr>
-          ))}
+          </thead>
+
+          <tbody>
+            {users.map((user) => (
+              <tr
+                key={user.key}
+                className="border-t border-b border-borderDark"
+              >
+                <td className="py-4">{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.date}</td>
+                <td className="">
+                  <div
+                    className={
+                      user.status === "Active"
+                        ? "text-green-300 bg-green-400/20 w-fit rounded-lg py-2 px-3"
+                        : "text-red-300 bg-red-400/20 w-fit rounded-lg py-2 px-3"
+                    }
+                  >
+                    {user.status}
+                  </div>
+                </td>
+                <td>{user.courses}</td>
+                <td className="">
+                  <div
+                    id="1"
+                    className="cursor-pointer bg-gray-500/70 py-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
+                  >
+                    {user.action}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

@@ -7,8 +7,8 @@ import {
   faMessage,
   faTerminal,
   faCircleExclamation,
-  faUserTie,
   faHeadset,
+  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
@@ -55,6 +55,8 @@ function Dashboard() {
   ];
   let [activeStatus, setActiveStatus] = useState("users");
 
+  let [width, setWidth] = useState(false);
+
   function setActive(e) {
     let currentTab = e.currentTarget
       .querySelector(".data")
@@ -65,9 +67,31 @@ function Dashboard() {
   let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 bg-hoverDark`;
   return (
     <div className="flex h-[100vh]">
-      <div className="border-r border-borderDark bg-lightDark w-[300px]">
-        <div className="text-white text-2xl px-5 py-7 font-bold flex gap-1">
-          LEARN <div className="text-purple-600">QUEST</div>
+      <div className={`border-r border-borderDark bg-lightDark w-fit`}>
+        <div
+          className={
+            width
+              ? "flex items-center justify-center"
+              : "flex items-center justify-between px-4 gap-2"
+          }
+        >
+          {width ? (
+            ""
+          ) : (
+            <div className="text-white text-2xl py-5 font-bold flex gap-1">
+              LEARN <div className="text-purple-600">QUEST</div>
+            </div>
+          )}
+
+          <FontAwesomeIcon
+            onClick={() => {
+              width ? setWidth(false) : setWidth(true);
+            }}
+            className="cursor-pointer text-white  border-gray-400/90 px-2 py-5  rounded transition hover:bg-gray-400/20"
+            rotation={width ? 270 : 90}
+            icon={faChevronDown}
+          />
+          {/* <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} /> */}
         </div>
         <div className="tabs-container flex flex-col gap-4">
           {tabs.map((tab) => (
@@ -79,15 +103,18 @@ function Dashboard() {
               onClick={setActive}
             >
               <div
-                className={
-                  activeStatus == tab.name
-                    ? `flex py-2 px-5 text-lg relative items-center gap-3 ` +
-                      active
-                    : "flex py-2 px-5 text-lg relative items-center gap-3 "
-                }
+                className={`flex py-2 px-5 text-lg relative items-center gap-3 ${
+                  activeStatus == tab.name ? active : ""
+                } ${width ? "justify-center" : ""}`}
               >
                 <FontAwesomeIcon className="text-gray-300" icon={tab.icon} />
-                <div className="text-gray-300 data capitalize">{tab.name}</div>
+                {width ? (
+                  ""
+                ) : (
+                  <div className="text-gray-300 data capitalize">
+                    {tab.name}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -97,10 +124,6 @@ function Dashboard() {
       <div className="flex-1 bg-dark">
         <div className="text-white py-3 border-b px-8 bg-black/20 border-borderDark">
           <div className="flex justify-between items-center gap-3">
-            <FontAwesomeIcon
-              className="text-xl border px-3 py-3"
-              icon={faUserTie}
-            />
             <div className="text-white uppercase">
               admin dashboard management
             </div>
@@ -109,7 +132,6 @@ function Dashboard() {
             </h1>
           </div>
         </div>
-
         <Users></Users>
       </div>
     </div>
