@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 export default function Analytics() {
   return (
-    <>
+    <div className="h-[800px] overflow-auto">
       <div className="flex items-center justify-between sm:flex-row flex-col">
         <div>
           <div className="text-white font-semibold text-4xl ">
@@ -97,7 +97,7 @@ export default function Analytics() {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 function Ping({ color }) {

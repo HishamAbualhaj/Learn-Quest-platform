@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Route, Routes , NavLink } from "react-router-dom";
+import { Route, Routes, NavLink } from "react-router-dom";
 import {
   faUsers,
   faPersonChalkboard,
@@ -63,7 +63,6 @@ function Dashboard() {
 
   const [activeStatus, setActiveStatus] = useState(1);
 
-
   // by default its not resized
   const [resize, setResize] = useState(true);
 
@@ -104,7 +103,7 @@ function Dashboard() {
   return (
     <div className="flex h-[100vh]">
       <div
-        className={`border-r border-borderDark bg-lightDark w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition ${
+        className={`border-r border-borderDark bg-lightDark w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 ${
           isTranslate ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -132,9 +131,11 @@ function Dashboard() {
         </div>
         <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
-            <NavLink
+            <NavLink 
               to={`/${tab.name}`}
-              className={({ isActive }) => (isActive ? setActiveStatus(tab.key) : '')}
+              className={({ isActive }) =>
+                isActive ? setActiveStatus(tab.key) : ""
+              }
             >
               <div
                 id={tab.key}

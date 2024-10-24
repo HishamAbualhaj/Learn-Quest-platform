@@ -162,7 +162,7 @@ function Users({ setActiveStatus }) {
                       setIdUser(user.key);
                     }}
                     id={user.key}
-                    className="cursor-pointer border border-red-500/70 text-white py-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
+                    className="cursor-pointer border border-red-500/70 text-white py-2 md:px-0 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
                   >
                     {user.action}
                   </div>
