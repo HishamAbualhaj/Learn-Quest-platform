@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import DeleteCourse from "./DeleteCourse";
-import {  Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 function Courses() {
+  
   const courses = [
     {
       key: 1,
@@ -103,10 +104,10 @@ function Courses() {
     <>
       <div className="flex items-center justify-between sm:flex-row flex-col">
         <div>
-          <div className="text-white font-semibold text-4xl px-5">
+          <div className="text-white font-semibold text-4xl">
             Course Panel
           </div>
-          <div className="text-gray-400 mt-2 px-5">
+          <div className="text-gray-400 mt-2">
             Track courses and manage them
           </div>
         </div>
@@ -155,7 +156,7 @@ function Courses() {
                 <td className="whitespace-nowrap">{course.lessons}</td>
                 <td className="whitespace-nowrap">{course.date}</td>
                 <td className="whitespace-nowrap p-2 flex flex-col gap-2">
-                  <Link to={`edit/${course.name}`}>
+                  <Link to={`edit/${course.name}`} state={2}>
                     <div
                       id={course.key}
                       className="cursor-pointer bg-gray-500/70 py-2 px-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"

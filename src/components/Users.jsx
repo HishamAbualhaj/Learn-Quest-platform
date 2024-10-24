@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteUser from "./DeleteUser";
-function Users() {
+function Users({ setActiveStatus }) {
+
   const users = [
     {
       key: 1,

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes , NavLink } from "react-router-dom";
 import {
   faUsers,
   faPersonChalkboard,
@@ -19,6 +19,7 @@ import Users from "./Users";
 import Courses from "./Courses";
 import AddCourse from "./AddCourse";
 import EditCourse from "./EditCourse";
+import Analytics from "./Analytics";
 function Dashboard() {
   const tabs = [
     {
@@ -62,6 +63,7 @@ function Dashboard() {
 
   const [activeStatus, setActiveStatus] = useState(1);
 
+
   // by default its not resized
   const [resize, setResize] = useState(true);
 
@@ -96,7 +98,6 @@ function Dashboard() {
   function setActive(e) {
     const currentTab = e.currentTarget.id;
     setActiveStatus(currentTab);
-    console.log(currentTab);
   }
 
   let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 bg-hoverDark`;
@@ -131,9 +132,12 @@ function Dashboard() {
         </div>
         <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
-            <Link to={`/${tab.name}`}>
+            <NavLink
+              to={`/${tab.name}`}
+              className={({ isActive }) => (isActive ? setActiveStatus(tab.key) : '')}
+            >
               <div
-              id={tab.key}
+                id={tab.key}
                 key={tab.key}
                 className={
                   "flex flex-col gap-5 cursor-pointer hover:bg-hoverDark transition"
@@ -155,7 +159,7 @@ function Dashboard() {
                   )}
                 </div>
               </div>
-            </Link>
+            </NavLink>
           ))}
         </div>
       </div>
@@ -187,15 +191,13 @@ function Dashboard() {
           <Routes>
             <Route path="/" element={<Users />} />
             <Route path="/users" element={<Users />} />
-
             <Route path="/Courses">
               <Route index path="/Courses" element={<Courses />} />
               <Route path="add" element={<AddCourse />} />
               <Route path="edit/:id" element={<EditCourse />} />
             </Route>
+            <Route path="/analytics" element={<Analytics />} />
           </Routes>
-
-          {/* <Courses /> */}
         </div>
       </div>
     </div>
