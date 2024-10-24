@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import DeleteUser from "./DeleteUser";
 function Users() {
   const users = [
@@ -103,19 +103,20 @@ function Users() {
     },
   ];
 
-
   const [deleteUserPopup, setdeleteUserPopup] = useState(false);
 
-  const [idUser,setIdUser] = useState(null);
+  const [idUser, setIdUser] = useState(null);
 
   return (
     <>
-      <div className="text-white font-semibold text-4xl px-5">Hello, Admin</div>
-      <div className="text-gray-400 mt-2 px-5">
+      <div className="text-white font-semibold text-4xl ">Hello, Admin</div>
+      <div className="text-gray-400 mt-2 ">
         Last Login was yesterday at 2:46 pm
       </div>
-      {deleteUserPopup && <DeleteUser setdeleteUserPopup={setdeleteUserPopup} id={idUser}/>}
-      <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto px-5">
+      {deleteUserPopup && (
+        <DeleteUser setdeleteUserPopup={setdeleteUserPopup} id={idUser} />
+      )}
+      <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto pr-5">
         <table className="text-gray-300 w-full">
           <thead>
             <tr className="border-t border-b border-borderDark">
@@ -123,8 +124,10 @@ function Users() {
               <td className="font-bold">Email</td>
               <td className="whitespace-nowrap font-bold">Date joined</td>
               <td className="font-bold">Status</td>
-              <td className="whitespace-nowrap xl:pr-0 pr-8 font-bold">Course joined</td>
-              <td  className="font-bold">Action</td>
+              <td className="whitespace-nowrap xl:pr-0 pr-8 font-bold">
+                Course joined
+              </td>
+              <td className="font-bold">Action</td>
             </tr>
           </thead>
 
@@ -155,10 +158,10 @@ function Users() {
                   <div
                     onClick={() => {
                       setdeleteUserPopup(!deleteUserPopup);
-                      setIdUser(user.key)
+                      setIdUser(user.key);
                     }}
                     id={user.key}
-                    className="cursor-pointer bg-red-500/70 py-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
+                    className="cursor-pointer border border-red-500/70 text-white py-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
                   >
                     {user.action}
                   </div>

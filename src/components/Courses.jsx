@@ -1,7 +1,6 @@
 import { useState } from "react";
-import AddCourse from "./AddCourse";
-import EditCourse from "./EditCourse";
 import DeleteCourse from "./DeleteCourse";
+import {  Link } from "react-router-dom";
 function Courses() {
   const courses = [
     {
@@ -96,12 +95,9 @@ function Courses() {
     },
   ];
 
-  const [addCoursePopup, setAddCoursePopup] = useState(false);
-  const [editCoursePopup, seteditCoursePopup] = useState(false);
   const [deleteCoursePopup, setdeleteCoursePopup] = useState(false);
 
-
-  const [idCourse,setIdCourse] = useState(null);
+  const [idCourse, setIdCourse] = useState(null);
 
   return (
     <>
@@ -114,18 +110,18 @@ function Courses() {
             Track courses and manage them
           </div>
         </div>
-        <div
-          onClick={() => {
-            setAddCoursePopup(!addCoursePopup);
-          }}
-          className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer sm:mt-0 mt-5 max-sm:w-full text-center"
-        >
-          Add Course
-        </div>
+        <Link to="add">
+          <div className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer sm:mt-0 mt-5 max-sm:w-full text-center">
+            Add Course
+          </div>
+        </Link>
       </div>
-      {addCoursePopup && <AddCourse setAddCoursePopup={setAddCoursePopup} />}
-      {editCoursePopup && <EditCourse seteditCoursePopup={seteditCoursePopup} id={idCourse} />}
-      {deleteCoursePopup && <DeleteCourse setdeleteCoursePopup={setdeleteCoursePopup} id={idCourse}/>}
+      {deleteCoursePopup && (
+        <DeleteCourse
+          setdeleteCoursePopup={setdeleteCoursePopup}
+          id={idCourse}
+        />
+      )}
       <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto px-5">
         <table className="text-gray-300 w-full">
           <thead>
@@ -159,23 +155,21 @@ function Courses() {
                 <td className="whitespace-nowrap">{course.lessons}</td>
                 <td className="whitespace-nowrap">{course.date}</td>
                 <td className="whitespace-nowrap p-2 flex flex-col gap-2">
+                  <Link to={`edit/${course.name}`}>
+                    <div
+                      id={course.key}
+                      className="cursor-pointer bg-gray-500/70 py-2 px-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
+                    >
+                      {course.action[0]}
+                    </div>
+                  </Link>
                   <div
-                  onClick={() => {
-                    seteditCoursePopup(!editCoursePopup);
-                    setIdCourse(course.key)
-                  }}
+                    onClick={() => {
+                      setdeleteCoursePopup(!deleteCoursePopup);
+                      setIdCourse(course.key);
+                    }}
                     id={course.key}
-                    className="cursor-pointer bg-gray-500/70 py-2 px-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
-                  >
-                    {course.action[0]}
-                  </div>
-                  <div
-                   onClick={() => {
-                    setdeleteCoursePopup(!deleteCoursePopup);
-                    setIdCourse(course.key)
-                  }}
-                    id={course.key}
-                    className="cursor-pointer bg-red-500/70 py-2 px-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
+                    className="cursor-pointer border border-red-500/70 text-white py-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
                   >
                     {course.action[1]}
                   </div>

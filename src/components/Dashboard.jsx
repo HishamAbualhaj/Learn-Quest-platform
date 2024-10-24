@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { Route, Routes, Link } from "react-router-dom";
 import {
   faUsers,
   faPersonChalkboard,
@@ -17,7 +17,8 @@ import { useState, useEffect } from "react";
 
 import Users from "./Users";
 import Courses from "./Courses";
-
+import AddCourse from "./AddCourse";
+import EditCourse from "./EditCourse";
 function Dashboard() {
   const tabs = [
     {
@@ -59,7 +60,7 @@ function Dashboard() {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  const [activeStatus, setActiveStatus] = useState("users");
+  const [activeStatus, setActiveStatus] = useState(1);
 
   // by default its not resized
   const [resize, setResize] = useState(true);
@@ -93,10 +94,9 @@ function Dashboard() {
   }, [windowWidth]);
 
   function setActive(e) {
-    const currentTab = e.currentTarget
-      .querySelector(".data")
-      .textContent.toLowerCase();
+    const currentTab = e.currentTarget.id;
     setActiveStatus(currentTab);
+    console.log(currentTab);
   }
 
   let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 bg-hoverDark`;
@@ -131,34 +131,37 @@ function Dashboard() {
         </div>
         <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
-            <div
-              key={tab.key}
-              className={
-                "flex flex-col gap-5 cursor-pointer hover:bg-hoverDark transition"
-              }
-              onClick={setActive}
-            >
+            <Link to={`/${tab.name}`}>
               <div
-                className={`flex py-2 px-5 text-lg relative items-center gap-3 ${
-                  activeStatus == tab.name ? active : ""
-                } ${!resize ? "justify-center" : ""}`}
+              id={tab.key}
+                key={tab.key}
+                className={
+                  "flex flex-col gap-5 cursor-pointer hover:bg-hoverDark transition"
+                }
+                onClick={setActive}
               >
-                <FontAwesomeIcon className="text-gray-300" icon={tab.icon} />
-                {!resize ? (
-                  ""
-                ) : (
-                  <div className="text-gray-300 data capitalize">
-                    {tab.name}
-                  </div>
-                )}
+                <div
+                  className={`flex py-2 px-5 text-lg relative items-center gap-3 ${
+                    activeStatus == tab.key ? active : ""
+                  } ${!resize ? "justify-center" : ""}`}
+                >
+                  <FontAwesomeIcon className="text-gray-300" icon={tab.icon} />
+                  {!resize ? (
+                    ""
+                  ) : (
+                    <div className="text-gray-300 data capitalize">
+                      {tab.name}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
 
       <div className="flex-1 bg-dark">
-        <div className="text-white py-3 border-b px-8 bg-black/20 border-borderDark">
+        <div className="text-white py-3 border-b bg-black/20 border-borderDark xl:px-12 sm:px-10 px-5 ">
           <div className="flex items-center justify-between">
             <FontAwesomeIcon
               onClick={() => {
@@ -180,8 +183,18 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="xl:px-16 sm:px-10 px-5 mt-12">
-          <Users />
+        <div className="xl:px-12 sm:px-10 px-5 mt-12">
+          <Routes>
+            <Route path="/" element={<Users />} />
+            <Route path="/users" element={<Users />} />
+
+            <Route path="/Courses">
+              <Route index path="/Courses" element={<Courses />} />
+              <Route path="add" element={<AddCourse />} />
+              <Route path="edit/:id" element={<EditCourse />} />
+            </Route>
+          </Routes>
+
           {/* <Courses /> */}
         </div>
       </div>

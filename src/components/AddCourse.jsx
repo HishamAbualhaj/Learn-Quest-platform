@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
-
-export default function AddCourse({ setAddCoursePopup }) {
+import { Link } from "react-router-dom";
+export default function AddCourse() {
   const inputs = [
     {
       key: 1,
@@ -49,22 +49,15 @@ export default function AddCourse({ setAddCoursePopup }) {
 
   return (
     <div>
-      <div
-        onClick={() => {
-          setAddCoursePopup(false);
-        }}
-        className="bg-black/50 w-full h-full absolute top-0 left-0"
-      ></div>
-      <div className="bg-lightDark rounded-sm  md:w-[650px] w-full h-[850px] overflow-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
+      <div className="rounded-sm  w-full overflow-auto h-[800px]">
         <div className="text-center text-white text-xl py-5 border-b border-borderDark flex justify-between px-4">
           Add Course Details
-          <FontAwesomeIcon
-            onClick={() => {
-              setAddCoursePopup(false);
-            }}
-            className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
-            icon={faXmark}
-          />
+          <Link to="/courses">
+            <FontAwesomeIcon
+              className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
+              icon={faXmark}
+            />
+          </Link>
         </div>
 
         <div className="form p-3">
