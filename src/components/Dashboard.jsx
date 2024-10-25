@@ -20,6 +20,7 @@ import Courses from "./Courses";
 import AddCourse from "./AddCourse";
 import EditCourse from "./EditCourse";
 import Analytics from "./Analytics";
+import Reviews from "./Reviews";
 function Dashboard() {
   const tabs = [
     {
@@ -198,6 +199,7 @@ function Dashboard() {
               <Route path="edit/:id" element={<EditCourse />} />
             </Route>
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/reviews" element={<Reviews />} />
           </Routes>
         </div>
       </div>
