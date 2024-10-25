@@ -21,6 +21,7 @@ import AddCourse from "./AddCourse";
 import EditCourse from "./EditCourse";
 import Analytics from "./Analytics";
 import Reviews from "./Reviews";
+import Chat from "./Chat";
 function Dashboard() {
   const tabs = [
     {
@@ -200,6 +201,9 @@ function Dashboard() {
             </Route>
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/reviews" element={<Reviews />} />
+            <Route path="/chat" element={<Chat />} />
+
+            <Route path="*" element={<h1 className="text-white text-4xl text-center mt-16">Not Found Page</h1>} />
           </Routes>
         </div>
       </div>

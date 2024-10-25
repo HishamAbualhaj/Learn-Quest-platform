@@ -12,7 +12,7 @@ export default {
         loginDark: "#292B33",
         borderDark: "rgba(255, 255, 255, 0.12)",
         hoverDark: "rgba(255, 255, 255, 0.06)",
-        // light mode 
+        // light mode
         lightText: "rgba(0, 9, 51, 0.65)",
         btn: "#4c64D9",
         lightBtn: "#A3B2FF",
@@ -20,4 +20,12 @@ export default {
     },
   },
   plugins: [],
+  safelist: [
+    "bg-green-500",
+    "bg-red-500",
+    "bg-green-400",
+    "bg-red-400",
+    "bg-blue-400/40",
+    "bg-gray-700",
+  ],
 };
