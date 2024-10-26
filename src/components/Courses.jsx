@@ -1,4 +1,4 @@
-import { useState , useEffect} from "react";
+import { useState } from "react";
 import DeleteCourse from "./DeleteCourse";
 import { Link } from "react-router-dom";
 function Courses() {

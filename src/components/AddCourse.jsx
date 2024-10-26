@@ -1,8 +1,14 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-export default function AddCourse({setActiveStatus}) {
+export default function AddCourse() {
+  const [files, setFiles] = useState(null);
+
+  const setMultiple = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(selectedFiles);
+  };
 
   const inputs = [
     {
@@ -12,41 +18,28 @@ export default function AddCourse({setActiveStatus}) {
     },
     {
       key: 2,
-      title: "Category : ",
-      inType: "text",
-    },
-    {
-      key: 3,
       title: "Price : ",
       inType: "number",
     },
     {
-      key: 4,
+      key: 3,
       title: "Discount : ",
       inType: "number",
     },
-    {
-      key: 5,
-      title: "Image : ",
-      inType: "file",
-    },
   ];
 
-  const [videos, setVideo] = useState([
-    {
-      id: 1,
-    },
-  ]);
-
-  function addVideo() {
-    const newObj = {
-      id: +(Math.random() * 1_000_000_000 + Math.random() * 1_000).toFixed(0),
-    };
-    console.log(videos);
-
-    setVideo([...videos, newObj]);
-    console.log(videos);
-  }
+  const category = [
+    { id: 1, name: "Introduction to Computer Science" },
+    { id: 2, name: "Web Development with HTML, CSS, and JavaScript" },
+    { id: 3, name: "Data Structures and Algorithms" },
+    { id: 4, name: "Database Management Systems" },
+    { id: 5, name: "Object-Oriented Programming with Java" },
+    { id: 6, name: "Cloud Computing Fundamentals" },
+    { id: 7, name: "Cybersecurity Basics" },
+    { id: 8, name: "Mobile App Development with React Native" },
+    { id: 9, name: "Machine Learning and Artificial Intelligence" },
+    { id: 10, name: "DevOps and Continuous Integration/Delivery" },
+  ];
 
   return (
     <div>
@@ -77,28 +70,56 @@ export default function AddCourse({setActiveStatus}) {
               />
             </div>
           ))}
-          <div className="flex flex-col mt-2 text-white">
-            <div className="flex items-center justify-between">
-              <label htmlFor="">Videos : </label>
-              <FontAwesomeIcon
-                onClick={addVideo}
-                className="bg-gray-500 p-2 rounded-sm cursor-pointer hover:bg-gray-800 hover:text-white "
-                icon={faPlus}
-              />
-            </div>
 
-            {videos.map((video) => (
-              <div key={video.id} id={video.id} className="video-handle">
+          <div className="flex flex-col mt-2 text-white gap-2">
+            <label htmlFor="">Category : </label>
+
+            <select
+              className="bg-transparent border border-[#888] rounded-md text-white focus:outline-none p-2 text-lg appearance-none w-full mt-2"
+              name="courses"
+              id=""
+            >
+              {category.map((category) => (
+                <option
+                  className="text-black"
+                  key={category.id}
+                  id={category.id}
+                  value={`${category.name}`}
+                >
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col mt-2 text-white">
+            <label htmlFor="">Image : </label>
+
+            <div className="image-handle relative cursor-pointer mt-2">
+              <div className="border border-gray-500 rounded-md flex justify-center py-10">
+                <div className="text-xl"> Upload image</div>
                 <input
                   type="file"
-                  className="mt-2 border border-textDark/40 rounded-md w-full"
+                  className="border border-textDark/40 rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
                 />
-                <div
-                  id={video.id}
-                  className={`hidden loader bg-white h-2 w-full rounded-md mt-2 after:content[''] after:absolute after:w-1/2 after:h-2 after:bg-blue-400 after:rounded-md`}
-                ></div>
               </div>
-            ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col mt-2 text-white">
+            <label htmlFor="">Videos : </label>
+
+            <div className="video-handle relative cursor-pointer">
+              <div className="border border-gray-500 rounded-md flex justify-center py-10">
+                <div className="text-xl"> Upload videos</div>
+                <input
+                  type="file"
+                  multiple
+                  onChange={setMultiple}
+                  className="border border-textDark/40 rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col mt-2 text-white">
