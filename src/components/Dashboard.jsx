@@ -67,35 +67,9 @@ function Dashboard() {
   const [activeStatus, setActiveStatus] = useState(1);
 
   // by default its not resized
-  const [resize, setResize] = useState(true);
+  const [resize, setResize] = useState(false);
 
   const [isTranslate, setIsTranslate] = useState(false);
-
-  // Handling side effect for screen resize
-  useEffect(() => {
-    // checking if we are in small screens
-    if (windowWidth <= 1280) {
-      setIsTranslate(false);
-    } else {
-      setIsTranslate(true);
-    }
-
-    // each time we resize screen,
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      if (windowWidth <= 1280) {
-        setIsTranslate(false);
-      } else {
-        setIsTranslate(true);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [windowWidth]);
 
   function setActive(e) {
     const currentTab = e.currentTarget.id;
@@ -106,16 +80,16 @@ function Dashboard() {
   return (
     <div className="flex h-[100vh]">
       <div
-        className={`border-r border-borderDark bg-lightDark w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 ${
-          isTranslate ? "translate-x-0" : "-translate-x-full"
+        className={`border-r border-borderDark bg-lightDark w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full  ${
+          isTranslate ? "!translate-x-0 " : ""
         }`}
       >
         <div
           className={`xl:flex items-center justify-center hidden ${
-            !resize ? "" : "px-4 gap-2"
+            resize ? "" : "px-4 gap-2"
           }`}
         >
-          {!resize ? (
+          {resize ? (
             ""
           ) : (
             <div className="text-white text-2xl py-[18px] font-bold flex gap-1">
@@ -128,20 +102,20 @@ function Dashboard() {
               setResize(!resize);
             }}
             className="cursor-pointer text-white border-gray-400/90 px-2 py-[26px] rounded transition hover:bg-gray-400/20"
-            rotation={!resize ? 270 : 90}
+            rotation={resize ? 270 : 90}
             icon={faChevronDown}
           />
         </div>
         <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
             <NavLink
-            key={tab.key}
+              key={tab.key}
               to={`/${tab.name}`}
               className={({ isActive }) =>
                 isActive
                   ? () => {
                       setActiveStatus(tab.key);
-                      setIsTranslate(!isTranslate)
+                      setIsTranslate(!isTranslate);
                     }
                   : ""
               }
@@ -157,10 +131,10 @@ function Dashboard() {
                 <div
                   className={`flex py-2 px-5 text-lg relative items-center gap-3 ${
                     activeStatus == tab.key ? active : ""
-                  } ${!resize ? "justify-center" : ""}`}
+                  } ${resize ? "justify-center" : ""}`}
                 >
                   <FontAwesomeIcon className="text-gray-300" icon={tab.icon} />
-                  {!resize ? (
+                  {resize ? (
                     ""
                   ) : (
                     <div className="text-gray-300 data capitalize">

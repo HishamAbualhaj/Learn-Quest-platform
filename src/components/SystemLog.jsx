@@ -74,8 +74,6 @@ function SystemLog() {
     },
   ];
 
-  const [logId, setLogId] = useState(null);
-
   const [itemMenu, setItemMenu] = useState({});
 
   const triggerDropdown = (logId) => {
@@ -95,7 +93,6 @@ function SystemLog() {
               id={log.logId}
               onClick={(e) => {
                 // console.log(e.currentTarget.getAttribute("id"));
-                setLogId(log.logId);
                 triggerDropdown(log.logId);
                 console.log("Updated itemMenu:", itemMenu);
               }}
