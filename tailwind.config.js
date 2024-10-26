@@ -17,6 +17,9 @@ export default {
         btn: "#4c64D9",
         lightBtn: "#A3B2FF",
       },
+      fontFamily: {
+        'terminal' : ['terminal']
+      }
     },
   },
   plugins: [],

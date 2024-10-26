@@ -37,7 +37,7 @@ function Reviews() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 grid-cols-1 p-3 max-h-[700px] overflow-auto gap-5 mt-5">
+      <div className="grid md:grid-cols-2 grid-cols-1 p-3 xl:max-h-[700px] max-h-[600px] overflow-auto gap-5 mt-5">
         <Review
           image={hisham}
           stars={[1, 2, 3, 4, 5]}
@@ -92,7 +92,7 @@ function Review({ image, stars, text }) {
         <div className="text-white text-xl">Hisham Alhaj</div>
         <div className="flex gap-2 mt-4">
           {stars.map(() => (
-            <FontAwesomeIcon className="text-yellow-400" icon={faStar} />
+            <FontAwesomeIcon key={Math.random()} className="text-yellow-400" icon={faStar} />
           ))}
         </div>
         <div className="text-gray-300 max-w-[500px] mt-4 md:text-lg text-md">

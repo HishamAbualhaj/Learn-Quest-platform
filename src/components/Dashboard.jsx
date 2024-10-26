@@ -22,6 +22,7 @@ import EditCourse from "./EditCourse";
 import Analytics from "./Analytics";
 import Reviews from "./Reviews";
 import Chat from "./Chat";
+import SystemLog from "./SystemLog";
 function Dashboard() {
   const tabs = [
     {
@@ -133,10 +134,16 @@ function Dashboard() {
         </div>
         <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
-            <NavLink 
+            <NavLink
+            key={tab.key}
               to={`/${tab.name}`}
               className={({ isActive }) =>
-                isActive ? setActiveStatus(tab.key) : ""
+                isActive
+                  ? () => {
+                      setActiveStatus(tab.key);
+                      setIsTranslate(!isTranslate)
+                    }
+                  : ""
               }
             >
               <div
@@ -202,8 +209,15 @@ function Dashboard() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/chat" element={<Chat />} />
-
-            <Route path="*" element={<h1 className="text-white text-4xl text-center mt-16">Not Found Page</h1>} />
+            <Route path="/system log" element={<SystemLog />} />
+            <Route
+              path="*"
+              element={
+                <h1 className="text-white text-4xl text-center mt-16">
+                  Not Found Page
+                </h1>
+              }
+            />
           </Routes>
         </div>
       </div>

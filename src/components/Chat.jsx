@@ -202,6 +202,7 @@ function Chat() {
         >
           {users.map((user) => (
             <User
+              key={user.id}
               name={user.name}
               lastMessage={user.lastMessage}
               isActive={user.isActive}

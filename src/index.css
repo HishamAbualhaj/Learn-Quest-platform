@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@font-face {
+  font-family: terminal;
+  src: url(./assets/Modeseven-L3n5.ttf);
+}
+
 body {
   font-family: "Montserrat", sans-serif;
 }
