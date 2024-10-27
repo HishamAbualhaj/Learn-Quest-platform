@@ -28,6 +28,7 @@ export default {
     "bg-red-500",
     "bg-green-400",
     "bg-red-400",
+    "bg-red-400/40",
     "bg-blue-400/40",
     "bg-gray-700",
   ],

@@ -93,8 +93,7 @@ function SystemLog() {
               id={log.logId}
               onClick={(e) => {
                 // console.log(e.currentTarget.getAttribute("id"));
-                triggerDropdown(log.logId);
-                console.log("Updated itemMenu:", itemMenu);
+                triggerDropdown(log.logId);   
               }}
               className="border-b  border-green-300/40 md:p-6 p-4 hover:bg-gray-500/20 cursor-pointer"
             >

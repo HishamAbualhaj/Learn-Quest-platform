@@ -23,6 +23,7 @@ import Analytics from "./Analytics";
 import Reviews from "./Reviews";
 import Chat from "./Chat";
 import SystemLog from "./SystemLog";
+import Maintenance from "./Maintenance";
 function Dashboard() {
   const tabs = [
     {
@@ -184,6 +185,7 @@ function Dashboard() {
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/system log" element={<SystemLog />} />
+            <Route path="/maintenance" element={<Maintenance />} />
             <Route
               path="*"
               element={
