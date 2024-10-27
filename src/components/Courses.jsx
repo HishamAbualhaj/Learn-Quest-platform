@@ -123,7 +123,7 @@ function Courses() {
           id={idCourse}
         />
       )}
-      <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto px-5">
+      <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[600px] overflow-auto px-5">
         <table className="text-gray-300 w-full">
           <thead>
             <tr className="border-t border-b border-borderDark">

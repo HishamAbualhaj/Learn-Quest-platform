@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Route, Routes, NavLink } from "react-router-dom";
+import { Route, Routes, Link, useLocation } from "react-router-dom";
 import {
   faUsers,
   faPersonChalkboard,
@@ -14,7 +14,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState, useEffect } from "react";
-
 import Users from "./Users";
 import Courses from "./Courses";
 import AddCourse from "./AddCourse";
@@ -65,12 +64,21 @@ function Dashboard() {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  const [activeStatus, setActiveStatus] = useState(1);
+  const [activeStatus, setActiveStatus] = useState(null);
 
   // by default its not resized
   const [resize, setResize] = useState(false);
 
   const [isTranslate, setIsTranslate] = useState(false);
+
+  const link = useLocation();
+
+  // change sidebar (active or not) status based on URL 
+  useEffect(() => {
+    const currentLink = link.pathname.split("/")[1];
+    setActiveStatus(currentLink);
+    setIsTranslate(false);
+  }, [link]);
 
   function setActive(e) {
     const currentTab = e.currentTarget.id;
@@ -109,29 +117,20 @@ function Dashboard() {
         </div>
         <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
-            <NavLink
-              key={tab.key}
-              to={`/${tab.name}`}
-              className={({ isActive }) =>
-                isActive
-                  ? () => {
-                      setActiveStatus(tab.key);
-                      setIsTranslate(!isTranslate);
-                    }
-                  : ""
-              }
-            >
+            <Link key={tab.key} to={`/${tab.name.replace(/\s+/g, "")}`}>
               <div
-                id={tab.key}
+                id={tab.name.replace(/\s+/g, "")}
                 key={tab.key}
                 className={
                   "flex flex-col gap-5 cursor-pointer hover:bg-hoverDark transition"
                 }
-                onClick={setActive}
+                onClick={(e)=> {
+                  setActive(e)
+                }}
               >
                 <div
                   className={`flex py-2 px-5 text-lg relative items-center gap-3 ${
-                    activeStatus == tab.key ? active : ""
+                    activeStatus == tab.name.replace(/\s+/g, "") ? active : ""
                   } ${resize ? "justify-center" : ""}`}
                 >
                   <FontAwesomeIcon className="text-gray-300" icon={tab.icon} />
@@ -144,7 +143,7 @@ function Dashboard() {
                   )}
                 </div>
               </div>
-            </NavLink>
+            </Link>
           ))}
         </div>
       </div>
@@ -184,7 +183,7 @@ function Dashboard() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/chat" element={<Chat />} />
-            <Route path="/system log" element={<SystemLog />} />
+            <Route path="/systemlog" element={<SystemLog />} />
             <Route path="/maintenance" element={<Maintenance />} />
             <Route
               path="*"
