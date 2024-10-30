@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import DeleteUser from "./DeleteUser";
 function Users({ setActiveStatus }) {
-
   const users = [
     {
       key: 1,
@@ -110,7 +109,9 @@ function Users({ setActiveStatus }) {
 
   return (
     <>
-      <div className="dark:text-white text-black font-semibold text-4xl ">Hello, Admin</div>
+      <div className="dark:text-white text-black font-semibold text-4xl ">
+        Hello, Admin
+      </div>
       <div className="dark:text-gray-400 text-lightText mt-2 ">
         Last Login was yesterday at 2:46 pm
       </div>
@@ -162,7 +163,7 @@ function Users({ setActiveStatus }) {
                       setIdUser(user.key);
                     }}
                     id={user.key}
-                    className="cursor-pointer border dark:border-red-500/70 border-red-300/70 dark:te0xt-white text-lightText py-2 md:px-0 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
+                    className="cursor-pointer border dark:border-red-500/70 border-red-300/70 dark:text-white text-lightText py-2 md:px-0 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
                   >
                     {user.action}
                   </div>

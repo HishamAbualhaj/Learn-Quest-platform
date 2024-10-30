@@ -19,14 +19,14 @@ function Reviews() {
     <>
       <div className="flex items-center md:flex-row flex-col justify-between">
         <div className="text">
-          <div className="text-white font-semibold text-4xl ">Reviews</div>
-          <div className="text-gray-400 mt-2 ">See all reviews for courses</div>
+          <div className="dark:text-white text-lightText font-semibold text-4xl ">Reviews</div>
+          <div className="dark:text-gray-400 text-lightText mt-2 ">See all reviews for courses</div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="text-white text-xl">Select Course</div>
+          <div className="dark:text-white text-lightText text-xl">Select Course</div>
           <select
-            className="bg-borderDark text-white focus:outline-none md:w-[500px] w-full p-2 text-lg appearance-none"
+            className="dark:bg-borderDark dark:border-none border  dark:text-white text-lightText focus:outline-none md:w-[500px] w-full p-2 text-lg appearance-none"
             name="courses"
             id=""
           >
@@ -80,7 +80,7 @@ function Reviews() {
 
 function Review({ image, stars, text }) {
   return (
-    <div className="flex gap-5 bg-lightDark p-5 rounded-md xl:flex-row flex-col">
+    <div className="flex gap-5 dark:bg-lightDark dark:shadow-none box-shadow p-5 rounded-md xl:flex-row flex-col dark:border-none border ">
       <div className="h-fit rounded-[50%]">
         <img
           className="rounded-[50%] object-cover h-[80px] w-[80px]"
@@ -89,13 +89,13 @@ function Review({ image, stars, text }) {
         />
       </div>
       <div>
-        <div className="text-white text-xl">Hisham Alhaj</div>
+        <div className="dark:text-white text-lightText text-xl">Hisham Alhaj</div>
         <div className="flex gap-2 mt-4">
           {stars.map(() => (
             <FontAwesomeIcon key={Math.random()} className="text-yellow-400" icon={faStar} />
           ))}
         </div>
-        <div className="text-gray-300 max-w-[500px] mt-4 md:text-lg text-md">
+        <div className="dark:text-gray-300 text-lightText max-w-[500px] mt-4 md:text-lg text-md">
           {text}
         </div>
       </div>

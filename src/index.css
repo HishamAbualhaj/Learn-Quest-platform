@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
   font-family: terminal;
   src: url(./assets/Modeseven-L3n5.ttf);
@@ -15,6 +14,12 @@ body {
 /* For Firefox */
 * {
   scrollbar-width: thin;
+}
+ 
+.light-scrollbar {
+  scrollbar-color: none #f4f4f4;
+}
+.dark-scrollbar {
   scrollbar-color: #555 #1e1e2f;
 }
 
@@ -32,6 +37,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-right: 20px;
 }
 
+.box-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 5px 0px;
+}
 /* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 10px;

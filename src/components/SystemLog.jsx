@@ -85,8 +85,9 @@ function SystemLog() {
 
   return (
     <div className="font-terminal">
-      <div className="bg-black/70 w-full h-[750px] overflow-auto rounded-md">
-        <div className="text-green-500">
+      <div className="dark:text-white text-lightText text-4xl font-semibold">Systenm Log</div>
+      <div className="dark:bg-black/70 bg-lightLayout w-full max-h-[750px] overflow-auto rounded-md mt-5">
+        <div className="dark:text-green-500 text-green-700">
           {logs.map((log) => (
             <div
               key={log.logId}

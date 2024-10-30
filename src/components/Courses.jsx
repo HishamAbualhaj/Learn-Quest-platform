@@ -2,7 +2,6 @@ import { useState } from "react";
 import DeleteCourse from "./DeleteCourse";
 import { Link } from "react-router-dom";
 function Courses() {
-  
   const courses = [
     {
       key: 1,
@@ -104,15 +103,15 @@ function Courses() {
     <>
       <div className="flex items-center justify-between sm:flex-row flex-col">
         <div>
-          <div className="text-white font-semibold text-4xl">
+          <div className="dark:text-white text-black font-semibold text-4xl">
             Course Panel
           </div>
-          <div className="text-gray-400 mt-2">
+          <div className="dark:text-gray-400 text-lightText mt-2">
             Track courses and manage them
           </div>
         </div>
         <Link to="add">
-          <div className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer sm:mt-0 mt-5 max-sm:w-full text-center">
+          <div className="dark:bg-gray-500 bg-none dark:text-white dark:border-none border  text-black font-semibold rounded-md py-2 px-4 dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition cursor-pointer sm:mt-0 mt-5 max-sm:w-full text-center">
             Add Course
           </div>
         </Link>
@@ -124,9 +123,9 @@ function Courses() {
         />
       )}
       <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[600px] overflow-auto px-5">
-        <table className="text-gray-300 w-full">
+        <table className="dark:text-gray-300 text-lightText w-full">
           <thead>
-            <tr className="border-t border-b border-borderDark">
+            <tr className="border-t border-b dark:border-borderDark border-lightBorder">
               <td className="py-4 font-bold">Name</td>
               <td className="font-bold">Category</td>
               <td className="whitespace-nowrap font-bold">Price</td>
@@ -142,7 +141,7 @@ function Courses() {
             {courses.map((course) => (
               <tr
                 key={course.key}
-                className="border-t border-b border-borderDark"
+                className="border-t border-b dark:border-borderDark border-lightBorder"
               >
                 <td className="py-4 xl:pr-0 pr-8 whitespace-nowrap">
                   {course.name}
@@ -159,7 +158,7 @@ function Courses() {
                   <Link to={`edit/${course.name}`} state={2}>
                     <div
                       id={course.key}
-                      className="cursor-pointer bg-gray-500/70 py-2 px-2 text-center rounded-md hover:bg-gray-800 hover:text-white transition"
+                      className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition"
                     >
                       {course.action[0]}
                     </div>
@@ -170,7 +169,7 @@ function Courses() {
                       setIdCourse(course.key);
                     }}
                     id={course.key}
-                    className="cursor-pointer border border-red-500/70 text-white py-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition md:px-0 px-2 "
+                    className="cursor-pointer border dark:border-red-500/70 border-red-300/70 dark:text-white text-lightText py-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition md:px-0 px-2 "
                   >
                     {course.action[1]}
                   </div>

@@ -44,7 +44,7 @@ export default function AddCourse() {
   return (
     <div>
       <div className="rounded-sm  w-full overflow-auto h-[800px]">
-        <div className="text-center text-white text-xl py-5 border-b border-borderDark flex justify-between px-4">
+        <div className="text-center dark:text-white text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
           Add Course Details
           <Link to="/courses">
             <FontAwesomeIcon
@@ -62,20 +62,23 @@ export default function AddCourse() {
             Successfully Added !
           </div> */}
           {inputs.map((input) => (
-            <div key={input.key} className="flex flex-col mt-2 text-white">
+            <div
+              key={input.key}
+              className="flex flex-col mt-2 dark:text-white text-lightText"
+            >
               <label htmlFor="">{input.title}</label>
               <input
-                className="mt-2 border border-textDark/40 rounded-md w-full"
+                className="mt-2 border dark:border-textDark/40 border-borderLight rounded-sm w-full"
                 type={input.inType}
               />
             </div>
           ))}
 
-          <div className="flex flex-col mt-2 text-white gap-2">
+          <div className="flex flex-col mt-2 dark:text-white text-lightText gap-2">
             <label htmlFor="">Category : </label>
 
             <select
-              className="bg-transparent border border-[#888] rounded-md text-white focus:outline-none p-2 text-lg appearance-none w-full mt-2"
+              className="bg-transparent border dark:border-[#888] border-borderLight rounded-sm dark:text-white text-lightText focus:outline-none p-2 text-lg appearance-none w-full mt-2"
               name="courses"
               id=""
             >
@@ -92,41 +95,41 @@ export default function AddCourse() {
             </select>
           </div>
 
-          <div className="flex flex-col mt-2 text-white">
+          <div className="flex flex-col mt-2 dark:text-white text-lightText ">
             <label htmlFor="">Image : </label>
 
             <div className="image-handle relative cursor-pointer mt-2">
-              <div className="border border-gray-500 rounded-md flex justify-center py-10">
-                <div className="text-xl"> Upload image</div>
+              <div className="border dark:border-gray-500 border-borderLight rounded-md flex justify-center py-10">
+                <div className="text-xl "> Upload image</div>
                 <input
                   type="file"
-                  className="border border-textDark/40 rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
+                  className="rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col mt-2 text-white">
+          <div className="flex flex-col mt-2 dark:text-white text-lightText ">
             <label htmlFor="">Videos : </label>
 
             <div className="video-handle relative cursor-pointer">
-              <div className="border border-gray-500 rounded-md flex justify-center py-10">
+              <div className="border dark:border-gray-500  rounded-md flex justify-center py-10">
                 <div className="text-xl"> Upload videos</div>
                 <input
                   type="file"
                   multiple
                   onChange={setMultiple}
-                  className="border border-textDark/40 rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
+                  className="ounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col mt-2 text-white">
+          <div className="flex flex-col mt-2 dark:text-white text-lightText">
             <label htmlFor="">Description : </label>
-            <textarea className="mt-2 border border-textDark/40 rounded-md w-full" />
+            <textarea className="mt-2 border dark:border-textDark/40 border-borderLight rounded-md w-full" />
           </div>
-          <div className="bg-gray-500 text-white font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer text-center mt-3">
+          <div className="dark:bg-gray-500 dark:text-white text-lightText dark:border-none border  font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer text-center mt-3">
             ADD
           </div>
         </div>

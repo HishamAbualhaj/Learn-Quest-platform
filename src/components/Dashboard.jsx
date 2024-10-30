@@ -89,7 +89,7 @@ function Dashboard() {
   return (
     <div className="flex h-[100vh]">
       <div
-        className={`border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-white w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full  ${
+        className={` border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full  ${
           isTranslate ? "!translate-x-0 " : ""
         }`}
       >
@@ -162,7 +162,7 @@ function Dashboard() {
               <div className="dark:text-white text-black uppercase max-sm:hidden">
                 admin dashboard management
               </div>
-              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer dark:text-white text-black dark:bg-gray-500 bg-none hover:bg-gray-800 hover:text-white transition text-center">
+              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer dark:text-white text-black dark:bg-gray-500 bg-none dark:hover:bg-gray-800 hover:text-white transition text-center">
                 <a href="">
                   <FontAwesomeIcon icon={faRightFromBracket} />
                 </a>

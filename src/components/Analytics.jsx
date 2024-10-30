@@ -12,21 +12,21 @@ export default function Analytics() {
     <div className="h-[800px] overflow-auto">
       <div className="flex items-center justify-between sm:flex-row flex-col">
         <div>
-          <div className="text-white font-semibold text-4xl ">
+          <div className="dark:text-white text-lightText font-semibold text-4xl ">
             Analytics Panel
           </div>
-          <div className="text-gray-400 mt-2">
+          <div className="dark:text-gray-400 text-lightText mt-2">
             Track users , courses, and much more
           </div>
         </div>
       </div>
 
       <div className="mt-3">
-        <div className="rounded-md border border-borderDark p-3">
+        <div className="rounded-md border dark:border-borderDark  p-3">
           <Panel
             icon={
               <FontAwesomeIcon
-                className="text-white text-xl  p-2 rounded-full"
+                className="dark:text-white text-lightText text-xl  p-2 rounded-full"
                 icon={faUser}
               />
             }
@@ -47,11 +47,11 @@ export default function Analytics() {
           </div>
         </div>
 
-        <div className="rounded-md border border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon
-                className="text-white text-xl  p-2 rounded-full"
+                className="dark:text-white text-lightText text-xl  p-2 rounded-full"
                 icon={faPersonChalkboard}
               />
             }
@@ -60,11 +60,11 @@ export default function Analytics() {
           />
         </div>
 
-        <div className="rounded-md border border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon
-                className="text-white text-xl  p-2 rounded-full"
+                className="dark:text-white text-lightText text-xl  p-2 rounded-full"
                 icon={faStar}
               />
             }
@@ -72,11 +72,11 @@ export default function Analytics() {
             number={550}
           />
         </div>
-        <div className="rounded-md border border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon
-                className="text-white text-xl  p-2 rounded-full"
+                className="dark:text-white text-lightText text-xl  p-2 rounded-full"
                 icon={faBlog}
               />
             }
@@ -84,11 +84,11 @@ export default function Analytics() {
             number={15}
           />
         </div>
-        <div className="rounded-md border border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon
-                className="text-white text-xl  p-2 rounded-full"
+                className="dark:text-white text-lightText text-xl  p-2 rounded-full"
                 icon={faClock}
               />
             }
@@ -114,14 +114,14 @@ function Ping({ color }) {
 }
 function Panel({ icon, text, number }) {
   return (
-    <div className="p-5 bg-lightDark shadow-lg flex-1">
+    <div className="p-5 dark:bg-lightDark dark:shadow-lg box-shadow flex-1">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {icon}
-          <div className="text-white xl:text-2xl text-xl uppercase">{text}</div>
+          <div className="dark:text-white text-lightText xl:text-2xl text-xl uppercase">{text}</div>
         </div>
 
-        <div className="text-2xl font-semibold text-white">{number}</div>
+        <div className="text-2xl font-semibold dark:text-white text-lightText">{number}</div>
       </div>
     </div>
   );

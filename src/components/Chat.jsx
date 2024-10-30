@@ -5,6 +5,7 @@ import hisham from "../assets/hisham.jpg";
 function Chat() {
   const [isTranslate, setIsTranslate] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
   // Handling side effect for screen resize
   useEffect(() => {
     // checking if we are in small screens
@@ -161,7 +162,7 @@ function Chat() {
   ];
   return (
     <div className="flex flex-col relative overflow-hidden">
-      <div className="text-white text-4xl">Chat</div>
+      <div className="dark:text-white text-lightText text-4xl">Chat</div>
       <FontAwesomeIcon
         onClick={() => {
           setIsTranslate(!isTranslate);
@@ -170,7 +171,7 @@ function Chat() {
         icon={faBars}
       />
       <div className="flex mt-5 gap-3">
-        <div className=" max-h-[700px] flex flex-col justify-end border lg:w-10/12 w-full border-borderDark bg-lightDark overflow-auto">
+        <div className=" max-h-[700px] rounded-sm flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
           <div className="flex flex-col p-5 gap-5 overflow-auto">
             {messages.map((message) => (
               <Message
@@ -182,9 +183,9 @@ function Chat() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 p-2">
             <input
-              className="text-white border border-white w-full h-[49px] rounded-md"
+              className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
               type="text"
             />
             <FontAwesomeIcon
@@ -198,7 +199,7 @@ function Chat() {
         <div
           className={`${
             isTranslate ? "translate-x-0" : "translate-x-full"
-          } transition border border-borderDark h-[700px] w-[350px] lg:relative right-0 absolute bg-lightDark overflow-auto`}
+          } transition border dark:border-borderDark border-borderLight h-[700px] w-[350px] lg:relative right-0 absolute dark:bg-lightDark bg-lightLayout overflow-auto`}
         >
           {users.map((user) => (
             <User
@@ -218,10 +219,10 @@ function Chat() {
 function Message({ text, name, isAdmin }) {
   return (
     <div className={`flex flex-col ${isAdmin ? "items-start" : "items-end"} `}>
-      <div className="text-white text-sm ">{name}</div>
+      <div className="dark:text-white text-lightText text-md ">{name}</div>
       <div
         className={`flex lg:w-1/2 w-fit ${
-          isAdmin ? "bg-blue-400/40" : "bg-gray-700"
+          isAdmin ? "dark:bg-blue-400/40 bg-blue-500/90" : "bg-gray-700"
         }  p-2 rounded-md mt-1`}
       >
         <div className="text-white text-start">{text}</div>
@@ -232,7 +233,7 @@ function Message({ text, name, isAdmin }) {
 }
 function User({ name, lastMessage, isActive, img }) {
   return (
-    <div className="relative flex  items-center gap-3 p-4 border-b border-borderDark hover:bg-borderDark transition cursor-pointer">
+    <div className="relative flex  items-center gap-3 p-4 border-b dark:border-borderDark border-borderLight dark:hover:bg-borderDark hover:bg-hoverLight transition cursor-pointer">
       <div
         className={`absolute bottom-4 left-6 rounded-full h-3 w-3 ${
           isActive ? "bg-green-500" : "bg-red-500"
@@ -244,8 +245,10 @@ function User({ name, lastMessage, isActive, img }) {
         alt=""
       />
       <div className="flex flex-col flex-1">
-        <div className="text-white">{name}</div>
-        <div className="text-sm text-gray-400 line-clamp-1">{lastMessage}</div>
+        <div className="dark:text-white text-black">{name}</div>
+        <div className="text-sm dark:text-gray-400 text-lightText line-clamp-1">
+          {lastMessage}
+        </div>
       </div>
     </div>
   );
