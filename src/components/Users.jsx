@@ -110,17 +110,17 @@ function Users({ setActiveStatus }) {
 
   return (
     <>
-      <div className="text-white font-semibold text-4xl ">Hello, Admin</div>
-      <div className="text-gray-400 mt-2 ">
+      <div className="dark:text-white text-black font-semibold text-4xl ">Hello, Admin</div>
+      <div className="dark:text-gray-400 text-lightText mt-2 ">
         Last Login was yesterday at 2:46 pm
       </div>
       {deleteUserPopup && (
         <DeleteUser setdeleteUserPopup={setdeleteUserPopup} id={idUser} />
       )}
       <div className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 h-[650px] overflow-auto pr-5">
-        <table className="text-gray-300 w-full">
+        <table className="dark:text-gray-300 text-lightText w-full">
           <thead>
-            <tr className="border-t border-b border-borderDark">
+            <tr className="border-t border-b dark:border-borderDark border-borderLight">
               <td className="py-4 font-bold">User</td>
               <td className="font-bold">Email</td>
               <td className="whitespace-nowrap font-bold">Date joined</td>
@@ -136,7 +136,7 @@ function Users({ setActiveStatus }) {
             {users.map((user) => (
               <tr
                 key={user.key}
-                className="border-t border-b border-borderDark"
+                className="border-t border-b dark:border-borderDark border-borderLight"
               >
                 <td className="py-4 xl:pr-0 pr-8 whitespace-nowrap">
                   {user.name}
@@ -147,8 +147,8 @@ function Users({ setActiveStatus }) {
                   <div
                     className={`py-2 px-3 rounded-lg w-fit ${
                       user.status === "Active"
-                        ? "text-green-300 bg-green-400/20"
-                        : "text-red-300 bg-red-400/20"
+                        ? "dark:text-green-300 text-green-400 bg-green-400/20"
+                        : "dark:text-red-300  text-red-400 bg-red-400/20"
                     }`}
                   >
                     {user.status}
@@ -162,7 +162,7 @@ function Users({ setActiveStatus }) {
                       setIdUser(user.key);
                     }}
                     id={user.key}
-                    className="cursor-pointer border border-red-500/70 text-white py-2 md:px-0 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
+                    className="cursor-pointer border dark:border-red-500/70 border-red-300/70 dark:te0xt-white text-lightText py-2 md:px-0 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
                   >
                     {user.action}
                   </div>

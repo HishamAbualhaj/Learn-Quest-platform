@@ -73,7 +73,7 @@ function Dashboard() {
 
   const link = useLocation();
 
-  // change sidebar (active or not) status based on URL 
+  // change sidebar (active or not) status based on URL
   useEffect(() => {
     const currentLink = link.pathname.split("/")[1];
     setActiveStatus(currentLink);
@@ -85,11 +85,11 @@ function Dashboard() {
     setActiveStatus(currentTab);
   }
 
-  let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 bg-hoverDark`;
+  let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 dark:bg-hoverDark bg-hoverLight`;
   return (
     <div className="flex h-[100vh]">
       <div
-        className={`border-r border-borderDark bg-lightDark w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full  ${
+        className={`border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-white w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full  ${
           isTranslate ? "!translate-x-0 " : ""
         }`}
       >
@@ -101,7 +101,7 @@ function Dashboard() {
           {resize ? (
             ""
           ) : (
-            <div className="text-white text-2xl py-[18px] font-bold flex gap-1">
+            <div className="dark:text-white text-black text-2xl py-[18px] font-bold flex gap-1">
               LEARN <div className="text-purple-600">QUEST</div>
             </div>
           )}
@@ -110,7 +110,7 @@ function Dashboard() {
             onClick={() => {
               setResize(!resize);
             }}
-            className="cursor-pointer text-white border-gray-400/90 px-2 py-[26px] rounded transition hover:bg-gray-400/20"
+            className="cursor-pointer dark:text-white text-lightText px-2 py-[26px] rounded transition hover:bg-gray-400/20"
             rotation={resize ? 270 : 90}
             icon={faChevronDown}
           />
@@ -122,10 +122,10 @@ function Dashboard() {
                 id={tab.name.replace(/\s+/g, "")}
                 key={tab.key}
                 className={
-                  "flex flex-col gap-5 cursor-pointer hover:bg-hoverDark transition"
+                  "flex flex-col gap-5 cursor-pointer dark:hover:bg-hoverDark  hover:bg-hoverLight transition"
                 }
-                onClick={(e)=> {
-                  setActive(e)
+                onClick={(e) => {
+                  setActive(e);
                 }}
               >
                 <div
@@ -133,11 +133,11 @@ function Dashboard() {
                     activeStatus == tab.name.replace(/\s+/g, "") ? active : ""
                   } ${resize ? "justify-center" : ""}`}
                 >
-                  <FontAwesomeIcon className="text-gray-300" icon={tab.icon} />
+                  <FontAwesomeIcon className="dark:text-gray-300 text-lightText" icon={tab.icon} />
                   {resize ? (
                     ""
                   ) : (
-                    <div className="text-gray-300 data capitalize">
+                    <div className="dark:text-gray-300 text-lightText data capitalize">
                       {tab.name}
                     </div>
                   )}
@@ -148,8 +148,8 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="flex-1 bg-dark">
-        <div className="text-white py-3 border-b bg-black/20 border-borderDark xl:px-12 sm:px-10 px-5 ">
+      <div className="flex-1 dark:bg-dark bg-white">
+        <div className="text-white py-3 border-b dark:bg-black/20 dark:border-borderDark border-borderLight xl:px-12 sm:px-10 px-5 ">
           <div className="flex items-center justify-between">
             <FontAwesomeIcon
               onClick={() => {
@@ -159,10 +159,10 @@ function Dashboard() {
               icon={faBars}
             />
             <div className="flex justify-between xl:flex-1 items-center gap-3">
-              <div className="text-white uppercase max-sm:hidden">
+              <div className="dark:text-white text-black uppercase max-sm:hidden">
                 admin dashboard management
               </div>
-              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition text-center">
+              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer dark:text-white text-black dark:bg-gray-500 bg-none hover:bg-gray-800 hover:text-white transition text-center">
                 <a href="">
                   <FontAwesomeIcon icon={faRightFromBracket} />
                 </a>

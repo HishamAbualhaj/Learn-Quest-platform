@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: "media",
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -13,13 +13,15 @@ export default {
         borderDark: "rgba(255, 255, 255, 0.12)",
         hoverDark: "rgba(255, 255, 255, 0.06)",
         // light mode
-        lightText: "rgba(0, 9, 51, 0.65)",
+        borderLight: "rgba(0, 17, 102, 0.1)",
+        lightText: "rgba(0, 6, 38, 0.9)",
         btn: "#4c64D9",
         lightBtn: "#A3B2FF",
+        hoverLight: "rgba(0, 21, 128, 0.04)",
       },
       fontFamily: {
-        'terminal' : ['terminal']
-      }
+        terminal: ["terminal"],
+      },
     },
   },
   plugins: [],
