@@ -133,7 +133,10 @@ function Dashboard() {
                     activeStatus == tab.name.replace(/\s+/g, "") ? active : ""
                   } ${resize ? "justify-center" : ""}`}
                 >
-                  <FontAwesomeIcon className="dark:text-gray-300 text-lightText" icon={tab.icon} />
+                  <FontAwesomeIcon
+                    className="dark:text-gray-300 text-lightText"
+                    icon={tab.icon}
+                  />
                   {resize ? (
                     ""
                   ) : (
