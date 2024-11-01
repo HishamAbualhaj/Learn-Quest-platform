@@ -114,7 +114,7 @@ function Ping({ color }) {
 }
 function Panel({ icon, text, number }) {
   return (
-    <div className="p-5 dark:bg-lightDark dark:shadow-lg box-shadow flex-1">
+    <div className="p-5 dark:bg-lightDark bg-white dark:shadow-lg box-shadow flex-1">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {icon}

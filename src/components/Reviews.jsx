@@ -80,7 +80,7 @@ function Reviews() {
 
 function Review({ image, stars, text }) {
   return (
-    <div className="flex gap-5 dark:bg-lightDark dark:shadow-none box-shadow p-5 rounded-md xl:flex-row flex-col dark:border-none border ">
+    <div className="flex gap-5 dark:bg-lightDark bg-white dark:shadow-none box-shadow p-5 rounded-md xl:flex-row flex-col dark:border-none border ">
       <div className="h-fit rounded-[50%]">
         <img
           className="rounded-[50%] object-cover h-[80px] w-[80px]"

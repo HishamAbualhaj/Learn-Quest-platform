@@ -23,6 +23,9 @@ export default {
       fontFamily: {
         terminal: ["terminal"],
       },
+      boxShadow: {
+        'custom' : 'rgba(149, 157, 165, 0.2) 0px 12px 20px'
+      }
     },
   },
   plugins: [],
