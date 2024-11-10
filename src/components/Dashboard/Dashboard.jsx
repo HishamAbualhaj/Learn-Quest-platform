@@ -23,6 +23,8 @@ import Reviews from "./Reviews";
 import Chat from "./Chat";
 import SystemLog from "./SystemLog";
 import Maintenance from "./Maintenance";
+
+import Logo from "../Logo";
 function Dashboard() {
   const tabs = [
     {
@@ -62,8 +64,6 @@ function Dashboard() {
     },
   ];
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
   const [activeStatus, setActiveStatus] = useState(null);
 
   // by default its not resized
@@ -101,9 +101,7 @@ function Dashboard() {
           {resize ? (
             ""
           ) : (
-            <div className="dark:text-white text-black text-2xl py-[18px] font-bold flex gap-1">
-              LEARN <div className="text-purple-600">QUEST</div>
-            </div>
+            <Logo />
           )}
 
           <FontAwesomeIcon
