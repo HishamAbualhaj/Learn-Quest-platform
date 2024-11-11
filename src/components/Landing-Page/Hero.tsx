@@ -3,12 +3,12 @@ import React from "react";
 function Hero() {
   return (
     <div className="section xl:py-24 py-20">
-      <div className="max-container flex items-center justify-center xl:flex-row flex-col xl:gap-0 gap-10">
+      <div className="max-container flex items-center justify-between xl:flex-row flex-col xl:gap-0 gap-10">
         <div className="flex flex-col gap-5">
           <div className="text-[50px] font-[600] max-w-[700px]">
             Learning made easy for everyone
           </div>
-          <div className="text-[20px] dark:text-white text-black/50 max-w-[800px]">
+          <div className="text-[20px] dark:text-white/50 text-black/50 max-w-[800px]">
             Start learning at your own pace with courses designed to fit your
             schedule. Whether you're just beginning or looking to deepen your
             knowledge, our platform offers engaging and accessible content.
