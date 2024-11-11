@@ -1,8 +1,9 @@
 import Login from "./components/login";
 import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Landing from "./components/Landing-Page/Landing";
 function App() {
-  return <Dashboard></Dashboard>;
+  return <Landing></Landing>;
 }
 
 export default App;

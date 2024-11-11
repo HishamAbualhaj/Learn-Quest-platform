@@ -13,6 +13,8 @@ export default {
         borderDark: "rgba(255, 255, 255, 0.12)",
         hoverDark: "rgba(255, 255, 255, 0.06)",
         // light mode
+        mainClr: "rgba(76, 100, 217, 1)",
+        mainClrDark: "rgba(163, 178, 255, 1)",
         borderLight: "rgba(0, 17, 102, 0.1)",
         lightText: "rgba(0, 6, 38, 0.9)",
         lightLayout: 'rgba(0, 21, 128, 0.03)',

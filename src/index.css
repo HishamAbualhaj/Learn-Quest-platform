@@ -15,7 +15,7 @@ body {
 * {
   scrollbar-width: thin;
 }
- 
+
 .light-scrollbar {
   scrollbar-color: none #f4f4f4;
 }
@@ -40,6 +40,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .box-shadow {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 5px 0px;
 }
+
 /* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 10px;
