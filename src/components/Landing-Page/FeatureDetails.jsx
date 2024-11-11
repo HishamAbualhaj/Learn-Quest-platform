@@ -3,7 +3,7 @@ import Button from "./Button";
 function FeatureDetails() {
   return (
     <div className="section">
-      <div className="max-container flex justify-between items-center lg:flex-row flex-col lg:gap-0 gap-10">
+      <div className="max-container flex justify-between items-center lg:flex-row flex-col lg:gap-0 gap-10 max-lg:py-16">
         <div className="py-10 flex flex-col gap-5">
           <div className="font-[600] lg:text-2xl text-xl">
             Everything you need to reach your learning goals
