@@ -28,8 +28,8 @@ export default function Header() {
   const [nav, setNav] = useState(false);
   const [activeNav, setActiveNav] = useState("Home");
   return (
-    <div className="dark:bg-dark relative bg-white border-b dark:border-borderDark text-lightText dark:text-white xl:px-0 px-5">
-      <div className="max-w-[1600px] mx-auto ">
+    <div className="section relative">
+      <div className="max-container">
         <div className="flex md:justify-between lg:gap-0 gap-5 items-center">
           <FontAwesomeIcon
             className="text-2xl text-gray-500 cursor-pointer md:hidden block"
@@ -53,7 +53,7 @@ export default function Header() {
                     : ""
                 } `}
               >
-                {nav.name}
+                <a href={`#${nav.name.toLowerCase()}`}>{nav.name}</a>
               </div>
             ))}
           </div>
@@ -75,7 +75,7 @@ function NavMobile() {
   const [activeNav, setActiveNav] = useState("Home");
   return (
     <>
-      <div className="flex max-w-[80%] justify-between flex-col absolute text-black top-[70px] border pb-5 bg-blue-100 rounded-sm">
+      <div className="box-shadow-light  flex max-w-[80%] justify-between flex-col absolute text-black top-[70px] border pb-5 bg-white rounded-md">
         <div className="flex flex-col">
           {navs.map((nav) => (
             <div

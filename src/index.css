@@ -41,6 +41,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 5px 0px;
 }
 
+.box-shadow-light {
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 20px 24px -4px;
+}
+
+.max-container {
+  @apply max-w-[1600px] mx-auto;
+}
+
+.section {
+  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white xl:px-0 px-5;
+}
 /* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 10px;
