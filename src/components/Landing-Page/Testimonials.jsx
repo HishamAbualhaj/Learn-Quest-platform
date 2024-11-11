@@ -32,8 +32,8 @@ function Testimonials() {
   ];
 
   return (
-    <div className="section">
-      <div className="max-container py-14">
+    <div className="section  py-14">
+      <div className="max-container">
         <div className="font-[600] lg:text-2xl text-xl">
           What Our Learners Are Saying
         </div>

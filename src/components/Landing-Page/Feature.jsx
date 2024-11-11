@@ -33,16 +33,17 @@ function Feature() {
     {
       id: 4,
       title: "Interactive Course Content",
-      subTitle: "Engage with hands-on exercises, quizzes, and real-world projects designed to reinforce learning",
+      subTitle:
+        "Engage with hands-on exercises, quizzes, and real-world projects designed to reinforce learning",
       icon: faChartLine,
     },
   ];
   return (
-    <div className="section bg-lightLayout dark:bg-lightDark  lg:py-16 py-10">
+    <div className="section bg-lightLayout dark:bg-lightDark lg:py-16 py-10">
       <div className="max-container">
         <div className="flex xl:flex-row flex-col justify-between xl:gap-0 gap-5">
           {features.map((feature) => (
-            <div  key={feature.id} className="flex flex-col gap-2">
+            <div key={feature.id} className="flex flex-col gap-2">
               <div className="">
                 <FontAwesomeIcon
                   className="text-mainClr/90 bg-mainClr/10 xl:p-5 p-4 rounded-full xl:text-xl text-lg"
