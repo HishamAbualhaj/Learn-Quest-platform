@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "./Button";
 
 function Hero() {
   return (
@@ -14,12 +15,8 @@ function Hero() {
             knowledge, our platform offers engaging and accessible content.
           </div>
           <div className="flex items-start gap-2 lg:flex-row flex-col">
-            <div className="xl:text-xl cursor-pointer rounded-md border dark:bg-mainClrDark dark:border-mainClrDark border-mainClr bg-mainClr dark:text-black text-white xl:px-5 xl:py-3 px-4 py-2 font-[600] transition hover:bg-mainClrDark hover:text-black hover:border-mainClrDark">
-              Sign up
-            </div>
-            <div className="xl:text-xl cursor-pointer border rounded-md dark:border-mainClrDark border-lightBtn text-mainClr dark:text-white xl:px-5 xl:py-3 px-4 py-2 font-[600]">
-              Join a course
-            </div>
+            <Button outlined={false} text="Sign up" size="xl" url={""} />
+            <Button outlined={true} text="Join a course" size="xl" url={""} />
           </div>
         </div>
         <img

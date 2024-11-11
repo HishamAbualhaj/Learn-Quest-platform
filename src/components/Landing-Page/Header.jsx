@@ -2,6 +2,7 @@ import React, { act, useState } from "react";
 import Logo from "../Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import Button from "./Button";
 const navs = [
   {
     id: 1,
@@ -58,12 +59,8 @@ export default function Header() {
             ))}
           </div>
           <div className="md:flex hidden gap-2 lg:flex-row flex-col">
-            <div className="cursor-pointer border rounded-md dark:border-mainClrDark border-lightBtn text-mainClr dark:text-white px-4 py-2 font-[600]">
-              Log in
-            </div>
-            <div className="cursor-pointer rounded-md border dark:bg-mainClrDark dark:border-mainClrDark border-mainClr bg-mainClr dark:text-black text-white px-4 py-2 font-[600] transition hover:bg-mainClrDark hover:text-black hover:border-mainClrDark">
-              Sign up
-            </div>
+            <Button outlined={true} text="Sign up" size="lg" url={""} />
+            <Button outlined={false} text="Log in" size="lg" url={""} />
           </div>
         </div>
       </div>
@@ -94,12 +91,8 @@ function NavMobile() {
           ))}
         </div>
         <div className="flex w-fit px-5 gap-2 mt-5">
-          <div className="cursor-pointer border rounded-md dark:border-mainClrDark border-lightBtn text-mainClr  px-4 py-2 font-[600]">
-            Log in
-          </div>
-          <div className="cursor-pointer rounded-md border dark:bg-mainClrDark dark:border-mainClrDark border-mainClr bg-mainClr dark:text-black text-white px-4 py-2 font-[600] ">
-            Sign up
-          </div>
+          <Button outlined={false} text="Sign up" size="lg" url={""} />
+          <Button outlined={true} text="Join a course" size="lg" url={""} />
         </div>
       </div>
     </>
