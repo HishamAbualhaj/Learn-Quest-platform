@@ -3,7 +3,7 @@ import Signup from "./components/Signup";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Landing from "./components/Landing-Page/Landing";
 function App() {
-  return <Landing></Landing>;
+  return <Dashboard></Dashboard>;
 }
 
 export default App;

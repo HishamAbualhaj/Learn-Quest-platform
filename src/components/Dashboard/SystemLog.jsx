@@ -74,48 +74,51 @@ function SystemLog() {
     },
   ];
 
-  const [itemMenu, setItemMenu] = useState({});
-
-  const triggerDropdown = (logId) => {
-    setItemMenu((prev) => ({
-      ...prev,
-      [logId]: !prev[logId],
-    }));
-  };
-
   return (
     <div className="font-terminal">
-      <div className="dark:text-white text-lightText text-4xl font-semibold">Systenm Log</div>
+      <div className="dark:text-white text-lightText text-4xl font-semibold">
+        System Log
+      </div>
       <div className="dark:bg-black/70 bg-lightLayout w-full max-h-[750px] overflow-auto rounded-md mt-5">
         <div className="dark:text-green-500 text-green-700">
           {logs.map((log) => (
-            <div
-              key={log.logId}
+            <Log
               id={log.logId}
-              onClick={(e) => {
-                // console.log(e.currentTarget.getAttribute("id"));
-                triggerDropdown(log.logId);   
-              }}
-              className="border-b  border-green-300/40 md:p-6 p-4 hover:bg-gray-500/20 cursor-pointer"
-            >
-              <div className="flex md:flex-row flex-col md:gap-0 gap-2 items-center justify-between">
-                <div>User: {log.logState}</div>
-                <div className="">{log.time}</div>
-              </div>
-
-              {itemMenu[log.logId] && (
-                <div className="ml-5 mt-5 dropMenu">
-                  <div>Log-id: {log.logId}</div>
-                  <div className="mt-2">user-id: {log.userId}</div>
-                  <div className="mt-2">Email: {log.email}</div>
-                </div>
-              )}
-            </div>
+              logState={log.logState}
+              email={log.email}
+              time={log.time}
+            />
           ))}
         </div>
       </div>
     </div>
   );
 }
+function Log({ id, logState, userId, email, time }) {
+  const [active, setActive] = useState(false);
+  return (
+    <div
+      key={id}
+      id={id}
+      onClick={(e) => {
+        // console.log(e.currentTarget.getAttribute("id"));
+        setActive(!active);
+      }}
+      className="border-b  border-green-300/40 md:p-6 p-4 hover:bg-gray-500/20 cursor-pointer"
+    >
+      <div className="flex md:flex-row flex-col md:gap-0 gap-2 items-center justify-between">
+        <div>User: {logState}</div>
+        <div className="">{time}</div>
+      </div>
 
+      {active && (
+        <div className="ml-5 mt-5 dropMenu">
+          <div>Log-id: {id}</div>
+          <div className="mt-2">user-id: {userId}</div>
+          <div className="mt-2">Email: {email}</div>
+        </div>
+      )}
+    </div>
+  );
+}
 export default SystemLog;

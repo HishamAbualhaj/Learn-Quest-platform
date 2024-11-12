@@ -5,6 +5,7 @@ import Feature from "./Feature";
 import FeatureDetails from "./FeatureDetails";
 import Testimonials from "./Testimonials";
 import CoursePreview from "./CoursePreview";
+import FrequentlyQuestions from './FrequentlyQuestions'
 import DemoPage from "./DemoPage";
 import Footer from "./Footer";
 function Landing() {
@@ -16,6 +17,7 @@ function Landing() {
       <FeatureDetails />
       <Testimonials />
       <CoursePreview />
+      <FrequentlyQuestions />
       <DemoPage />
       <Footer />
     </>

@@ -4,7 +4,7 @@ function DemoPage() {
   return (
     <div className="section bg-lightLayout dark:bg-lightDark py-12">
       <div className="max-container ">
-        <div className="flex justify-between">
+        <div className="flex justify-between xl:flex-row flex-col xl:gap-0 gap-5">
           <div>
             <div className="font-[600] lg:text-4xl text-xl">Our Platform</div>
             <div className="text-black/50 max-w-[600px] dark:text-white/50 mt-2 leading-7">
