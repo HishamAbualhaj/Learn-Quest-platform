@@ -129,7 +129,7 @@ export default function AddCourse() {
             <label htmlFor="">Description : </label>
             <textarea className="mt-2 border dark:border-textDark/40 border-borderLight rounded-md w-full" />
           </div>
-          <div className="dark:bg-gray-500 dark:text-white text-lightText dark:border-none border  font-semibold rounded-md p-2 hover:bg-gray-800 hover:text-white transition cursor-pointer text-center mt-3">
+          <div className="mt-3 cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition">
             ADD
           </div>
         </div>
