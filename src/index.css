@@ -25,24 +25,16 @@ body {
 
 input,
 textarea {
-  @apply py-2 pl-2 bg-transparent;
+  @apply py-2 pl-2 bg-transparent border dark:border-borderDark rounded-sm;;
 }
 input:focus,
 textarea:focus {
-  box-shadow: 0 0 5px #888;
-  @apply outline-none border-[#888];
+  /* box-shadow: 0 0 5px #888; */
+  @apply outline-none border-purple-700/70 dark:border-purple-500/70;
 }
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
   padding-right: 20px;
-}
-
-.box-shadow {
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 5px 0px;
-}
-
-.box-shadow-light {
-  box-shadow: rgba(0, 0, 0, 0.08) 0px 20px 24px -4px;
 }
 
 .max-container {
@@ -50,7 +42,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .section {
-  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white  px-5;
+  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white px-5;
 }
 /* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
