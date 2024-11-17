@@ -3,6 +3,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Logo from "../Logo";
 import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../Avatar";
+import AllCourses from './AllCourses'
 import {
   faHeadset,
   faMessage,
@@ -99,7 +100,8 @@ function Student() {
         </div>
         <Routes>
           <Route path="/profile" element={<Profile />}></Route>
-          <Route path="/chatStudent" element={<ChatStudent />}></Route>
+          <Route path="/chat" element={<ChatStudent />}></Route>
+          <Route path="/allcourses" element={<AllCourses />}></Route>
         </Routes>
       </div>
     </div>
