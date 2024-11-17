@@ -37,6 +37,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-right: 20px;
 }
 
+.box-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 5px 0px;
+}
+
+.box-shadow-light {
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 20px 24px -4px;
+}
+.height-vh-adjust {
+  height: calc(100vh - 69px);
+}
 .max-container {
   @apply max-w-[1600px] mx-auto;
 }

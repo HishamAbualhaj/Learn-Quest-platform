@@ -14,6 +14,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBlogger } from "@fortawesome/free-brands-svg-icons";
 import Profile from "./Profile";
+import ChatStudent from "./ChatStudent";
 function Student() {
   const tabs = [
     {
@@ -98,6 +99,7 @@ function Student() {
         </div>
         <Routes>
           <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/chatStudent" element={<ChatStudent />}></Route>
         </Routes>
       </div>
     </div>

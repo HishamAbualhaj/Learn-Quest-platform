@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Button";
 function FeatureDetails() {
   return (
-    <div className="section  max-lg:py-16">
+    <div className="section max-lg:py-16">
       <div className="max-container flex justify-between items-center lg:flex-row flex-col lg:gap-0 gap-10">
         <div className="py-10 flex flex-col gap-5">
           <div className="font-[600] lg:text-2xl text-xl">
