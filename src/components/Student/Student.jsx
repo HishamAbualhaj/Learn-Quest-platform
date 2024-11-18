@@ -3,7 +3,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Logo from "../Logo";
 import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../Avatar";
-import AllCourses from './AllCourses'
+import AllCourses from "./AllCourses";
 import {
   faHeadset,
   faMessage,
@@ -79,7 +79,7 @@ function Student() {
             />
           </div>
           {active && (
-            <div className="shadow-custom dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white right-0 top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
+            <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white right-0 top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
               {tabs.map((tab) => (
                 <Link key={tab.key} to={tab.name.replace(/\s+/g, "")}>
                   <div key={tab.key} className="flex flex-col">
@@ -98,12 +98,12 @@ function Student() {
             </div>
           )}
         </div>
-        <Routes>
-          <Route path="/profile" element={<Profile />}></Route>
-          <Route path="/chat" element={<ChatStudent />}></Route>
-          <Route path="/allcourses" element={<AllCourses />}></Route>
-        </Routes>
       </div>
+      <Routes>
+        <Route path="/profile" element={<Profile />}></Route>
+        <Route path="/chat" element={<ChatStudent />}></Route>
+        <Route path="/allcourses" element={<AllCourses />}></Route>
+      </Routes>
     </div>
   );
 }
