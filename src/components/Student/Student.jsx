@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBlogger } from "@fortawesome/free-brands-svg-icons";
 import Profile from "./Profile";
 import ChatStudent from "./ChatStudent";
+import MyCourses from "./MyCourses";
 function Student() {
   const tabs = [
     {
@@ -56,9 +57,9 @@ function Student() {
       onClick={() => {
         setActive(false);
       }}
-      className="section border-none h-[100vh]"
+      className="section_student border-none h-[100vh]"
     >
-      <div className="max-container">
+      <div className="border-b border-borderDark px-5 pb-2">
         <div className="flex justify-between lg:gap-0 gap-5 items-center relative">
           <Logo />
           <div
@@ -68,7 +69,7 @@ function Student() {
             }}
             className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
           >
-            <div className=" bg-slate-400/20 rounded-[50%]">
+            <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
               <Avatar img={Person} className={"h-[50px] w-[50px]"} />
             </div>
             <div className="text-lg">Hisham</div>
@@ -103,6 +104,7 @@ function Student() {
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/chat" element={<ChatStudent />}></Route>
         <Route path="/allcourses" element={<AllCourses />}></Route>
+        <Route path="/mycourses" element={<MyCourses />}></Route>
       </Routes>
     </div>
   );

@@ -52,7 +52,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .section {
-  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white px-5;
+  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white sm:px-5 px-1;
+}
+.section_student {
+  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white;
+
 }
 /* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {

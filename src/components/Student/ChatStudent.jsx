@@ -70,29 +70,30 @@ function ChatStudent() {
     },
   ];
   return (
-    <div className="height-vh-adjust">
-      <div className="lg:text-4xl text-2xl font-semibold">Chat</div>
-      <div className="mt-3 h-[800px] rounded-sm flex flex-col justify-end border dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
-        <div className="flex flex-col p-5 gap-5 overflow-auto">
-          {messages.map((message) => (
-            <Message
-              name={message.name}
-              key={message.id}
-              text={message.message}
-              isAdmin={message.isAdmin}
+    <div className="sm:px-5 px-1">
+      <div className="height-vh-adjust">
+        <div className="text-4xl font-semibold">Chat</div>
+        <div className="mt-3 h-[800px] rounded-sm flex flex-col justify-end border dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
+          <div className="flex flex-col p-5 gap-5 overflow-auto">
+            {messages.map((message) => (
+              <Message
+                name={message.name}
+                key={message.id}
+                text={message.message}
+                isAdmin={message.isAdmin}
+              />
+            ))}
+          </div>
+          <div className="flex items-center gap-3 p-2">
+            <input
+              className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
+              type="text"
             />
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3 p-2">
-          <input
-            className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
-            type="text"
-          />
-          <FontAwesomeIcon
-            className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
-            icon={faPaperPlane}
-          />
+            <FontAwesomeIcon
+              className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
+              icon={faPaperPlane}
+            />
+          </div>
         </div>
       </div>
     </div>
