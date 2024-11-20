@@ -4,6 +4,7 @@ import web from "../../assets/web.jpg";
 import ui from "../../assets/uiux.jpg";
 import cyber from "../../assets/cyber.jpg";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import Button from "../Button";
 function MyCourses() {
   const mycourses = [
     {
@@ -58,8 +59,8 @@ function MyCourses() {
     },
   ];
   return (
-    <div className="sm:px-5 px-1">
-      <div className=" bg-lightLayout dark:bg-lightDark py-10 mt-10 overflow-auto h-[800px]">
+    <div className="sm:px-5 px-1 mt-10">
+      <div className=" bg-lightLayout dark:bg-lightDark py-10 overflow-auto h-[800px]">
         <div className="md:px-5 px-2">
           <div className="flex items-center justify-between md:flex-row flex-col max-md:gap-5">
             <div className="font-[600] text-4xl">My Courses</div>
@@ -128,12 +129,10 @@ function MyCourses() {
                   </div>
                   {course.completed && (
                     <div className="flex items-center text-center gap-2 mt-5">
-                      <div className="bg-green-700/70 py-2 rounded-md flex-1">
+                      <div className="bg-green-700/70 py-2 rounded-md flex-1 text-white">
                         Completed !
                       </div>
-                      <div className="p-2 rounded-md dark:bg-purple-700/40 cursor-pointer dark:hover:bg-purple-700 bg-purple-600 text-white hover:bg-purple-700 transition flex-1">
-                        Get Certificate
-                      </div>
+                      <Button props="flex-1" margin="mt-0" text="Get Certificate" />
                     </div>
                   )}
                 </div>

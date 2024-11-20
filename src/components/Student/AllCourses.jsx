@@ -4,6 +4,7 @@ import ui from "../../assets/uiux.jpg";
 import cyber from "../../assets/cyber.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
+import Button from "../Button";
 function AllCourses() {
   const courses = [
     {
@@ -63,8 +64,8 @@ function AllCourses() {
     },
   ];
   return (
-    <div className="sm:px-5 px-1">
-      <div className=" bg-lightLayout dark:bg-lightDark py-10 mt-10 overflow-auto h-[800px]">
+    <div className="sm:px-5 px-1 mt-10">
+      <div className=" bg-lightLayout dark:bg-lightDark py-10 overflow-auto h-[800px]">
         <div className="md:px-5 px-2">
           <div className="flex items-center justify-between md:flex-row flex-col max-md:gap-5">
             <div className="font-[600] text-4xl">Courses</div>
@@ -150,9 +151,7 @@ function AllCourses() {
                         : course.price + " $"}
                     </div>
                   </div>
-                  <div className="btn mt-4 p-2 rounded-md dark:bg-purple-700/40 w-fit cursor-pointer dark:hover:bg-purple-700 bg-purple-600 text-white hover:bg-purple-700 transition">
-                    Join Now
-                  </div>
+                  <Button  text="Join Now"/>
                 </div>
               </div>
             ))}

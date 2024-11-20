@@ -17,7 +17,7 @@ export default {
         mainClrDark: "rgba(163, 178, 255, 1)",
         borderLight: "rgba(0, 17, 102, 0.1)",
         lightText: "rgba(0, 6, 38, 0.9)",
-        lightLayout: 'rgba(0, 21, 128, 0.03)',
+        lightLayout: "rgba(0, 21, 128, 0.03)",
         btn: "#4c64D9",
         lightBtn: "#A3B2FF",
         hoverLight: "rgba(0, 21, 128, 0.04)",
@@ -26,8 +26,8 @@ export default {
         terminal: ["terminal"],
       },
       boxShadow: {
-        'custom' : 'rgba(149, 157, 165, 0.2) 0px 12px 20px'
-      }
+        custom: "rgba(149, 157, 165, 0.2) 0px 12px 20px",
+      },
     },
   },
   plugins: [],
@@ -38,7 +38,7 @@ export default {
     "bg-red-400",
     "bg-red-400/40",
     "bg-blue-400/40",
-    'bg-blue-500/90',
+    "bg-blue-500/90",
     "bg-gray-700",
   ],
 };

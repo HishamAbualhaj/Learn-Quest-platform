@@ -25,7 +25,7 @@ body {
 
 input,
 textarea {
-  @apply py-2 pl-2 bg-transparent border dark:border-borderDark rounded-sm;;
+  @apply py-2 pl-2 bg-transparent border dark:border-borderDark rounded-sm;
 }
 input:focus,
 textarea:focus {
@@ -56,7 +56,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .section_student {
   @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white;
-
 }
 /* Customize the scrollbar for webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {

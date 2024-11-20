@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Logo from "../Logo";
 import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../Avatar";
 import AllCourses from "./AllCourses";
 import {
-  faHeadset,
   faMessage,
   faPersonChalkboard,
   faRightFromBracket,
@@ -17,6 +16,8 @@ import { faBlogger } from "@fortawesome/free-brands-svg-icons";
 import Profile from "./Profile";
 import ChatStudent from "./ChatStudent";
 import MyCourses from "./MyCourses";
+import Blog from "./Blog";
+import BlogPost from "./BlogPost";
 function Student() {
   const tabs = [
     {
@@ -57,9 +58,9 @@ function Student() {
       onClick={() => {
         setActive(false);
       }}
-      className="section_student border-none h-[100vh]"
+      className="section_student border-none "
     >
-      <div className="border-b border-borderDark px-5 pb-2">
+      <div className="border-b dark:border-borderDark border-borderLight px-5 pb-2">
         <div className="flex justify-between lg:gap-0 gap-5 items-center relative">
           <Logo />
           <div
@@ -105,6 +106,10 @@ function Student() {
         <Route path="/chat" element={<ChatStudent />}></Route>
         <Route path="/allcourses" element={<AllCourses />}></Route>
         <Route path="/mycourses" element={<MyCourses />}></Route>
+        <Route path="/blog">
+          <Route index element={<Blog />}></Route>
+          <Route path=":name" element={<BlogPost />}></Route>
+        </Route>
       </Routes>
     </div>
   );
