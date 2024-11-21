@@ -44,8 +44,8 @@ function Profile() {
   const [state, setState] = useState("Profile");
   const [isEdit, setIsEdit] = useState(false);
   return (
-    <div className="sm:px-5 px-1 mt-5 pb-8">
-      <div className=" dark:bg-lightDark bg-white border dark:border-borderDark flex items-center flex-col  box-shadow-light dark:box-shadow rounded-md h-[800px] overflow-auto">
+    <div className="sm:px-5 px-1 flex items-center height-vh-adjust">
+      <div className=" dark:bg-lightDark w-full bg-white border dark:border-borderDark flex items-center flex-col  box-shadow-light dark:box-shadow rounded-md h-[800px] overflow-auto">
         <div className="w-full p-5 flex justify-between">
           <FontAwesomeIcon
             onClick={() => {

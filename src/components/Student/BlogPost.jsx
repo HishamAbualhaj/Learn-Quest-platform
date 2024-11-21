@@ -3,7 +3,7 @@ import Ai from "../../assets/blog/artical.jpg";
 
 function BlogPost() {
   return (
-    <div className="bg-lightLayout dark:bg-lightDark">
+    <div className="bg-lightLayout dark:bg-gray-800/20">
       <div className="max-w-[1100px] mx-auto leading-8 py-10 sm:max-lg:px-8 px-5 ">
         <h1 className="sm:text-[30px] text-2xl font-bold leading-10">
           The Evolution of Artificial Intelligence: Where Are We Now?

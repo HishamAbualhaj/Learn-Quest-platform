@@ -2,6 +2,7 @@ import React from "react";
 import Ai from "../../assets/blog/artical.jpg";
 import cloud from "../../assets/blog/cloud_computing.jpg";
 import web from "../../assets/blog/web.jpg";
+import cyber from "../../assets/blog/cyber.jpg";
 import Button from "../Button";
 function Blog() {
   const posts = [
@@ -34,12 +35,12 @@ function Blog() {
       title: "Cybersecurity Essentials for Businesses in 2024",
       summary:
         "Highlight the importance of robust cybersecurity for businesses, given the rise in ransomware and phishing attacks. Provide an overview of key practices like multi-factor authentication, regular updates, and employee training. Include insights into emerging threats like AI-driven attacks and the significance of zero-trust architecture.",
-      image: cloud,
+      image: cyber,
       author: "Hisham (ADMIN)",
     },
   ];
   return (
-    <div className="sm:px-5 px-1 mt-5 h-[800px] overflow-auto">
+    <div className="sm:px-5 px-3 py-5">
       <div className="text-4xl">Blog</div>
       <div className="grid 2xl:grid-cols-2 grid-cols-1 gap-3 mt-5">
         {posts.map((post) => (

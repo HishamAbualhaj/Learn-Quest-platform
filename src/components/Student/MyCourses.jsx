@@ -59,7 +59,7 @@ function MyCourses() {
     },
   ];
   return (
-    <div className="sm:px-5 px-1 mt-10">
+    <div className="sm:px-5 px-1 height-vh-adjust flex items-center">
       <div className=" bg-lightLayout dark:bg-lightDark py-10 overflow-auto h-[800px]">
         <div className="md:px-5 px-2">
           <div className="flex items-center justify-between md:flex-row flex-col max-md:gap-5">

@@ -70,10 +70,10 @@ function ChatStudent() {
     },
   ];
   return (
-    <div className="sm:px-5 px-1">
-      <div className="height-vh-adjust">
+    <div className="sm:px-5 px-1 height-vh-adjust flex items-center">
+      <div className="w-full">
         <div className="text-4xl font-semibold">Chat</div>
-        <div className="mt-3 h-[800px] rounded-sm flex flex-col justify-end border dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
+        <div className="mt-5 h-[750px] rounded-sm flex flex-col justify-end border dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
           <div className="flex flex-col p-5 gap-5 overflow-auto">
             {messages.map((message) => (
               <Message
