@@ -47,7 +47,7 @@ function Blog() {
           <div key={post.id} className=" border dark:border-borderDark">
             <div className="flex p-3 rounded-md gap-5 lg:flex-row flex-col">
               <img
-                className="max-lg:mx-auto md:max-w-[400px]"
+                className="max-lg:mx-auto md:max-w-[400px] h-[400px] object-cover"
                 src={post.image}
                 alt="Ai image"
               />
