@@ -5,6 +5,7 @@ import cyber from "../../assets/cyber.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
 import Button from "../Button";
+import { Link } from "react-router-dom";
 function AllCourses() {
   const courses = [
     {
@@ -151,7 +152,9 @@ function AllCourses() {
                         : course.price + " $"}
                     </div>
                   </div>
-                  <Button  text="Join Now"/>
+                  <Link to={`/CoursePage/${course.title.replace(/[\s/]/g, "")}`}>
+                    <Button text="Join Now" />
+                  </Link>
                 </div>
               </div>
             ))}
