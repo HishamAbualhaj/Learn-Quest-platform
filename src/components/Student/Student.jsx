@@ -18,6 +18,7 @@ import ChatStudent from "./ChatStudent";
 import MyCourses from "./MyCourses";
 import Blog from "./Blog";
 import BlogPost from "./BlogPost";
+import CoursePage from "./CoursePage";
 function Student() {
   const tabs = [
     {
@@ -104,8 +105,14 @@ function Student() {
       <Routes>
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/chat" element={<ChatStudent />}></Route>
+
         <Route path="/allcourses" element={<AllCourses />}></Route>
-        <Route path="/mycourses" element={<MyCourses />}></Route>
+        <Route path="/CoursePage/:courseName" element={<CoursePage />}></Route>
+
+        <Route path="/mycourses" element={<MyCourses />}>
+          <Route path=":courseName" element={<CoursePage />}></Route>
+        </Route>
+
         <Route path="/blog">
           <Route index element={<Blog />}></Route>
           <Route path=":name" element={<BlogPost />}></Route>
