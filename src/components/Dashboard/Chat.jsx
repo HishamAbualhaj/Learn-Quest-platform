@@ -4,33 +4,6 @@ import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import hisham from "../../assets/hisham.jpg";
 function Chat() {
   const [isTranslate, setIsTranslate] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  // Handling side effect for screen resize
-  useEffect(() => {
-    // checking if we are in small screens
-    if (windowWidth <= 1280) {
-      setIsTranslate(false);
-    } else {
-      setIsTranslate(true);
-    }
-
-    // each time we resize screen,
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      if (windowWidth <= 1280) {
-        setIsTranslate(false);
-      } else {
-        setIsTranslate(true);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [windowWidth]);
 
   const messages = [
     {
@@ -171,7 +144,7 @@ function Chat() {
         icon={faBars}
       />
       <div className="flex mt-5 gap-3">
-        <div className=" max-h-[700px] rounded-sm flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
+        <div className="max-h-[700px] rounded-sm flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
           <div className="flex flex-col p-5 gap-5 overflow-auto">
             {messages.map((message) => (
               <Message
@@ -198,8 +171,8 @@ function Chat() {
         {/*For users to chat with */}
         <div
           className={`${
-            isTranslate ? "translate-x-0" : "translate-x-full"
-          } transition border dark:border-borderDark border-borderLight h-[700px] w-[350px] lg:relative right-0 absolute dark:bg-lightDark bg-lightLayout overflow-auto`}
+            isTranslate ? "!translate-x-0" : ""
+          } transition border dark:border-borderDark border-borderLight h-[700px] w-[350px] lg:relative right-0 absolute dark:bg-lightDark bg-lightLayout overflow-auto max-lg:translate-x-full`}
         >
           {users.map((user) => (
             <User
