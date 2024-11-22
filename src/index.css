@@ -36,7 +36,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
   padding-right: 20px;
 }
-
+select {
+  @apply dark:bg-borderDark dark:border-none border dark:text-white text-lightText focus:outline-none  appearance-none p-2;
+}
 .box-shadow {
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 5px 0px;
 }
@@ -50,9 +52,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .max-container {
   @apply max-w-[1600px] mx-auto;
 }
-
+.border_platform.all {
+  @apply border dark:border-borderDark border-borderLight;
+}
+.border_platform.b {
+  @apply border-b dark:border-borderDark border-borderLight;
+}
+.border_platform.t {
+  @apply border-t dark:border-borderDark border-borderLight;
+}
+.border_platform.l {
+  @apply border-l dark:border-borderDark border-borderLight;
+}
+.border_platform.r {
+  @apply border-r dark:border-borderDark border-borderLight;
+}
 .section {
-  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white sm:px-5 px-1;
+  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white sm:px-5 px-1 ;
 }
 .section_student {
   @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white;
