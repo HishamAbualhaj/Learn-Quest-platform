@@ -25,7 +25,7 @@ function Login() {
         <div className="flex flex-col mt-4">
           <label htmlFor="">Email</label>
           <input
-              className="mt-2 border dark:border-textDark/40 border-lightText/30 rounded-md w-full"
+              className="mt-2 border rounded-md w-full"
               type="text"
             />
         </div>
@@ -33,7 +33,7 @@ function Login() {
         <div className="flex flex-col mt-4">
           <label htmlFor="">Password</label>
           <input
-              className="mt-2 border dark:border-textDark/40 border-lightText/30 rounded-md w-full"
+              className="mt-2 border rounded-md w-full"
               type="password"
             />
           <div className="text-lightBtn mt-2 underline ">

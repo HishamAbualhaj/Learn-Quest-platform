@@ -25,7 +25,7 @@ body {
 
 input,
 textarea {
-  @apply py-2 pl-2 bg-transparent border dark:border-borderDark rounded-sm;
+  @apply py-2 pl-2 border dark:border-borderDark border-borderLight rounded-sm dark:bg-lightDark bg-lightLayout;
 }
 input:focus,
 textarea:focus {

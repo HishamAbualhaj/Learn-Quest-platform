@@ -386,7 +386,7 @@ function CoursePage() {
     return (
       <>
         <div className="flex justify-between mt-5">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-5">
             <Avatar className={"h-[50px] w-[50px]"} img={image} />
             <div className="text-lg">{name}</div>
           </div>

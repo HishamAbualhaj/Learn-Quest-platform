@@ -4,6 +4,7 @@ import cloud from "../../assets/blog/cloud_computing.jpg";
 import web from "../../assets/blog/web.jpg";
 import cyber from "../../assets/blog/cyber.jpg";
 import Button from "../Button";
+import { Link } from "react-router-dom";
 function Blog() {
   const posts = [
     {
@@ -24,7 +25,7 @@ function Blog() {
     },
     {
       id: 3,
-      title: " The Future of Web Development: What's Next in 2024?",
+      title: "The Future of Web Development: What's Next in 2024?",
       summary:
         "Examine trends shaping web development, such as the rise of progressive web apps (PWAs), advancements in frameworks like Next.js and React, and the integration of AI in web design. Include insights into the importance of Web3, blockchain technology, and enhanced user experiences through AR/VR.",
       image: web,
@@ -59,7 +60,9 @@ function Blog() {
                 <div className="underline mt-5 text-purple-300">
                   Author : {post.author}
                 </div>
-                <Button margin="mt-4" text="Read Now" />
+                <Link to={post.title.replace(/\//g,"")}>
+                  <Button margin="mt-4" text="Read Now" />
+                </Link>
               </div>
             </div>
           </div>

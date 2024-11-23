@@ -24,14 +24,14 @@ function Signup() {
           <div className="flex flex-col flex-1">
             <label htmlFor="">First name</label>
             <input
-              className="mt-2 border dark:border-textDark/40 border-lightText/30 rounded-md w-full"
+              className="mt-2 border rounded-md w-full"
               type="text"
             />
           </div>
           <div className="flex flex-col flex-1">
             <label htmlFor="">Last name</label>
             <input
-              className="mt-2 border dark:border-textDark/40 border-borderLight/30 rounded-md w-full"
+              className="mt-2 border rounded-md w-full"
               type="text"
             />
           </div>
@@ -40,7 +40,7 @@ function Signup() {
         <div className="flex flex-col mt-4">
           <label htmlFor="">Email</label>
           <input
-            className="mt-2 border dark:border-textDark/40 border-borderLight/30 rounded-md w-full"
+            className="mt-2 border rounded-md w-full"
             type="text"
           />
         </div>
@@ -48,7 +48,7 @@ function Signup() {
         <div className="flex flex-col mt-4">
           <label htmlFor="">Password</label>
           <input
-            className="mt-2 border dark:border-textDark/40 border-borderLight/30 rounded-md w-full"
+            className="mt-2 border rounded-md w-full"
             type="password"
           />
           {/* <div className="text-lightBtn mt-2 underline ">
@@ -58,7 +58,7 @@ function Signup() {
         <div className="flex flex-col mt-4">
           <label htmlFor="">Date of Birth</label>
           <input
-            className="mt-2 border dark:border-textDark/40 border-borderLight/30 rounded-md w-full"
+            className="mt-2 border rounded-md w-full"
             type="date"
           />
         </div>
