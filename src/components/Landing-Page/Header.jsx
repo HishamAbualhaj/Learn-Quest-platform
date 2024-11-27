@@ -59,8 +59,8 @@ export default function Header() {
             ))}
           </div>
           <div className="md:flex hidden gap-2 lg:flex-row flex-col">
-            <Button outlined={true} text="Sign up" size="lg" url={""} />
-            <Button outlined={false} text="Log in" size="lg" url={""} />
+            <Button outlined={true} text="Sign up" size="lg" url={"signup"} />
+            <Button outlined={false} text="Log in" size="lg" url={"login"} />
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Route, Routes, Link, useLocation } from "react-router-dom";
+import { Route, Routes, Link, useLocation, Outlet } from "react-router-dom";
 import {
   faUsers,
   faPersonChalkboard,
@@ -14,15 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState, useEffect } from "react";
-import Users from "./Users";
-import Courses from "./Courses";
-import AddCourse from "./AddCourse";
-import EditCourse from "./EditCourse";
-import Analytics from "./Analytics";
-import Reviews from "./Reviews";
-import Chat from "./Chat";
-import SystemLog from "./SystemLog";
-import Maintenance from "./Maintenance";
+
 
 import Logo from "../Logo";
 function Dashboard() {
@@ -115,7 +107,7 @@ function Dashboard() {
         </div>
         <div className="tabs-container flex flex-col gap-4 ">
           {tabs.map((tab) => (
-            <Link key={tab.key} to={`/${tab.name.replace(/\s+/g, "")}`}>
+            <Link key={tab.key} to={`${tab.name.replace(/\s+/g, "")}`}>
               <div
                 id={tab.name.replace(/\s+/g, "")}
                 key={tab.key}
@@ -173,28 +165,7 @@ function Dashboard() {
         </div>
 
         <div className="xl:px-12 sm:px-10 px-5 mt-12">
-          <Routes>
-            <Route path="/" element={<Users />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/Courses">
-              <Route index path="/Courses" element={<Courses />} />
-              <Route path="add" element={<AddCourse />} />
-              <Route path="edit/:id" element={<EditCourse />} />
-            </Route>
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/systemlog" element={<SystemLog />} />
-            <Route path="/maintenance" element={<Maintenance />} />
-            <Route
-              path="*"
-              element={
-                <h1 className="text-white text-4xl text-center mt-16">
-                  Not Found Page
-                </h1>
-              }
-            />
-          </Routes>
+         <Outlet />
         </div>
       </div>
     </div>

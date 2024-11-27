@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Logo from "../Logo";
 import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../Avatar";
-import AllCourses from "./AllCourses";
 import {
   faMessage,
   faPersonChalkboard,
@@ -13,12 +12,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBlogger } from "@fortawesome/free-brands-svg-icons";
-import Profile from "./Profile";
-import ChatStudent from "./ChatStudent";
-import MyCourses from "./MyCourses";
-import Blog from "./Blog";
-import BlogPost from "./BlogPost";
-import CoursePage from "./CoursePage";
 function Student() {
   const tabs = [
     {
@@ -102,22 +95,7 @@ function Student() {
           )}
         </div>
       </div>
-      <Routes>
-        <Route path="/profile" element={<Profile />}></Route>
-        <Route path="/chat" element={<ChatStudent />}></Route>
-
-        <Route path="/allcourses" element={<AllCourses />}></Route>
-        <Route path="/CoursePage/:courseName" element={<CoursePage />}></Route>
-
-        <Route path="/mycourses" element={<MyCourses />}>
-          <Route path=":courseName" element={<CoursePage />}></Route>
-        </Route>
-
-        <Route path="/blog">
-          <Route index element={<Blog />}></Route>
-          <Route path=":name" element={<BlogPost />}></Route>
-        </Route>
-      </Routes>
+      <Outlet />
     </div>
   );
 }
