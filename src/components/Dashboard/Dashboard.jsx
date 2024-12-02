@@ -15,8 +15,8 @@ import {
 
 import { useState, useEffect } from "react";
 
-
 import Logo from "../Logo";
+import ButtonAdmin from "./ButtonAdmin";
 function Dashboard() {
   const tabs = [
     {
@@ -67,7 +67,7 @@ function Dashboard() {
 
   // change sidebar (active or not) status based on URL
   useEffect(() => {
-    const currentLink = link.pathname.split("/")[1];
+    const currentLink = link.pathname.split("/")[2];
     setActiveStatus(currentLink);
     setIsTranslate(false);
   }, [link]);
@@ -90,11 +90,7 @@ function Dashboard() {
             resize ? "" : "px-4 gap-2"
           }`}
         >
-          {resize ? (
-            ""
-          ) : (
-            <Logo />
-          )}
+          {resize ? "" : <Logo />}
 
           <FontAwesomeIcon
             onClick={() => {
@@ -155,17 +151,18 @@ function Dashboard() {
               <div className="dark:text-white text-black uppercase max-sm:hidden">
                 admin dashboard management
               </div>
-              <h1 className="text-xl px-5 py-2 rounded-md cursor-pointer dark:text-white text-black dark:bg-gray-500 bg-none dark:hover:bg-gray-800 hover:text-white transition text-center">
-                <a href="">
-                  <FontAwesomeIcon icon={faRightFromBracket} />
-                </a>
-              </h1>
+              <Link to="">
+                <FontAwesomeIcon
+                  className="text-lg cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-3 px-5 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition"
+                  icon={faRightFromBracket}
+                />
+              </Link>
             </div>
           </div>
         </div>
 
         <div className="xl:px-12 sm:px-10 px-5 mt-12">
-         <Outlet />
+          <Outlet />
         </div>
       </div>
     </div>

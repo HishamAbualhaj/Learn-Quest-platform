@@ -57,7 +57,7 @@ function FrequentlyQuestions() {
 
   return (
     <div className="section py-16">
-      <div className="max-container">
+      <div className="max-container flex justify-center">
         <div className="max-w-[750px]">
           <div className="font-[600] lg:text-2xl text-xl">
             Frequently asked questions

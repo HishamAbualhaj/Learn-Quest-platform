@@ -152,7 +152,7 @@ function AllCourses() {
                         : course.price + " $"}
                     </div>
                   </div>
-                  <Link to={`/CoursePage/${course.title.replace(/[\s/]/g, "")}`}>
+                  <Link to={`/student/CoursePage/${course.title.replace(/[\s/]/g, "")}`}>
                     <Button text="Join Now" />
                   </Link>
                 </div>

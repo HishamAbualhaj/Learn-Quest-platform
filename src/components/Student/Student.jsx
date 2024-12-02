@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import Logo from "../Logo";
 import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../Avatar";
@@ -45,7 +45,7 @@ function Student() {
       icon: faRightFromBracket,
     },
   ];
-
+  
   const [active, setActive] = useState(false);
   return (
     <div

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DeleteCourse from "./DeleteCourse";
 import { Link } from "react-router-dom";
+import ButtonAdmin from "./ButtonAdmin";
 function Courses() {
   const courses = [
     {
@@ -111,9 +112,7 @@ function Courses() {
           </div>
         </div>
         <Link to="add">
-          <div className="dark:bg-gray-500 bg-none dark:text-white dark:border-none border  text-black font-semibold rounded-md py-2 px-4 dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition cursor-pointer sm:mt-0 mt-5 max-sm:w-full text-center">
-            Add Course
-          </div>
+         <ButtonAdmin text="Add Course"/>
         </Link>
       </div>
       {deleteCoursePopup && (
