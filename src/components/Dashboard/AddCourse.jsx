@@ -2,14 +2,8 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import ButtonAdmin from "./ButtonAdmin";
 export default function AddCourse() {
-  const [files, setFiles] = useState(null);
-
-  const setMultiple = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
-  };
-
   const inputs = [
     {
       key: 1,
@@ -28,6 +22,10 @@ export default function AddCourse() {
     },
   ];
 
+  const [lessons, setLessons] = useState([1]);
+  function addLesson() {
+    setLessons([...lessons, lessons.at(-1) + 1]);
+  }
   const category = [
     { id: 1, name: "Introduction to Computer Science" },
     { id: 2, name: "Web Development with HTML, CSS, and JavaScript" },
@@ -44,9 +42,9 @@ export default function AddCourse() {
   return (
     <div>
       <div className="rounded-sm  w-full overflow-auto h-[800px]">
-        <div className="text-center dark:text-white text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
+        <div className="text-center dark:text-white text-white text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
           Add Course Details
-          <Link to="/courses">
+          <Link to="/dashboard/courses">
             <FontAwesomeIcon
               className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
               icon={faXmark}
@@ -54,11 +52,11 @@ export default function AddCourse() {
           </Link>
         </div>
 
-        <div className="form p-3">
+        <div className="p-3">
           {/* <div className="bg-red-500/20 text-center py-2 rounded-sm text-red-400">
             Something went wrong
           </div>
-          <div className="bg-green-500/20 text-center py-2 rounded-sm text-green-400">
+          <div className="bg-green-500/20 text-center py-2 rounded-sm text-green-400 mt-5">
             Successfully Added !
           </div> */}
           {inputs.map((input) => (
@@ -67,10 +65,7 @@ export default function AddCourse() {
               className="flex flex-col mt-2 dark:text-white text-lightText"
             >
               <label htmlFor="">{input.title}</label>
-              <input
-                className="mt-2 border dark:border-textDark/40 border-borderLight rounded-sm w-full"
-                type={input.inType}
-              />
+              <input className="mt-2" type={input.inType} />
             </div>
           ))}
 
@@ -99,7 +94,7 @@ export default function AddCourse() {
             <label htmlFor="">Image : </label>
 
             <div className="image-handle relative cursor-pointer mt-2">
-              <div className="border dark:border-gray-500 border-borderLight rounded-md flex justify-center py-10">
+              <div className="border_platform all rounded-md flex justify-center py-10">
                 <div className="text-xl "> Upload image</div>
                 <input
                   type="file"
@@ -109,29 +104,67 @@ export default function AddCourse() {
             </div>
           </div>
 
-          <div className="flex flex-col mt-2 dark:text-white text-lightText ">
-            <label htmlFor="">Videos : </label>
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between mt-2 dark:text-white text-lightText ">
+              <label htmlFor="">Videos : </label>
 
-            <div className="video-handle relative cursor-pointer">
-              <div className="border dark:border-gray-500  rounded-md flex justify-center py-10">
-                <div className="text-xl"> Upload videos</div>
-                <input
-                  type="file"
-                  multiple
-                  onChange={setMultiple}
-                  className="ounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
-                />
+              <div
+                onClick={() => {
+                  addLesson();
+                }}
+              >
+                <ButtonAdmin text="Add Lesson" />
               </div>
             </div>
+            {lessons.map((id) => (
+              <div
+                key={id}
+                className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
+              >
+                <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
+                  Lesson {id}
+                </div>
+                <div className="flex flex-col gap-3 mt-3">
+                  <div>
+                    <div className="flex flex-col gap-2">
+                      <div>Title: </div>
+                      <input
+                        className="w-full"
+                        type="text"
+                        placeholder="Lessson title"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex flex-col gap-2">
+                      <div>Sub Title: </div>
+                      <input
+                        className="w-full"
+                        type="text"
+                        placeholder="Lessson sub title"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex flex-col gap-2">
+                      <div>Lesson Url: </div>
+                      <input
+                        className="w-full"
+                        type="text"
+                        placeholder="Lessson url"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="flex flex-col mt-2 dark:text-white text-lightText">
             <label htmlFor="">Description : </label>
-            <textarea className="mt-2 border dark:border-textDark/40 border-borderLight rounded-md w-full" />
+            <textarea className="mt-2" />
           </div>
-          <div className="mt-3 cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition">
-            ADD
-          </div>
+          <ButtonAdmin text="ADD" />
         </div>
       </div>
     </div>
