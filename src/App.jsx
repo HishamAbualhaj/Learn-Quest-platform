@@ -24,12 +24,11 @@ import Chat from "./components/Dashboard/Chat";
 import SystemLog from "./components/Dashboard/SystemLog";
 import Maintenance from "./components/Dashboard/Maintenance";
 function App() {
-
-  createBrowserRouter([
-    {
-      element: <></>
-    }
-  ])
+  // createBrowserRouter([
+  //   {
+  //     element: <></>
+  //   }
+  // ])
   return (
     <Routes>
       <Route path="/" element={<Landing />}></Route>
@@ -38,6 +37,7 @@ function App() {
 
       <Route path="/student" element={<Student />}>
         <Route index element={<Profile />}></Route>
+        <Route path="profile" element={<Profile />}></Route>
         <Route path="chat" element={<ChatStudent />}></Route>
 
         <Route path="allcourses" element={<AllCourses />}></Route>
@@ -51,10 +51,20 @@ function App() {
           <Route index element={<Blog />}></Route>
           <Route path=":name" element={<BlogPost />}></Route>
         </Route>
+
+        <Route
+          path="*"
+          element={
+            <h1 className="text-white h-[100vh] text-4xl text-center mt-16">
+              Page Not Found
+            </h1>
+          }
+        />
       </Route>
 
       <Route path="/dashboard" element={<Dashboard />}>
-        <Route index path="users" element={<Users />} />
+        <Route index element={<Users />} />
+        <Route path="users" element={<Users />} />
         <Route path="Courses">
           <Route index element={<Courses />} />
           <Route path="add" element={<AddCourse />} />
@@ -69,7 +79,7 @@ function App() {
           path="*"
           element={
             <h1 className="text-white text-4xl text-center mt-16">
-              Not Found Page
+              Page Not Found
             </h1>
           }
         />
