@@ -5,7 +5,7 @@ function FeatureDetails() {
     <div className="section max-lg:py-16">
       <div className="max-container flex justify-between items-center lg:flex-row flex-col lg:gap-0 gap-10">
         <div className="py-10 flex flex-col gap-5">
-          <div className="font-[600] lg:text-2xl text-xl">
+          <div className="font-[600] lg:text-4xl text-xl">
             Everything you need to reach your learning goals
           </div>
           <div className="text-black/50 max-w-[600px] dark:text-white/50">

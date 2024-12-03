@@ -32,7 +32,7 @@ function CoursePreview() {
   return (
     <div className="section bg-lightLayout dark:bg-lightDark py-14">
       <div className="max-container">
-        <div className="font-[600] lg:text-2xl text-xl">Our Courses</div>
+        <div className="font-[600] lg:text-4xl text-xl">Our Courses</div>
         <div className="text-black/50 max-w-[600px] dark:text-white/50 mt-2">
           Learn at your own pace with our expertly crafted courses designed to
           take your skills to the next level.

@@ -34,14 +34,14 @@ function Testimonials() {
   return (
     <div className="section  py-14">
       <div className="max-container">
-        <div className="font-[600] lg:text-2xl text-xl">
+        <div className="font-[600] lg:text-4xl text-xl">
           What Our Learners Are Saying
         </div>
         <div className="text-black/50 max-w-[600px] dark:text-white/50 mt-2">
           Discover how our courses have transformed careers and helped people
           achieve their goals.
         </div>
-        <div className="flex xl:flex-row flex-col xl:gap-5 gap-10 mt-5">
+        <div className="grid xl:grid-cols-3 lg:grid-cols-2 xl:gap-5 gap-10 mt-5">
           {testimonials.map((testimonial) => (
             <div key={testimonial.id} className="flex flex-col gap-3">
               <div className="flex items-center gap-3">

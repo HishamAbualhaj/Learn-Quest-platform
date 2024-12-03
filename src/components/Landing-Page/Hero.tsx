@@ -16,6 +16,7 @@ function Hero() {
           </div>
           <div className="flex items-start gap-2 lg:flex-row flex-col">
             <Button outlined={false} text="Sign up" size="xl" url={""} />
+
             <Button outlined={true} text="Join a course" size="xl" url={""} />
           </div>
         </div>

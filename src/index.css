@@ -61,7 +61,7 @@ select {
   @apply border-r dark:border-borderDark border-borderLight;
 }
 .section {
-  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white sm:px-5 px-1;
+  @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white sm:px-5 px-4;
 }
 .section_student {
   @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white;
@@ -70,11 +70,9 @@ select {
 ::-webkit-scrollbar {
   width: 10px;
 }
-
 ::-webkit-scrollbar-track {
   background: #1e1e2f;
 }
-
 ::-webkit-scrollbar-thumb {
   background-color: #555;
   border-radius: 5px;

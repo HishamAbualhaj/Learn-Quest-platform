@@ -72,7 +72,7 @@ function NavMobile() {
   const [activeNav, setActiveNav] = useState("Home");
   return (
     <>
-      <div className="box-shadow-light  flex max-w-[80%] justify-between flex-col absolute text-black top-[70px] border pb-5 bg-white rounded-md">
+      <div className="box-shadow-light w-full border_platform all flex max-w-[80%] justify-between flex-col absolute text-black dark:text-white top-[70px] border pb-5 bg-white dark:bg-lightDark rounded-md">
         <div className="flex flex-col">
           {navs.map((nav) => (
             <div
@@ -90,9 +90,9 @@ function NavMobile() {
             </div>
           ))}
         </div>
-        <div className="flex w-fit px-5 gap-2 mt-5">
-          <Button outlined={false} text="Sign up" size="lg" url={""} />
-          <Button outlined={true} text="Join a course" size="lg" url={""} />
+        <div className="flex max-sm:flex-col w-fit px-5 gap-2 mt-5 ">
+          <Button props="!dark:text-lightText" outlined={true} text="Sign up" size="lg" url={""} />
+          <Button props="!dark:text-lightText" outlined={true} text="Join a course" size="lg" url={""} />
         </div>
       </div>
     </>

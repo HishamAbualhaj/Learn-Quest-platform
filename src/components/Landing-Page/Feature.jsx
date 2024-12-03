@@ -41,7 +41,7 @@ function Feature() {
   return (
     <div className="section bg-lightLayout dark:bg-lightDark lg:py-16 py-10">
       <div className="max-container">
-        <div className="flex xl:flex-row flex-col justify-between xl:gap-0 gap-5">
+        <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 xl:gap-0 gap-5">
           {features.map((feature) => (
             <div key={feature.id} className="flex flex-col gap-2">
               <div className="">
