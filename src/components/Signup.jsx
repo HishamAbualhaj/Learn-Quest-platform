@@ -51,9 +51,6 @@ function Signup() {
             className="mt-2 border rounded-md w-full"
             type="password"
           />
-          {/* <div className="text-lightBtn mt-2 underline ">
-            <a href="">Forgot password?</a>
-          </div> */}
         </div>
         <div className="flex flex-col mt-4">
           <label htmlFor="">Date of Birth</label>
