@@ -66,7 +66,7 @@ function Signup() {
         <div className="text-darkText mt-3 flex gap-2 items-center">
           Already have an account?
           <div className="text-lightBtn underline ">
-            <a href="">Log in</a>
+            <a href="login">Log in</a>
           </div>
         </div>
       </div>

@@ -37,7 +37,7 @@ function Login() {
               type="password"
             />
           <div className="text-lightBtn mt-2 underline ">
-            <a href="">Forgot password?</a>
+            <a href="forgotpassword">Forgot password?</a>
           </div>
         </div>
 
@@ -47,7 +47,7 @@ function Login() {
         <div className="text-darkText mt-3 flex gap-2 items-center">
           Already have an account?
           <div className="text-lightBtn underline ">
-            <a href="">Sign up</a>
+            <a href="signup">Sign up</a>
           </div>
         </div>
       </div>
