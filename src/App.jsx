@@ -23,6 +23,7 @@ import Reviews from "./components/Dashboard/Reviews";
 import Chat from "./components/Dashboard/Chat";
 import SystemLog from "./components/Dashboard/SystemLog";
 import Maintenance from "./components/Dashboard/Maintenance";
+import ForgotPass from "./components/ForgotPass";
 function App() {
   // createBrowserRouter([
   //   {
@@ -34,7 +35,7 @@ function App() {
       <Route path="/" element={<Landing />}></Route>
       <Route path="/login" element={<Login />}></Route>
       <Route path="/signup" element={<Signup />}></Route>
-
+      <Route path="/forgotpassword" element={<ForgotPass />}></Route>
       <Route path="/student" element={<Student />}>
         <Route index element={<Profile />}></Route>
         <Route path="profile" element={<Profile />}></Route>

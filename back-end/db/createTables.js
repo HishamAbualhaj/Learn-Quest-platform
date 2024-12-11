@@ -1,19 +1,4 @@
-import mysql from "mysql";
-
-// Create a connection to the database
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root", // Replace with your DB user
-  password: "", // Replace with your DB password
-  database: "learnquest", // Replace with your database name
-});
-
-// Connect to the database
-connection.connect((err) => {
-  if (err) throw err;
-  console.log("Connected to the database.");
-});
-
+import connection from './db.js'
 // SQL queries to create tables
 const createAdminTable = `
 CREATE TABLE IF NOT EXISTS Admin (
@@ -30,10 +15,10 @@ CREATE TABLE IF NOT EXISTS User (
   last_name VARCHAR(50) NOT NULL,
   status_user BOOLEAN NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
-  password VARCHAR(50) NOT NULL
+  password VARCHAR(50) NOT NULL,
   gender VARCHAR(10),
-  birthdate DATE
-  joined_at DATE
+  birthdate DATE,
+  joined_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
@@ -43,10 +28,11 @@ CREATE TABLE IF NOT EXISTS Courses (
   title VARCHAR(100) NOT NULL,
   description TEXT,
   price FLOAT NOT NULL,
+  discount INT NOT NULL,
   duration TIME NOT NULL,
   category VARCHAR(50),
   tabs TEXT,
-  created_date DATE NOT NULL
+  created_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 `;
 
