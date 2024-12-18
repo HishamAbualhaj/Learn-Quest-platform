@@ -1,5 +1,5 @@
 import http from "http";
-
+import { signup } from "./api/auth/signup.js";
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
@@ -14,6 +14,10 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.url === "/signup" && req.method === "POST") {
+    signup(req, res);
+  } else {
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Route not found" }));
   }
 });
 

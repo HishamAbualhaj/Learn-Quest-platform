@@ -3,7 +3,12 @@ import google from "../assets/google.svg";
 import Alert from "./Alert";
 
 function Signup() {
-  const [alert, setAlert] = useState(false);
+  const [alert, setAlert] = useState(null);
+  useEffect(() => {
+    setTimeout(() => {
+      setAlert(null);
+    }, 5000);
+  }, [alert]);
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
@@ -21,7 +26,6 @@ function Signup() {
       [id]: value,
     });
   }
-
   async function handleSubmit(e) {
     e.preventDefault();
     try {
@@ -34,22 +38,33 @@ function Signup() {
       });
 
       const result = response.json();
-      result.then((x) => {
-        console.log(x);
+      result.then((data) => {
+        console.log(data.message);
+        data.message ? setAlert("success") : setAlert("error");
       });
     } catch (error) {
       console.error("Error signing up:", error);
-      setAlert
+      setAlert("error");
     }
   }
 
   return (
-    <div className="dark:bg-dark bg-lightLayout h-[100vh]  md:px-0 px-5">
+    <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 relative">
       <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pt-10 pl-0 md:pl-10 font-bold flex gap-1">
         LEARN <div className="text-purple-600">QUEST</div>
       </div>
       <div className="mx-auto max-w-[500px] p-7 mt-10 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl">
-        <Alert msg="Something went wrong" type="s" />
+        {alert === "error" ? (
+          <div className="absolute  md:w-[500px] w-[400px] left-1/2 -translate-x-1/2 top-[50px]">
+            <Alert msg="Something went wrong" type="succe" />
+          </div>
+        ) : alert === "success" ? (
+          <div className="absolute  md:w-[500px] w-[400px] left-1/2 -translate-x-1/2 top-[50px]">
+            <Alert msg="Signed up successfully" type="success" />
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="lg:text-4xl text-2xl font-bold">Sign up free</div>
         <div className="dark:text-textDark text-lightText mt-2">
           No credit card required
@@ -97,7 +112,22 @@ function Signup() {
               type="text"
             />
           </div>
-
+          <div className="flex flex-col mt-4">
+            <label htmlFor="gender">Gender</label>
+            <select
+              className="mt-2 border rounded-md w-full"
+              onChange={handleChange}
+              name=""
+              id="gender"
+            >
+              <option className="text-black" value="Male">
+                Male
+              </option>
+              <option className="text-black" value="Female">
+                Female
+              </option>
+            </select>
+          </div>
           <div className="flex flex-col mt-4">
             <label htmlFor="password">Password</label>
             <input
@@ -108,9 +138,9 @@ function Signup() {
             />
           </div>
           <div className="flex flex-col mt-4">
-            <label htmlFor="birthOfDate">Date of Birth</label>
+            <label htmlFor="birthdate">Date of Birth</label>
             <input
-              id="birthOfDate"
+              id="birthdate"
               onChange={handleChange}
               className="mt-2 border rounded-md w-full"
               type="date"
