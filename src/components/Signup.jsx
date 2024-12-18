@@ -3,19 +3,19 @@ import google from "../assets/google.svg";
 import Alert from "./Alert";
 
 function Signup() {
-  const [alert, setAlert] = useState(null);
-  useEffect(() => {
-    setTimeout(() => {
-      setAlert(null);
-    }, 5000);
-  }, [alert]);
+  const [alert, setAlert] = useState({ status: "", msg: "" });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setAlert({ status: null, msg: "" });
+  //   }, 5000);
+  // }, [alert]);
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
     status_user: false,
     email: "",
     password: "",
-    gender: "",
+    gender: "Male",
     birthdate: "",
   });
 
@@ -26,10 +26,11 @@ function Signup() {
       [id]: value,
     });
   }
+
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3001/signup", {
+      const response = await fetch("http://localhost:3002/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,33 +39,34 @@ function Signup() {
       });
 
       const result = response.json();
-      result.then((data) => {
-        console.log(data.message);
-        data.message ? setAlert("success") : setAlert("error");
-      });
+      console.log(response)
+      response.status === 404
+        ? setAlert({ status: "0", msg: "Can't connect to server" })
+        : result.then((data) => {
+            console.log(data);
+            data.result
+              ? setAlert({ status: "1", msg: data.message })
+              : setAlert({ status: "0", msg: data.message });
+          });
     } catch (error) {
       console.error("Error signing up:", error);
-      setAlert("error");
+      setAlert({ status: "0", msg: "Can't connect to server" });
     }
   }
 
   return (
-    <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 relative">
-      <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pt-10 pl-0 md:pl-10 font-bold flex gap-1">
+    <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 h-[100vh]">
+      <div className="dark:text-white text-lightText text-2xl max-md:justify-center pt-5 pl-0 md:pl-10 font-bold flex gap-1">
         LEARN <div className="text-purple-600">QUEST</div>
       </div>
-      <div className="mx-auto max-w-[500px] p-7 mt-10 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl">
-        {alert === "error" ? (
-          <div className="absolute  md:w-[500px] w-[400px] left-1/2 -translate-x-1/2 top-[50px]">
-            <Alert msg="Something went wrong" type="succe" />
-          </div>
-        ) : alert === "success" ? (
-          <div className="absolute  md:w-[500px] w-[400px] left-1/2 -translate-x-1/2 top-[50px]">
-            <Alert msg="Signed up successfully" type="success" />
-          </div>
-        ) : (
-          <></>
-        )}
+      <div className="mx-auto max-w-[500px] p-7 mt-5 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl relative">
+        {alert.status &&
+          (Number(alert.status) ? (
+            <Alert msg={alert.msg} type="success" />
+          ) : (
+            <Alert msg={alert.msg} type="failed" />
+          ))}
+
         <div className="lg:text-4xl text-2xl font-bold">Sign up free</div>
         <div className="dark:text-textDark text-lightText mt-2">
           No credit card required
@@ -86,6 +88,7 @@ function Signup() {
             <div className="flex flex-col flex-1">
               <label htmlFor="first_name">First name</label>
               <input
+                required
                 id="first_name"
                 onChange={handleChange}
                 className="mt-2 border rounded-md w-full"
@@ -95,6 +98,7 @@ function Signup() {
             <div className="flex flex-col flex-1">
               <label htmlFor="last_name">Last name</label>
               <input
+                required
                 id="last_name"
                 onChange={handleChange}
                 className="mt-2 border rounded-md w-full"
@@ -106,6 +110,7 @@ function Signup() {
           <div className="flex flex-col mt-4">
             <label htmlFor="email">Email</label>
             <input
+              required
               id="email"
               onChange={handleChange}
               className="mt-2 border rounded-md w-full"
@@ -131,6 +136,7 @@ function Signup() {
           <div className="flex flex-col mt-4">
             <label htmlFor="password">Password</label>
             <input
+              required
               id="password"
               onChange={handleChange}
               className="mt-2 border rounded-md w-full"
@@ -140,6 +146,7 @@ function Signup() {
           <div className="flex flex-col mt-4">
             <label htmlFor="birthdate">Date of Birth</label>
             <input
+              required
               id="birthdate"
               onChange={handleChange}
               className="mt-2 border rounded-md w-full"
