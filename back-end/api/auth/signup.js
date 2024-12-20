@@ -1,34 +1,10 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
-
+import isEmailFound from "../../utils/isEmailFound.js";
 let response = null;
 let request = null;
 let errDatabase = null;
-async function isEmailFound(email) {
-  try {
-    const query = `SELECT * from user WHERE email = ?`;
-    const result = await connection
-      .promise()
-      .query(query, [email], (err) => {
-        errDatabase = err;
-      })
-      .then((data) => {
-        return data;
-      });
-    const [data] = result;
-    return data.length === 0 ? false : true;
-  } catch (error) {
-    handleResponse(
-      response,
-      error,
-      "Error Internal server at isEmailFound : ",
-      201,
-      500,
-      "",
-      "Something went wrong"
-    );
-  }
-}
+
 export const signup = (req, res) => {
   response = res;
   request = req;
@@ -53,6 +29,7 @@ export const signup = (req, res) => {
       } = JSON.parse(body);
       (async () => {
         const isFound = await isEmailFound(email);
+
         if (isFound) {
           handleResponse(
             response,
