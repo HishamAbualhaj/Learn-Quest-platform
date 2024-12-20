@@ -1,4 +1,6 @@
-async function isEmailFound(email) {
+import handleResponse from "./handleResponse.js";
+import connection from "../db/db.js";
+async function isEmailFound(email,response) {
   try {
     const query = `SELECT * from user WHERE email = ?`;
     const result = await connection
