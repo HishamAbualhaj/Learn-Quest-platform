@@ -60,10 +60,16 @@ export const signup = (req, res) => {
             `User: ${first_name} just Signed Up`,
             email
           );
-          Promise.all([signup, intoLog]).then(([signUpResult, logResult]) => {
-            // Both queries are complete
-            console.log("Sign-up success:", signUpResult);
-            console.log("Log success:", logResult);
+          Promise.all([signup, intoLog]).then(([]) => {
+            handleResponse(
+              res,
+              null,
+              "Error handling two promises : ",
+              201,
+              500,
+              "Sign up successfully !",
+              "Something went wrong , try again"
+            );
           });
         }
       })();
@@ -80,7 +86,7 @@ export const signup = (req, res) => {
   });
 };
 
-function signUpPromise(
+async function signUpPromise(
   student_id,
   first_name,
   last_name,
@@ -90,14 +96,12 @@ function signUpPromise(
   gender,
   birthdate
 ) {
-  const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, password, gender, birthdate)
+  try {
+    const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, password, gender, birthdate)
   VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
-
-  connection
-    .promise()
-    .query(
-      query,
-      [
+    return await connection
+      .promise()
+      .query(query, [
         student_id,
         first_name,
         last_name,
@@ -106,20 +110,17 @@ function signUpPromise(
         password,
         gender,
         birthdate,
-      ],
-      (err) => {
-        // handleResponse(
-        //   res,
-        //   err,
-        //   "Error inserting into user: ",
-        //   201,
-        //   500,
-        //   "Sign up successfully !",
-        //   "Something went wrong , try again"
-        // );
-      }
-    )
-    .then((data) => {
-      console.log("Data from sign up : ", data);
-    });
+      ]);
+  } catch (error) {
+    handleResponse(
+      res,
+      error,
+      "Error inserting into user: ",
+      201,
+      500,
+      "",
+      "Error to sign up"
+    );
+    return error;
+  }
 }

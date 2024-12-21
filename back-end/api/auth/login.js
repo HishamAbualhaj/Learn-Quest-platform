@@ -1,11 +1,13 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
+import log from "../../system/logs.js";
 let response = null;
 let request = null;
 let errDatabase = null;
 
 async function getId(email, password) {
-  const query = "SELECT student_id FROM user WHERE email = ? AND password = ?";
+  const query =
+    "SELECT student_id,first_name FROM user WHERE email = ? AND password = ?";
   const result = await connection
     .promise()
     .query(query, [email, password], (err) => {
@@ -46,7 +48,13 @@ export const login = (req, res) => {
         // fetching for password if vaild or not
         const isAuth = await getId(email, password);
         if (isAuth) {
-          const [{ student_id }] = isAuth;
+          const [{ student_id, first_name }] = isAuth;
+          const intoLog = log(
+            response,
+            student_id,
+            `User: ${first_name} just Logined In`,
+            email
+          );
           res.writeHead(201, {
             "Content-Type": "application/json",
           });
