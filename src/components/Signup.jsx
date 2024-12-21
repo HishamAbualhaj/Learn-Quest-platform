@@ -3,7 +3,7 @@ import google from "../assets/google.svg";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
-
+import useFetch from "./Hooks/useFetch";
 function Signup() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);
@@ -41,37 +41,9 @@ function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    try {
-      const response = await fetch("http://localhost:3002/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const result = response.json();
-      setIsLoading(false);
-      response.status === 404
-        ? setAlert({
-            status: "0",
-            msg: "Can't connect to server",
-            redirect: false,
-          })
-        : result.then((data) => {
-            data.result
-              ? setAlert({ status: "1", msg: data.message, redirect: true })
-              : setAlert({ status: "0", msg: data.message, redirect: false });
-          });
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Error signing up:", error);
-      setAlert({
-        status: "0",
-        msg: "Can't connect to server",
-        redirect: false,
-      });
-    }
+    const response = await useFetch("http://localhost:3002/signup", userData);
+    setIsLoading(false);
+    setAlert(response);
   }
 
   return (
