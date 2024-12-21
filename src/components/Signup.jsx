@@ -1,14 +1,25 @@
 import { useEffect, useState } from "react";
 import google from "../assets/google.svg";
 import Alert from "./Alert";
+import { useNavigate } from "react-router-dom";
+import Button from "./Button";
 
 function Signup() {
-  const [alert, setAlert] = useState({ status: "", msg: "" });
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setAlert({ status: null, msg: "" });
-  //   }, 5000);
-  // }, [alert]);
+  const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAlert({ status: null, msg: "" });
+      {
+        alert.redirect && navigate("/login");
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
@@ -29,6 +40,7 @@ function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await fetch("http://localhost:3002/signup", {
         method: "POST",
@@ -39,18 +51,26 @@ function Signup() {
       });
 
       const result = response.json();
-      console.log(response)
+      setIsLoading(false);
       response.status === 404
-        ? setAlert({ status: "0", msg: "Can't connect to server" })
+        ? setAlert({
+            status: "0",
+            msg: "Can't connect to server",
+            redirect: false,
+          })
         : result.then((data) => {
-            console.log(data);
             data.result
-              ? setAlert({ status: "1", msg: data.message })
-              : setAlert({ status: "0", msg: data.message });
+              ? setAlert({ status: "1", msg: data.message, redirect: true })
+              : setAlert({ status: "0", msg: data.message, redirect: false });
           });
     } catch (error) {
+      setIsLoading(false);
       console.error("Error signing up:", error);
-      setAlert({ status: "0", msg: "Can't connect to server" });
+      setAlert({
+        status: "0",
+        msg: "Can't connect to server",
+        redirect: false,
+      });
     }
   }
 
@@ -114,7 +134,7 @@ function Signup() {
               id="email"
               onChange={handleChange}
               className="mt-2 border rounded-md w-full"
-              type="text"
+              type="email"
             />
           </div>
           <div className="flex flex-col mt-4">
@@ -153,13 +173,13 @@ function Signup() {
               type="date"
             />
           </div>
-
-          <button
+          <Button
             type="submit"
-            className="w-full hover:bg-purple-900 transition bg-purple-700 rounded-md py-4 text-center mt-8 text-white font-semibold cursor-pointer"
-          >
-            Sign up
-          </button>
+            text="Sign up"
+            loadingText="Loading"
+            isloading={isLoading}
+            padding="py-4 w-full font-semibold"
+          />
         </form>
 
         <div className="text-darkText mt-3 flex gap-2 items-center">
