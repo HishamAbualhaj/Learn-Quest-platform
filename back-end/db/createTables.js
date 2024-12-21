@@ -1,4 +1,4 @@
-import connection from './db.js'
+import connection from "./db.js";
 // SQL queries to create tables
 const createAdminTable = `
 CREATE TABLE IF NOT EXISTS Admin (
@@ -47,12 +47,21 @@ CREATE TABLE IF NOT EXISTS SystemLogs (
 );
 `;
 
+const createSessionTable = `
+CREATE TABLE IF NOT EXISTS session (
+    session_id VARCHAR(255) NOT NULL PRIMARY KEY,  
+    user_id INT NOT NULL,                       
+    data TEXT,                                    
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    expires_at DATETIME NOT NULL                  
+);`;
 // Execute the queries
 const tables = [
   createAdminTable,
   createUserTable,
   createCoursesTable,
   createSystemLogsTable,
+  createSessionTable
 ];
 
 tables.forEach((query) => {

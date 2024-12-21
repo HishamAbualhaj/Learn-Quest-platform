@@ -41,7 +41,11 @@ function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    const response = await useFetch("http://localhost:3002/signup", userData);
+    const response = await useFetch(
+      "http://localhost:3002/signup",
+      userData,
+      "POST"
+    );
     setIsLoading(false);
     setAlert(response);
   }

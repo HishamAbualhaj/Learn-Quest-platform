@@ -6,7 +6,7 @@ let response = null;
 let request = null;
 let errDatabase = null;
 
-export const signup = (req, res) => {
+const signup = (req, res) => {
   response = res;
   request = req;
   let body = "";
@@ -124,3 +124,5 @@ async function signUpPromise(
     return error;
   }
 }
+
+export default signup;

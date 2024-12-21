@@ -1,36 +1,10 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
 import log from "../../system/logs.js";
+import crypto from "crypto";
 let response = null;
 let request = null;
-let errDatabase = null;
-
-async function getId(email, password) {
-  const query =
-    "SELECT student_id,first_name FROM user WHERE email = ? AND password = ?";
-  const result = await connection
-    .promise()
-    .query(query, [email, password], (err) => {
-      console.error("Error at login :", err);
-      handleResponse(
-        response,
-        err,
-        "Error at selecting data ",
-        201,
-        500,
-        "",
-        "Something went wrong",
-        false
-      );
-    })
-    .then((data) => {
-      return data;
-    });
-  const [data] = result;
-  return data.length === 0 ? false : data;
-}
-
-export const login = (req, res) => {
+const login = (req, res) => {
   response = res;
   request = req;
   let body = "";
@@ -49,25 +23,34 @@ export const login = (req, res) => {
         const isAuth = await getId(email, password);
         if (isAuth) {
           const [{ student_id, first_name }] = isAuth;
-          const intoLog = log(
+          log(
             response,
             student_id,
             `User: ${first_name} just Logined In`,
             email
           );
-          res.writeHead(201, {
-            "Content-Type": "application/json",
-          });
-          res.end(
-            JSON.stringify({
-              student_id: student_id,
-              result: true,
-            })
-          );
+          // Handling session storage at database
+          const generateSessionId = () => crypto.randomBytes(8).toString("hex");
+          // Generating random session id
+          const sessionId = generateSessionId();
+          const expires = new Date(Date.now() + 3600000 * 24); // 1 day
+          const isSession = await handleSession(sessionId, student_id, expires);
+          if (isSession) {
+            res.writeHead(200, {
+              "Content-Type": "application/json",
+              "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400`,
+            });
+            res.end(
+              JSON.stringify({
+                student_id: student_id,
+                result: true,
+              })
+            );
+          }
         } else {
           handleResponse(
             response,
-            errDatabase,
+            null,
             "Error selecting user email: ",
             201,
             500,
@@ -84,8 +67,55 @@ export const login = (req, res) => {
         "Error parsing request body: ",
         201,
         500,
+        "",
         "Error to Sign up"
       );
     }
   });
 };
+
+async function getId(email, password) {
+  try {
+    const query =
+      "SELECT student_id,first_name FROM user WHERE email = ? AND password = ?";
+    const result = await connection.promise().query(query, [email, password]);
+    const [data] = result;
+    return data.length === 0 ? false : data;
+  } catch (error) {
+    handleResponse(
+      res,
+      error,
+      "Error Inserting user data : ",
+      201,
+      500,
+      "",
+      "Error to Insert user"
+    );
+    return error;
+  }
+}
+
+async function handleSession(session_id, user_id, expires) {
+  try {
+    const query =
+      "INSERT INTO sessions (session_id, user_id, expires_at) VALUES (?, ?, ?)";
+    const result = await connection
+      .promise()
+      .query(query, [session_id, user_id, expires]);
+    const [data] = result;
+    return data.length === 0 ? false : data;
+  } catch (error) {
+    handleResponse(
+      res,
+      error,
+      "Error Inserting sesssion data : ",
+      201,
+      500,
+      "",
+      "Error to Insert session"
+    );
+    return error;
+  }
+}
+
+export default login;

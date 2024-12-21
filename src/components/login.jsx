@@ -9,6 +9,15 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
+    (async () => {
+      const response = await useFetch(
+        "http://localhost:3002/session",
+        {},
+        "GET"
+      );
+      console.log("Response is ",response);
+    })();
+
     {
       alert.redirect && navigate("/");
     }
@@ -20,7 +29,7 @@ function Login() {
       clearTimeout(timer);
     };
   }, [alert]);
-  
+
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -36,7 +45,11 @@ function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    const response = await useFetch("http://localhost:3002/login", userData);
+    const response = await useFetch(
+      "http://localhost:3002/login",
+      userData,
+      "POST"
+    );
     setIsLoading(false);
     setAlert(response);
   }
