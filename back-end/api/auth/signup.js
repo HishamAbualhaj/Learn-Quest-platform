@@ -10,10 +10,11 @@ const signup = (req, res) => {
   response = res;
   request = req;
   let body = "";
-
+ 
   // Triggering received data from client and collect it
   req.on("data", (chunks) => {
     body += chunks.toString();
+    console.log(body)
   });
 
   // Entire body has been received : no more data is coming
@@ -28,6 +29,19 @@ const signup = (req, res) => {
         gender,
         birthdate,
       } = JSON.parse(body);
+      if(password.length < 8) {
+        handleResponse(
+          response,
+          errDatabase,
+          "Error selecting user email: ",
+          201,
+          500,
+          "Password should be more than 8 charcater",
+          "Something went wrong",
+          false
+        );
+        return;
+      }
       (async () => {
         const isFound = await isEmailFound(email, response);
 
