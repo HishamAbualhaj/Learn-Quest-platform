@@ -1,25 +1,21 @@
-import React from "react";
-
-async function useFetch(url, data, method) {
+async function useFetch(url, data = null, method) {
   let response = null;
   let res = null;
   try {
-    if (method === "GET") {
-      res = await fetch(url, {
-        method: method,
-        credentials: 'include',
-      });
-    } else {
-      res = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-    }
+    res = await fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body:
+        ["POST", "PATCH", "GET"].includes(method) && data
+          ? JSON.stringify(data)
+          : undefined,
+      credentials: "include",
+    });
 
     const result = await res.json();
+    console.log(result)
     if (res.status === 404) {
       response = {
         status: "0",
