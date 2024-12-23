@@ -46,6 +46,7 @@ const login = (req, res) => {
                 result: true,
               })
             );
+            return;
           }
         } else {
           handleResponse(
@@ -98,7 +99,7 @@ async function getId(email, password) {
 async function handleSession(session_id, user_id, expires) {
   try {
     const query =
-      "INSERT INTO sessions (session_id, user_id, expires_at) VALUES (?, ?, ?)";
+      "INSERT INTO session (session_id, user_id, expires_at) VALUES (?, ?, ?)";
     const result = await connection
       .promise()
       .query(query, [session_id, user_id, expires]);
@@ -106,7 +107,7 @@ async function handleSession(session_id, user_id, expires) {
     return data.length === 0 ? false : data;
   } catch (error) {
     handleResponse(
-      res,
+      response,
       error,
       "Error Inserting sesssion data : ",
       201,
