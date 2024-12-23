@@ -1,6 +1,7 @@
 import http from "http";
 import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
+import logout from "./api/auth/logout.js";
 import session from "./system/session.js";
 const server = http.createServer((req, res) => {
   // Add CORS headers
@@ -21,6 +22,8 @@ const server = http.createServer((req, res) => {
     login(req, res);
   } else if (req.url === "/session" && req.method === "GET") {
     session(req, res);
+  } else if (req.url === "/logout" && req.method === "GET") {
+    logout(req, res);
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Route not found" }));
