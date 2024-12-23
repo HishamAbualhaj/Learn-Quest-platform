@@ -4,7 +4,14 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Landing from "./components/Landing-Page/Landing";
 import Student from "./components/Student/Student";
 
-import { Routes, Route, createBrowserRouter } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  createBrowserRouter,
+  RouterProvider,
+  useNavigate,
+  redirect,
+} from "react-router-dom";
 
 import Profile from "./components/Student/Profile";
 import ChatStudent from "./components/Student/ChatStudent";
@@ -24,71 +31,136 @@ import Chat from "./components/Dashboard/Chat";
 import SystemLog from "./components/Dashboard/SystemLog";
 import Maintenance from "./components/Dashboard/Maintenance";
 import ForgotPass from "./components/ForgotPass";
+import useFetch from "./components/Hooks/useFetch";
+import Logout from "./components/logout";
 function App() {
-  // createBrowserRouter([
-  //   {
-  //     element: <></>
-  //   }
-  // ])
-  return (
-    <Routes>
-      <Route path="/" element={<Landing />}></Route>
-      <Route path="/login" element={<Login />}></Route>
-      <Route path="/signup" element={<Signup />}></Route>
-      <Route path="/forgotpassword" element={<ForgotPass />}></Route>
-      <Route path="/student" element={<Student />}>
-        <Route index element={<Profile />}></Route>
-        <Route path="profile" element={<Profile />}></Route>
-        <Route path="chat" element={<ChatStudent />}></Route>
+  const error = (
+    <div className="flex items-center justify-center h-[100vh] bg-dark flex-col gap-2">
+      <h1 className="md:text-4xl text-xl text-center   text-red-400 ">
+        Something went wrong
+      </h1>
+      <div className="text-gray-400 text-lg">Try to reload page, </div>
+    </div>
+  );
 
-        <Route path="allcourses" element={<AllCourses />}></Route>
-        <Route path="CoursePage/:courseName" element={<CoursePage />}></Route>
-
-        <Route path="mycourses" element={<MyCourses />}>
-          <Route path=":courseName" element={<CoursePage />}></Route>
-        </Route>
-
-        <Route path="blog">
-          <Route index element={<Blog />}></Route>
-          <Route path=":name" element={<BlogPost />}></Route>
-        </Route>
-
-        <Route
-          path="*"
-          element={
+  async function fetchData(url) {
+    const response = await useFetch(url, null, "GET");
+    console.log(response);
+    const reDirected = response.msg.loggedIn;
+    return reDirected;
+  }
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Landing />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
+      errorElement: error,
+    },
+    {
+      path: "/signup",
+      element: <Signup />,
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
+      errorElement: error,
+    },
+    {
+      path: "/logout",
+      element: <Logout />,
+      loader: () => {
+        return fetchData("http://localhost:3002/logout");
+      },
+      errorElement: error,
+    },
+    {
+      path: "/forgotpassword",
+      element: <ForgotPass />,
+    },
+    {
+      path: "/student",
+      element: <Student />,
+      children: [
+        {
+          index: true,
+          element: <Profile />,
+        },
+        {
+          path: "profile",
+          element: <Profile />,
+        },
+        { path: "chat", element: <ChatStudent /> },
+        { path: "allcourses", element: <AllCourses /> },
+        { path: "CoursePage/:courseName", element: <CoursePage /> },
+        {
+          path: "mycourses",
+          children: [
+            { index: true, element: <MyCourses /> },
+            { path: ":courseName", element: <CoursePage /> },
+          ],
+        },
+        {
+          path: "blog",
+          children: [
+            { index: true, element: <Blog /> },
+            { path: ":blogId", element: <BlogPost /> },
+          ],
+        },
+        {
+          path: "*",
+          element: (
             <h1 className="text-white h-[100vh] text-4xl text-center mt-16">
               Page Not Found
             </h1>
-          }
-        />
-      </Route>
-
-      <Route path="/dashboard" element={<Dashboard />}>
-        <Route index element={<Users />} />
-        <Route path="users" element={<Users />} />
-        <Route path="Courses">
-          <Route index element={<Courses />} />
-          <Route path="add" element={<AddCourse />} />
-          <Route path="edit/:id" element={<EditCourse />} />
-        </Route>
-        <Route path="analytics" element={<Analytics />} />
-        <Route path="reviews" element={<Reviews />} />
-        <Route path="chat" element={<Chat />} />
-        <Route path="systemlog" element={<SystemLog />} />
-        <Route path="maintenance" element={<Maintenance />} />
-        <Route
-          path="*"
-          element={
+          ),
+        },
+        {},
+      ],
+    },
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
+      children: [
+        { index: true, element: <Users /> },
+        { path: "users", element: <Users /> },
+        {
+          path: "courses",
+          children: [
+            { index: true, element: <Courses /> },
+            { path: "add", element: <AddCourse /> },
+            { path: "edit/:id", element: <EditCourse /> },
+          ],
+        },
+        { path: "analytics", element: <Analytics /> },
+        { path: "reviews", element: <Reviews /> },
+        { path: "chat", element: <Chat /> },
+        { path: "systemlog", element: <SystemLog /> },
+        { path: "maintenance", element: <Maintenance /> },
+        {
+          path: "*",
+          element: (
             <h1 className="text-white text-4xl text-center mt-16">
               Page Not Found
             </h1>
-          }
-        />
-      </Route>
-    </Routes>
-
-    // <Student/>
-  );
+          ),
+        },
+      ],
+    },
+    {
+      path: "*",
+      element: (
+        <h1 className="text-white text-4xl text-center mt-16">
+          404 - Page Not Found
+        </h1>
+      ),
+    },
+  ]);
+  return <RouterProvider router={router} />;
 }
 
 export default App;
