@@ -21,5 +21,4 @@ async function log(res, student_id, log_message, email) {
     return error;
   }
 }
-
 export default log;
