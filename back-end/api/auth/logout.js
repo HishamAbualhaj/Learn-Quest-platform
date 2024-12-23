@@ -4,13 +4,9 @@ const logout = (req, res) => {
   const cookies = req.headers.cookie || "";
   let sessionId = "";
   if (cookies) {
-    sessionId = cookies
-      .split("; ")
-      .find((cookie) => {
-        cookie.startsWith("session_id");
-      })
-      .split("=")[1];
+    sessionId = cookies.split("=")[1];
   }
+  // if you were redirected to logout using url request
   if (!sessionId) {
     res.writeHead(401, { "Content-Type": "application/json" });
     res.end(
@@ -20,13 +16,16 @@ const logout = (req, res) => {
         userId: undefined,
       })
     );
+    return;
   }
   deleteSession(sessionId, res);
 };
+
 async function deleteSession(sessionId, res) {
   try {
     const query = "DELETE FROM session WHERE session_id = ?";
-    await connection.promise().query(query, [sessionId]);
+    const result = await connection.promise().query(query, [sessionId]);
+    console.log(result);
     handleResponse(
       res,
       null,
@@ -49,3 +48,4 @@ async function deleteSession(sessionId, res) {
     return error;
   }
 }
+export default logout;
