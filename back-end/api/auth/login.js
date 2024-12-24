@@ -42,8 +42,7 @@ const login = (req, res) => {
             });
             res.end(
               JSON.stringify({
-                student_id: student_id,
-                result: true,
+                status: true,
               })
             );
             return;
@@ -52,11 +51,11 @@ const login = (req, res) => {
           handleResponse(
             response,
             null,
-            "Error selecting user email: ",
+            "",
             201,
             500,
             "Email or password is incorrect",
-            "Something went wrong",
+            "",
             false
           );
         }

@@ -33,11 +33,11 @@ const signup = (req, res) => {
         handleResponse(
           response,
           errDatabase,
-          "Error selecting user email: ",
+          "",
           201,
           500,
           "Password should be more than 8 charcater",
-          "Something went wrong",
+          "",
           false
         );
         return;
@@ -49,11 +49,11 @@ const signup = (req, res) => {
           handleResponse(
             response,
             errDatabase,
-            "Error selecting user email: ",
+            "",
             201,
             500,
             "Email Already Found",
-            "Something went wrong",
+            "",
             false
           );
         } else {
@@ -78,11 +78,11 @@ const signup = (req, res) => {
             handleResponse(
               res,
               null,
-              "Error handling two promises : ",
+              "",
               201,
               500,
               "Sign up successfully !",
-              "Something went wrong , try again"
+              ""
             );
           });
         }
