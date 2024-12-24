@@ -47,6 +47,7 @@ function Login() {
     );
     setIsLoading(false);
     setAlert(response);
+    console.log(response);
   }
 
   return (
@@ -56,7 +57,7 @@ function Login() {
       </div>
       <div className="mx-auto max-w-[500px] p-7 mt-10 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl">
         {alert.status &&
-          (Number(alert.status) ? (
+          (alert.status ? (
             <Alert msg={alert.msg} type="success" />
           ) : (
             <Alert msg={alert.msg} type="failed" />

@@ -52,6 +52,7 @@ function Signup() {
     );
     setIsLoading(false);
     setAlert(response);
+    console.log(response);
   }
 
   return (
@@ -60,12 +61,11 @@ function Signup() {
         LEARN <div className="text-purple-600">QUEST</div>
       </div>
       <div className="mx-auto max-w-[500px] p-7 mt-5 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl relative">
-        {alert.status &&
-          (Number(alert.status) ? (
-            <Alert msg={alert.msg} type="success" />
-          ) : (
-            <Alert msg={alert.msg} type="failed" />
-          ))}
+        {alert.status ? (
+          <Alert msg={alert.msg} type="success" />
+        ) : (
+          <Alert msg={alert.msg} type="failed" />
+        )}
 
         <div className="lg:text-4xl text-2xl font-bold">Sign up free</div>
         <div className="dark:text-textDark text-lightText mt-2">

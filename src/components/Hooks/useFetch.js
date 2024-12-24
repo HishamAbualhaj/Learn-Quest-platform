@@ -15,7 +15,6 @@ async function useFetch(url, data = null, method) {
     });
 
     const result = await res.json();
-    console.log(result)
     if (res.status === 404) {
       response = {
         status: "0",
@@ -25,9 +24,13 @@ async function useFetch(url, data = null, method) {
     } else {
       // Handle success and fail status from server side
       result.status
-        ? (response = { status: "1", msg: result.data, redirect: true })
+        ? (response = {
+            status: result.status,
+            msg: result.data,
+            redirect: true,
+          })
         : (response = {
-            status: "0",
+            status: result.status,
             msg: result.data,
             redirect: false,
           });
@@ -35,7 +38,7 @@ async function useFetch(url, data = null, method) {
   } catch (error) {
     console.error("Error connecting to server:", error);
     response = {
-      status: "0",
+      status: false,
       msg: "Error connecting to server",
       redirect: false,
     };
