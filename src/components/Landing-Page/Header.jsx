@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import useFetch from "../Hooks/useFetch";
 import Logo from "../Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -71,8 +72,39 @@ const navs = [
 export default function Header() {
   const [nav, setNav] = useState(false);
   const [activeNav, setActiveNav] = useState("Home");
-
   const [active, setActive] = useState(false);
+  const [isLoggedIn, setIsLogged] = useState(false);
+  const [firstName, setFirstName] = useState(null);
+  useEffect(() => {
+    (async function fetchData() {
+      const response = await useFetch(
+        "http://localhost:3002/session",
+        null,
+        "GET"
+      );
+      console.log(response);
+      let reDirected = response.msg.loggedIn;
+      let id = response.msg.userId;
+      setIsLogged(reDirected);
+      // after getting user id then fetch for data
+
+      const user = {
+        id: id,
+      };
+      (async () => {
+        const res = await useFetch(
+          "http://localhost:3002/getUserData",
+          user,
+          "POST"
+        );
+        if (res.msg.data) {
+          const [{ first_name }] = res.msg.data;
+          setFirstName(first_name);
+        }
+      })();
+    })();
+  }, []);
+
   return (
     <div className="section relative">
       <div className="max-container">
@@ -103,50 +135,59 @@ export default function Header() {
               </div>
             ))}
           </div>
-          {/* <div className="md:flex hidden gap-2 lg:flex-row flex-col">
-            <Button outlined={true} text="Sign up" size="lg" url={"signup"} />
-            <Button outlined={false} text="Log in" size="lg" url={"login"} />
-          </div> */}
-          <div className=" dark:border-borderDark border-borderLight md:px-5 pb-2">
-            <div className="relative">
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActive(!active);
-                }}
-                className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
-              >
-                <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
-                  <Avatar img={Person} className={"h-[50px] w-[50px]"} />
-                </div>
-                <div className="text-lg">Hisham</div>
-                <FontAwesomeIcon
-                  className="text-lg text-slate-400 dark:text-white"
-                  icon={faShare}
-                  rotation={90}
-                />
-              </div>
-              {active && (
-                <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:left-0 -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
-                  {tabs.map((tab) => (
-                    <Link key={tab.key} to={`student/${tab.name.replace(/\s+/g, "")}`}>
-                      <div key={tab.key} className="flex flex-col">
-                        <div
-                          className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
-                        >
-                          <FontAwesomeIcon
-                            className="text-gray-400/80 dark:text-white"
-                            icon={tab.icon}
-                          />
-                          <div>{tab.name}</div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
+          {/*Check user status if logged in or not */}
+          {!isLoggedIn ? (
+            <div className="md:flex hidden gap-2 lg:flex-row flex-col">
+              <Button outlined={true} text="Sign up" size="lg" url={"signup"} />
+              <Button outlined={false} text="Log in" size="lg" url={"login"} />
             </div>
-          </div>
+          ) : (
+            <div className=" dark:border-borderDark border-borderLight md:px-5 pb-2">
+              <div className="relative">
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActive(!active);
+                  }}
+                  className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
+                >
+                  <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
+                    <Avatar img={Person} className={"h-[50px] w-[50px]"} />
+                  </div>
+                  <div className="text-lg">
+                    {!firstName ? "Loading data" : firstName}
+                  </div>
+                  <FontAwesomeIcon
+                    className="text-lg text-slate-400 dark:text-white"
+                    icon={faShare}
+                    rotation={90}
+                  />
+                </div>
+                {active && (
+                  <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:left-0 -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
+                    {tabs.map((tab) => (
+                      <Link
+                        key={tab.key}
+                        to={`student/${tab.name.replace(/\s+/g, "")}`}
+                      >
+                        <div key={tab.key} className="flex flex-col">
+                          <div
+                            className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
+                          >
+                            <FontAwesomeIcon
+                              className="text-gray-400/80 dark:text-white"
+                              icon={tab.icon}
+                            />
+                            <div>{tab.name}</div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

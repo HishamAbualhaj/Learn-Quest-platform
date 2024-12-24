@@ -3,6 +3,7 @@ import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
 import logout from "./api/auth/logout.js";
 import session from "./system/session.js";
+import getUserData from "./utils/getUserData.js";
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
@@ -24,6 +25,8 @@ const server = http.createServer((req, res) => {
     session(req, res);
   } else if (req.url === "/logout" && req.method === "GET") {
     logout(req, res);
+  } else if (req.url === "/getUserData" && req.method === "POST") {
+    getUserData(req, res);
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Route not found" }));
