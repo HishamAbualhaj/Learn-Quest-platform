@@ -4,17 +4,22 @@ const logout = (req, res) => {
   const cookies = req.headers.cookie || "";
   let sessionId = "";
   if (cookies) {
-    sessionId = cookies.split("=")[1];
+    sessionId = cookies.match(/session_id=([\w\d]+)/)?.[1];
   }
   // if you were redirected to logout using url request
   if (!sessionId) {
-    res.writeHead(401, { "Content-Type": "application/json" });
-    res.end(
-      JSON.stringify({
+    handleResponse(
+      res,
+      null,
+      "",
+      201,
+      500,
+      {
         loggedIn: false,
         msg: "No session to logout",
         userId: undefined,
-      })
+      },
+      ""
     );
     return;
   }
@@ -32,7 +37,11 @@ async function deleteSession(sessionId, res) {
       "",
       201,
       500,
-      "Successfully deleting session , redirecting ...",
+      {
+        loggedIn: false,
+        msg: "Successfully deleting session , redirecting ...",
+        userId: undefined,
+      },
       ""
     );
   } catch (error) {

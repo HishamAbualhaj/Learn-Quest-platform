@@ -3,8 +3,9 @@ import handleResponse from "../utils/handleResponse.js";
 const session = (req, res) => {
   const cookies = req.headers.cookie || "";
   let sessionId = "";
+  console.log(cookies);
   if (cookies) {
-    sessionId = cookies.split("=")[1];
+    sessionId = cookies.match(/session_id=([\w\d]+)/)?.[1];
   }
   if (!sessionId) {
     handleResponse(
@@ -32,19 +33,19 @@ async function validateSessionId(sessionId, res) {
     const query =
       "SELECT user_id FROM session WHERE session_id = ? AND expires_at > NOW()";
     const result = await connection.promise().query(query, [sessionId]);
-    if (result.length === 0) {
+    if (result[0].length === 0) {
       handleResponse(
         res,
         null,
-        "Session not found or expired.",
-        401,
+        "",
+        201,
         500,
         {
           loggedIn: false,
           msg: "Session not found or expired.",
           userId: undefined,
         },
-        "Invalid session"
+        ""
       );
       return;
     } else {
@@ -64,7 +65,15 @@ async function validateSessionId(sessionId, res) {
       );
     }
   } catch (error) {
-    handleResponse(res, error, "", 201, 500, "", "Error at selecting session");
+    handleResponse(
+      res,
+      error,
+      "Error at selecting session",
+      201,
+      500,
+      "",
+      "Error at selecting session"
+    );
     return error;
   }
 }
