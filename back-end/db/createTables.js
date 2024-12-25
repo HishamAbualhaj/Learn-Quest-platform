@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS Courses (
   duration TIME NOT NULL,
   category VARCHAR(50),
   tabs TEXT,
+  image_url VARCHAR(250),
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
@@ -43,7 +44,7 @@ CREATE TABLE IF NOT EXISTS CourseMaterials (
   subtitle VARCHAR(100) NOT NULL,
   isCompleted BOOLEAN DEFAULT FALSE,
   url VARCHAR(2083),
-  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,c
+  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 );
 `;
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS session (
     user_id INT NOT NULL,                       
     data TEXT,                                    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-    expires_at TIMESTAMP NOT NULL                  
+    expires_at DATETIME NOT NULL                  
 );`;
 // Execute the queries
 const tables = [
