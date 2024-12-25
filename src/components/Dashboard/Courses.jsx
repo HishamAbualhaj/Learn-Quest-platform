@@ -1,101 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteCourse from "./DeleteCourse";
 import { Link } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
+import useFetch from "../Hooks/useFetch";
 function Courses() {
-  const courses = [
-    {
-      key: 1,
-      name: "JavaScript Essentials",
-      type: "Programming",
-      price: 50,
-      lessons: 15,
-      date: "2024-05-12",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 2,
-      name: "Advanced CSS & Sass",
-      type: "Design",
-      price: 40,
-      lessons: 20,
-      date: "2024-06-25",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 3,
-      name: "Python for Data Science",
-      type: "Data Science",
-      price: 70,
-      lessons: 30,
-      date: "2024-03-10",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 4,
-      name: "React Development Bootcamp",
-      type: "Programming",
-      price: 100,
-      lessons: 25,
-      date: "2024-07-01",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 5,
-      name: "UI/UX Design Fundamentals",
-      type: "Design",
-      price: 45,
-      lessons: 18,
-      date: "2024-04-14",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 6,
-      name: "Machine Learning with Python",
-      type: "Data Science",
-      price: 85,
-      lessons: 35,
-      date: "2024-08-10",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 7,
-      name: "Full Stack Web Development",
-      type: "Programming",
-      price: 120,
-      lessons: 40,
-      date: "2024-09-05",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 8,
-      name: "Digital Marketing 101",
-      type: "Marketing",
-      price: 30,
-      lessons: 12,
-      date: "2024-11-20",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 9,
-      name: "Intro to Cybersecurity",
-      type: "Security",
-      price: 60,
-      lessons: 22,
-      date: "2024-02-18",
-      action: ["Edit", "Delete"],
-    },
-    {
-      key: 10,
-      name: "Cloud Computing with AWS",
-      type: "Cloud Computing",
-      price: 90,
-      lessons: 28,
-      date: "2024-10-07",
-      action: ["Edit", "Delete"],
-    },
-  ];
-
+  const [courses, setCourses] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const res = await useFetch(
+        "http://localhost:3002/getCourses",
+        null,
+        "GET"
+      );
+      let arrOfCourses = res.msg.map((data) => {
+        const { course_id, title, category, price, created_date } = data;
+        console.log(course_id, title, category, price, created_date);
+        return {
+          key: course_id,
+          name: title,
+          type: category,
+          price: price,
+          lessons: 0,
+          date: created_date,
+          action: ["Edit", "Delete"],
+        };
+      });
+      setCourses([...arrOfCourses]);
+    })();
+  }, []);
   const [deleteCoursePopup, setdeleteCoursePopup] = useState(false);
 
   const [idCourse, setIdCourse] = useState(null);
@@ -112,7 +44,7 @@ function Courses() {
           </div>
         </div>
         <Link to="add">
-         <ButtonAdmin text="Add Course"/>
+          <ButtonAdmin text="Add Course" />
         </Link>
       </div>
       {deleteCoursePopup && (
