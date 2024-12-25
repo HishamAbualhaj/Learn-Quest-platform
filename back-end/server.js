@@ -5,6 +5,8 @@ import logout from "./api/auth/logout.js";
 import session from "./system/session.js";
 import getUserData from "./utils/getUserData.js";
 import addCourse from "./api/data/addCourse.js";
+import getCourses from "./api/data/getCourses.js";
+import deleteCourse from "./api/data/deleteCourse.js";
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
@@ -30,6 +32,10 @@ const server = http.createServer((req, res) => {
     getUserData(req, res);
   } else if (req.url === "/addCourse" && req.method === "POST") {
     addCourse(req, res);
+  } else if (req.url === "/getCourses" && req.method === "GET") {
+    getCourses(req, res);
+  } else if (req.url === "/deleteCourse" && req.method === "POST") {
+    deleteCourse(req, res);
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Route not found" }));
