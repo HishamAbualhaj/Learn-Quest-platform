@@ -1,9 +1,39 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
+import useFetch from "../Hooks/useFetch";
+import Alert from "../Alert";
 export default function AddCourse() {
+  let defaultData = {
+    title: "",
+    price: "",
+    discount: "",
+    category: "",
+    image: "",
+    description: "",
+    tabs: [""],
+    materials: [
+      {
+        title: "",
+        subtitle: "",
+        url: "",
+      },
+    ],
+  };
+
+  const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAlert({ status: null, msg: "" });
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
   const inputs = [
     {
       key: 1,
@@ -35,34 +65,26 @@ export default function AddCourse() {
     },
   ];
 
-  const [courseData, setCourseData] = useState({
-    title: "",
-    price: "",
-    discount: "",
-    category: "",
-    image: "",
-    description: "",
-    tabs: [""],
-    materials: [
-      {
-        title: "",
-        subtitle: "",
-        url: "",
-      },
-    ],
-  });
+  const [courseData, setCourseData] = useState(defaultData);
 
-  useEffect(() => {
-    console.log(courseData);
-  }, [courseData]);
+  async function insertData() {
+    setIsLoading(true);
+    const res = await useFetch(
+      "http://localhost:3002/addCourse",
+      courseData,
+      "POST"
+    );
+    setIsLoading(false);
+    setAlert(res);
+  }
 
   function handleChange(e) {
     let { id, value } = e.target;
     if (id === "image") {
       value = e.target.files[0]?.name;
     }
-    if(id === 'tabs') {
-      value = value.split(' ')
+    if (id === "tabs") {
+      value = value.split(" ");
     }
     setCourseData({
       ...courseData,
@@ -126,12 +148,11 @@ export default function AddCourse() {
         </div>
 
         <div className="p-3">
-          {/* <div className="bg-red-500/20 text-center py-2 rounded-sm text-red-400">
-            Something went wrong
-          </div>
-          <div className="bg-green-500/20 text-center py-2 rounded-sm text-green-400 mt-5">
-            Successfully Added !
-          </div> */}
+          {alert.status ? (
+            <Alert msg={alert.msg} type="success" />
+          ) : (
+            <Alert msg={alert.msg} type="failed" />
+          )}
           {inputs.map((input) => (
             <div
               key={input.key}
@@ -262,7 +283,15 @@ export default function AddCourse() {
               className="mt-2"
             />
           </div>
-          <ButtonAdmin text="ADD" />
+          {isLoading ? (
+            <div>
+              <ButtonAdmin text="LOADING ... " />
+            </div>
+          ) : (
+            <div onClick={insertData}>
+              <ButtonAdmin text="ADD" />
+            </div>
+          )}
         </div>
       </div>
     </div>
