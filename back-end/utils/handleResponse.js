@@ -16,6 +16,7 @@ const handleResponse = (
   } else {
     res.writeHead(status_code_success, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ status: color, data: responseData }));
+    return;
   }
 };
 export default handleResponse;
