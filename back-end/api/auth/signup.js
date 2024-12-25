@@ -127,7 +127,7 @@ async function signUpPromise(
       ]);
   } catch (error) {
     handleResponse(
-      res,
+      null,
       error,
       "Error inserting into user: ",
       201,
