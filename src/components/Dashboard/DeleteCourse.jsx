@@ -1,10 +1,23 @@
 import React from "react";
+import useFetch from "../Hooks/useFetch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTriangleExclamation,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 function DeleteCourse({ setdeleteCoursePopup, id }) {
+  function handleDelete() {
+    (async () => {
+      const res = await useFetch(
+        "http://localhost:3002/deleteCourse",
+        { course_id: id },
+        "POST"
+      );
+      console.log(res);
+      window.location.reload();
+      setdeleteCoursePopup(false);
+    })();
+  }
   return (
     <div>
       <div
@@ -35,7 +48,12 @@ function DeleteCourse({ setdeleteCoursePopup, id }) {
             This action cannot be undone. Please confirm if you wish to proceed.
           </div>
         </div>
-        <div className="mt-3 bg-red-500/80 text-center px-4 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer">YES !</div>
+        <div
+          onClick={handleDelete}
+          className="mt-3 bg-red-500/80 text-center px-4 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer"
+        >
+          YES !
+        </div>
       </div>
     </div>
   );
