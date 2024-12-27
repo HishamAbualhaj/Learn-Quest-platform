@@ -7,10 +7,12 @@ import getUserData from "./utils/getUserData.js";
 import addCourse from "./api/data/addCourse.js";
 import getCourses from "./api/data/getCourses.js";
 import deleteCourse from "./api/data/deleteCourse.js";
+import getCourseData from "./api/data/getCourseData.js";
+import updateCourse from "./api/data/updateCourse.js";
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS"); // Allow specific methods
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT,OPTIONS"); // Allow specific methods
   res.setHeader("Access-Control-Allow-Headers", "Content-Type"); // Allow specific headers
   res.setHeader("Access-Control-Allow-Credentials", true);
   if (req.method === "OPTIONS") {
@@ -36,6 +38,10 @@ const server = http.createServer((req, res) => {
     getCourses(req, res);
   } else if (req.url === "/deleteCourse" && req.method === "POST") {
     deleteCourse(req, res);
+  } else if (req.url === "/getCourseData" && req.method === "POST") {
+    getCourseData(req, res);
+  } else if (req.url === "/updateCourse" && req.method === "PUT") {
+    updateCourse(req, res);
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Route not found" }));

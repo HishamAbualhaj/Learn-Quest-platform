@@ -5,7 +5,6 @@ async function isEmailFound(email, response) {
     const query = `SELECT * from user WHERE email = ?`;
     const result = await connection.promise().query(query, [email]);
     const [data] = result;
-    console.log("Current data is ", data);
     return data.length === 0 ? false : true;
   } catch (error) {
     handleResponse(

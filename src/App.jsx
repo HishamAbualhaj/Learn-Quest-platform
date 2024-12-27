@@ -45,7 +45,6 @@ function App() {
 
   async function fetchData(url) {
     const response = await useFetch(url, null, "GET");
-    console.log(response);
     const reDirected = response.msg.loggedIn;
     return reDirected;
   }
@@ -67,14 +66,6 @@ function App() {
       element: <Signup />,
       loader: () => {
         return fetchData("http://localhost:3002/session");
-      },
-      errorElement: error,
-    },
-    {
-      path: "/logout",
-      element: <Logout />,
-      loader: () => {
-        return fetchData("http://localhost:3002/logout");
       },
       errorElement: error,
     },
@@ -110,6 +101,14 @@ function App() {
             { index: true, element: <Blog /> },
             { path: ":blogId", element: <BlogPost /> },
           ],
+        },
+        {
+          path: "logout",
+          element: <Logout />,
+          loader: () => {
+            return fetchData("http://localhost:3002/logout");
+          },
+          errorElement: error,
         },
         {
           path: "*",
