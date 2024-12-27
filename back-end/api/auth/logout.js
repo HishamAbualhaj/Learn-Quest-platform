@@ -30,7 +30,6 @@ async function deleteSession(sessionId, res) {
   try {
     const query = "DELETE FROM session WHERE session_id = ?";
     const result = await connection.promise().query(query, [sessionId]);
-    console.log(result);
     handleResponse(
       res,
       null,

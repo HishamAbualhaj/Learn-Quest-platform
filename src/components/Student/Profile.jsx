@@ -4,40 +4,49 @@ import hisham from "../../assets/Screenshot_1.jpg";
 import { faGear, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFetch from "../Hooks/useFetch";
-
+import ButtonAdmin from "../Dashboard/ButtonAdmin";
+import Alert from "../Alert";
 function Profile() {
   const [state, setState] = useState("Profile");
   const [isEdit, setIsEdit] = useState(false);
-  const [profileData, setProfileData] = useState([
+  const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [data, setData] = useState([
     {
       key: 1,
       name: "First name",
-      data: "first_name",
+      data: "",
+      inType: "text",
     },
     {
       key: 2,
       name: "Last name",
-      data: "last_name",
+      data: "",
+      inType: "text",
     },
     {
       key: 3,
       name: "Email",
-      data: "email",
+      data: "",
+      inType: "email",
     },
     {
       key: 4,
       name: "Birth Of Date",
-      data: "date",
+      data: "",
+      inType: "date",
     },
     {
       key: 5,
       name: "Gender",
-      data: "gender",
+      data: "",
+      inType: "select",
     },
     {
       key: 6,
       name: "Joined At",
-      data: "join",
+      data: "",
+      inType: "date",
     },
     {
       key: 7,
@@ -45,97 +54,60 @@ function Profile() {
       data: "5",
     },
   ]);
-  const [data, setData] = useState({});
-  useEffect(() => {
-    (async function fetchData() {
-      const response = await useFetch(
-        "http://localhost:3002/session",
-        null,
-        "GET"
-      );
-      let id = response.msg.userId;
 
-      // after getting user id then fetch for data
-      const user = {
-        id: id,
-      };
-      (async () => {
-        const res = await useFetch(
-          "http://localhost:3002/getUserData",
-          user,
-          "POST"
+  useEffect(() => {
+    if (!isEdit) {
+      (async function fetchData() {
+        const response = await useFetch(
+          "http://localhost:3002/session",
+          null,
+          "GET"
         );
-        console.log(res);
-        if (res.msg.data) {
-          const [
-            { first_name, last_name, email, gender, joined_at, birthdate },
-          ] = res.msg.data;
+        let id = response.msg.userId;
+        setUserId(id);
+        // after getting user id then fetch for data
+        const user = {
+          id: id,
+        };
+        (async () => {
+          const res = await useFetch(
+            "http://localhost:3002/getUserData",
+            user,
+            "POST"
+          );
+          if (res.msg.data) {
+            const [
+              { first_name, last_name, email, gender, joined_at, birthdate },
+            ] = res.msg.data;
 
-          const date = birthdate.split("T")[0];
-          const join = joined_at.split("T")[0];
-          setData({
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-            gender: gender,
-            joined_at: join,
-            birthdate: date,
-          });
-          // const student_data = [
-          // {
-          //   key: 1,
-          //   name: "First name",
-          //   data: first_name,
-          // },
-          // {
-          //   key: 2,
-          //   name: "Last name",
-          //   data: last_name,
-          // },
-          // {
-          //   key: 3,
-          //   name: "Email",
-          //   data: email,
-          // },
-          // {
-          //   key: 4,
-          //   name: "Birth Of Date",
-          //   data: date,
-          // },
-          // {
-          //   key: 5,
-          //   name: "Gender",
-          //   data: gender,
-          // },
-          // {
-          //   key: 6,
-          //   name: "Joined At",
-          //   data: join,
-          // },
-          // {
-          //   key: 7,
-          //   name: "Course Completed",
-          //   data: "5",
-          // },
-          // ];
-          // setProfileData(student_data);
-        }
+            const date = birthdate.split("T")[0];
+            const join = joined_at.split("T")[0];
+
+            const values = [
+              first_name,
+              last_name,
+              email,
+              date,
+              gender,
+              join,
+              "5",
+            ];
+            const arr = data.map((_, index) => {
+              // Change all values as they are arranged at array above !
+              data[index] = {
+                ...data[index],
+                data: values[index],
+              };
+              return data[index];
+            });
+
+            setData(arr);
+          }
+        })();
       })();
-    })();
-  }, []);
-  function handleChange(e) {
-    const { id, value } = e.target;
+    }
+  }, [isEdit]);
 
-    // setProfileData();
-    console.log("Updated profile data: ", value);
-    // setProfileData(updatedProfileData);
-
-    console.log(id, value);
-  }
-
-  useEffect(() => {
-    console.log(profileData);
-  }, [profileData]);
   return (
     <div className="sm:px-5 px-1 flex items-center height-vh-adjust">
       <div className=" dark:bg-lightDark w-full bg-white border dark:border-borderDark flex items-center flex-col  box-shadow-light dark:box-shadow rounded-md h-[800px] overflow-auto">
@@ -164,7 +136,7 @@ function Profile() {
         </div>
         <div className="flex w-full flex-col gap-5 py-16 lg:px-16 md:px-8 sm:px-4 px-2">
           {state === "Profile" ? (
-            profileData.map((data) => (
+            data.map((data) => (
               <div
                 key={data.key}
                 className="text-xl flex gap-2 border dark:border-borderDark p-4 rounded-md"
@@ -175,35 +147,119 @@ function Profile() {
           ) : (
             <EditProfile />
           )}
-          {isEdit && (
-            <div className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white  transition">
-              EDIT
-            </div>
-          )}
         </div>
       </div>
     </div>
   );
-
   function EditProfile() {
+    const [alert, setAlert] = useState({
+      status: "",
+      msg: "",
+      redirect: false,
+    });
+    useEffect(() => {
+      console.log(alert);
+  
+    }, [alert]);
+    const [dataProfile, setDataProfile] = useState(data);
+
+    const handleChange = (e) => {
+      const { id, value } = e.target;
+
+      const newProfile = dataProfile.map((obj, index) => {
+        if (obj.key === Number(id)) {
+          // Change the value of current input (obj)
+          dataProfile[index] = {
+            ...dataProfile[index],
+            data: value,
+          };
+          return dataProfile[index];
+        } else {
+          return obj;
+        }
+      });
+
+      setDataProfile(newProfile);
+    };
+
+    async function handleProfileEdit() {
+      // setting data ready for server formate !
+      const obj = {
+        student_id: userId,
+        first_name: dataProfile[0].data,
+        last_name: dataProfile[1].data,
+        email: dataProfile[2].data,
+        birthdate: dataProfile[3].data,
+        gender: dataProfile[4].data,
+      };
+      setIsLoading(true);
+      const res = await useFetch(
+        "http://localhost:3002/updateUser",
+        obj,
+        "PUT"
+      );
+      setIsLoading(false);
+      console.log(res, res.status);
+      setAlert(res);
+      if (res.status) {
+        setState("Profile");
+        setIsEdit(false);
+      }
+    }
     return (
       <>
-        {profileData.map((obj) => (
+        {dataProfile.map((data) => (
           <div
-            key={obj.key}
+            key={data.key}
             className="text-xl items-center flex gap-2 border dark:border-borderDark p-4 rounded-md"
           >
-            {obj.name}:
+            {data.name}:
             <div className="text-slate-300 flex-1">
-              <input
-                id={obj.key}
-                onChange={handleChange}
-                className="border dark:border-borderDark w-full"
-                type="text"
-              />
+              {data.inType === "select" ? (
+                <select
+                  onChange={handleChange}
+                  className="w-full"
+                  id={data.key}
+                >
+                  <option className="text-black" value="Male">
+                    Male
+                  </option>
+                  <option className="text-black" value="Female">
+                    Female
+                  </option>
+                </select>
+              ) : (
+                <input
+                  id={data.key}
+                  onChange={handleChange}
+                  value={data.data || " "}
+                  className="border dark:border-borderDark w-full"
+                  type={data.inType}
+                  disabled={data.key === 6}
+                />
+              )}
             </div>
           </div>
         ))}
+        {alert.status ? (
+          <Alert msg={alert.msg} type="success" />
+        ) : (
+          <Alert msg={alert.msg} type="failed" />
+        )}
+        {isEdit &&
+          (isLoading ? (
+            <div>
+              <ButtonAdmin text="LOADING ... " />
+            </div>
+          ) : (
+            <div
+              onClick={() => {
+                handleProfileEdit();
+              }}
+            >
+              <ButtonAdmin text="Edit Profile" />
+            </div>
+          ))}
       </>
     );
   }

@@ -9,6 +9,7 @@ import getCourses from "./api/data/getCourses.js";
 import deleteCourse from "./api/data/deleteCourse.js";
 import getCourseData from "./api/data/getCourseData.js";
 import updateCourse from "./api/data/updateCourse.js";
+import updateUser from "./api/data/updateUser.js";
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
@@ -42,6 +43,8 @@ const server = http.createServer((req, res) => {
     getCourseData(req, res);
   } else if (req.url === "/updateCourse" && req.method === "PUT") {
     updateCourse(req, res);
+  } else if (req.url === "/updateUser" && req.method === "PUT") {
+    updateUser(req, res);
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Route not found" }));
