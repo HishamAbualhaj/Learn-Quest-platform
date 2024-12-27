@@ -52,7 +52,8 @@ const addCourse = (req, res) => {
         "Error parsing request body: ",
         201,
         500,
-        "Error to add course"
+        "",
+        "Error adding course",
       );
     }
   });

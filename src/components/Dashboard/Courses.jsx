@@ -5,6 +5,7 @@ import ButtonAdmin from "./ButtonAdmin";
 import useFetch from "../Hooks/useFetch";
 function Courses() {
   const [courses, setCourses] = useState([]);
+
   useEffect(() => {
     (async () => {
       const res = await useFetch(
@@ -86,9 +87,12 @@ function Courses() {
                 <td className="whitespace-nowrap">{course.lessons}</td>
                 <td className="whitespace-nowrap">{course.date}</td>
                 <td className="whitespace-nowrap p-2 flex flex-col gap-2">
-                  <Link to={`edit/${course.name}`} state={2}>
+                  <Link to={`edit/${course.key}`} state={2}>
                     <div
                       id={course.key}
+                      onClick={() => {
+                        setIdCourse(course.key);
+                      }}
                       className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition"
                     >
                       {course.action[0]}

@@ -23,7 +23,7 @@ function getUserData(req, response) {
               data: undefined,
               msg: "No student found",
             },
-            "Something went wrong"
+            ""
           );
         } else {
           handleResponse(

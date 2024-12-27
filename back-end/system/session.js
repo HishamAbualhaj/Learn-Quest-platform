@@ -3,7 +3,6 @@ import handleResponse from "../utils/handleResponse.js";
 const session = (req, res) => {
   const cookies = req.headers.cookie || "";
   let sessionId = "";
-  console.log(cookies);
   if (cookies) {
     sessionId = cookies.match(/session_id=([\w\d]+)/)?.[1];
   }

@@ -6,23 +6,6 @@ import ButtonAdmin from "./ButtonAdmin";
 import useFetch from "../Hooks/useFetch";
 import Alert from "../Alert";
 export default function AddCourse() {
-  let defaultData = {
-    title: "",
-    price: "",
-    discount: "",
-    category: "",
-    image: "",
-    description: "",
-    tabs: [""],
-    materials: [
-      {
-        title: "",
-        subtitle: "",
-        url: "",
-      },
-    ],
-  };
-
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -64,7 +47,22 @@ export default function AddCourse() {
       placeholder: "UI/UX FRONT-END etc ...",
     },
   ];
-
+  let defaultData = {
+    title: "",
+    price: "",
+    discount: "",
+    category: "",
+    image: "",
+    description: "",
+    tabs: [""],
+    materials: [
+      {
+        title: "",
+        subtitle: "",
+        url: "",
+      },
+    ],
+  };
   const [courseData, setCourseData] = useState(defaultData);
 
   async function insertData() {
@@ -105,6 +103,7 @@ export default function AddCourse() {
       materials: updateMaterial,
     });
   }
+
   const [lessons, setLessons] = useState([1]);
   function addLesson() {
     setLessons([...lessons, lessons.at(-1) + 1]);
@@ -170,7 +169,7 @@ export default function AddCourse() {
           ))}
 
           <div className="flex flex-col mt-2 dark:text-white text-lightText gap-2">
-            <label htmlFor="">Category : </label>
+            <label htmlFor="category">Category : </label>
 
             <select
               onChange={handleChange}
