@@ -8,7 +8,7 @@ async function useFetch(url, data = null, method) {
         "Content-Type": "application/json",
       },
       body:
-        ["POST", "PATCH", "GET"].includes(method) && data
+        ["POST", "PATCH", "GET", "PUT"].includes(method) && data
           ? JSON.stringify(data)
           : undefined,
       credentials: "include",
