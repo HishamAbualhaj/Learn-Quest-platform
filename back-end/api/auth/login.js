@@ -23,7 +23,7 @@ const login = (req, res) => {
         const isAuth = await getId(email, password);
         if (isAuth) {
           const [{ student_id, first_name }] = isAuth;
-          log(
+          await log(
             response,
             student_id,
             `User: ${first_name} just Logined In`,
