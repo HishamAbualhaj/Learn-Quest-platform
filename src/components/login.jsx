@@ -56,12 +56,11 @@ function Login() {
         LEARN <div className="text-purple-600">QUEST</div>
       </div>
       <div className="mx-auto max-w-[500px] p-7 mt-10 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl">
-        {alert.status &&
-          (alert.status ? (
-            <Alert msg={alert.msg} type="success" />
-          ) : (
-            <Alert msg={alert.msg} type="failed" />
-          ))}
+        {alert.status ? (
+          <Alert msg={alert.msg} type="success" />
+        ) : (
+          <Alert msg={alert.msg} type="failed" />
+        )}
         <div className="lg:text-4xl text-2xl font-bold">Welcome</div>
         <div className="dark:text-textDark text-lightText mt-2">
           Log in to your account
@@ -72,13 +71,11 @@ function Login() {
             Log in with Google
           </div>
         </div>
-
         <div className="dark:text-textDark text-lightText mt-8 flex items-center gap-3">
           <div className="dark:bg-textDark bg-lightText h-[1px] w-1/2"></div>
           OR
           <div className="dark:bg-textDark bg-lightText h-[1px] w-1/2"></div>
         </div>
-
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col mt-4">
             <label htmlFor="email">Email</label>
@@ -111,7 +108,6 @@ function Login() {
             padding="py-4 w-full font-semibold"
           />
         </form>
-
         <div className="text-darkText mt-3 flex gap-2 items-center">
           Already have an account?
           <div className="text-lightBtn underline ">
