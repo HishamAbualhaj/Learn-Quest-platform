@@ -1,8 +1,74 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
-export default function EditCourse({ setActiveStatus }) {
+import { useEffect, useState } from "react";
+import useFetch from "../Hooks/useFetch";
+import Alert from "../Alert";
+export default function EditCourse() {
+  const location = useLocation();
+  const [courseId, setCourseId] = useState(null);
+  useEffect(() => {
+    //getting course id for edit
+    const id = location.pathname.split("/").at(-1);
+    setCourseId(id);
+  }, []);
+  let defaultData = {
+    title: "",
+    price: "",
+    discount: "",
+    category: "",
+    image: "",
+    description: "",
+    tabs: [""],
+    materials: [],
+  };
+
+  const [courseData, setCourseData] = useState(defaultData);
+  useEffect(() => {
+    if (courseId) {
+      setCourseData((pre) => {
+        return {
+          ...pre,
+          course_id: courseId,
+        };
+      });
+      async function getData() {
+        const res = await useFetch(
+          "http://localhost:3002/getCourseData",
+          { course_id: courseId },
+          "POST"
+        );
+        const { msg } = res.msg;
+        const [courseDataFetched, courseMaterial] = msg;
+        console.log(courseDataFetched);
+        Object.entries(courseDataFetched).forEach(([id, value]) => {
+          setCourseData((pre) => {
+            return {
+              ...pre,
+              [id]: value,
+            };
+          });
+        });
+        addLessonForEdit(courseMaterial);
+      }
+      getData();
+    }
+  }, [courseId]);
+
+  const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAlert({ status: null, msg: "" });
+    }, 5000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [alert]);
+
   const category = [
     { id: 1, name: "Introduction to Computer Science" },
     { id: 2, name: "Web Development with HTML, CSS, and JavaScript" },
@@ -15,60 +81,124 @@ export default function EditCourse({ setActiveStatus }) {
     { id: 9, name: "Machine Learning and Artificial Intelligence" },
     { id: 10, name: "DevOps and Continuous Integration/Delivery" },
   ];
-  const courses = {
-    id: 1,
-    title: "Introduction to Computer Science",
-    price: 100,
-    discount: 20,
-    description: "Learn the basics of computer science.",
-    category: "Computer Science",
-    lessons: [
-      {
-        id: 1,
-        title: "Lesson 1",
-        subTitle: "Introduction",
-        lessonUrl: "https://example.com/lesson1",
-      },
-      {
-        id: 2,
-        title: "Lesson 2",
-        subTitle: "Basics of Programming",
-        lessonUrl: "https://example.com/lesson2",
-      },
-      {
-        id: 3,
-        title: "Lesson 3",
-        subTitle: "Data Structures",
-        lessonUrl: "https://example.com/lesson3",
-      },
-      {
-        id: 4,
-        title: "Lesson 4",
-        subTitle: "Algorithms",
-        lessonUrl: "https://example.com/lesson4",
-      },
-    ],
-  };
   const inputs = [
     {
       key: 1,
+      id: "title",
       title: "Title : ",
-      inputdata: courses.title,
       inType: "text",
     },
     {
       key: 2,
+      id: "price",
       title: "Price : ",
-      inputdata: courses.price,
       inType: "number",
     },
     {
       key: 3,
+      id: "discount",
       title: "Discount : ",
-      inputdata: courses.discount,
       inType: "number",
     },
+    {
+      key: 4,
+      id: "tabs",
+      title: "Tabs : ",
+      inType: "text",
+    },
   ];
+
+  useEffect(() => {
+    console.log(courseData);
+  }, [courseData]);
+
+  async function editData() {
+    setIsLoading(true);
+    console.log("Data before sending : ", courseData);
+    const res = await useFetch(
+      "http://localhost:3002/updateCourse",
+      courseData,
+      "PUT"
+    );
+    setIsLoading(false);
+    setAlert(res)
+  }
+
+  function handleChange(e) {
+    let { id, value } = e.target;
+    if (id === "image") {
+      value = e.target.files[0]?.name;
+    }
+    if (id === "tabs") {
+      value = value.split(" ");
+    }
+    setCourseData({
+      ...courseData,
+      [id]: value,
+    });
+  }
+
+  // handle lesson change
+  function handleLessonChange(e, lesson_id) {
+    const { id, value } = e.target;
+    const arrOfObjs = [...courseData.materials];
+    let currentIndex = 0;
+    // getting the input we are typing into (current element) from the array of objs
+    const arr = arrOfObjs.find((obj, index) => {
+      if (obj.id === lesson_id) {
+        currentIndex = index;
+        return true;
+      }
+    });
+    arrOfObjs[currentIndex] = {
+      ...arr,
+      [id]: value,
+    };
+
+    setCourseData((prev) => {
+      return {
+        ...prev,
+        materials: arrOfObjs,
+      };
+    });
+  }
+
+  function addLessonForEdit(courseMaterials) {
+    console.log(courseMaterials);
+    let courseMaterialsArr = [];
+    courseMaterials.forEach((obj) => {
+      const { title, subtitle, url } = obj;
+      const updateMaterial = {
+        id: obj.material_id,
+        title: title,
+        subtitle: subtitle,
+        url: url,
+      };
+      courseMaterialsArr = [...courseMaterialsArr, updateMaterial];
+    });
+    setCourseData((prev) => {
+      return {
+        ...prev,
+        materials: courseMaterialsArr,
+      };
+    });
+  }
+  function addLesson() {
+    // add new object value for new lesson
+    setCourseData({
+      ...courseData,
+      materials: [
+        ...courseData.materials,
+        {
+          id: Math.round(Math.random() * 10000),
+          title: "",
+          subtitle: "",
+          url: "",
+        },
+      ],
+    });
+  }
+
   return (
     <div>
       <div className="rounded-sm w-full h-[800px] overflow-auto">
@@ -83,34 +213,35 @@ export default function EditCourse({ setActiveStatus }) {
         </div>
 
         <div className="p-3">
-          {/* <div className="bg-red-500/20 text-center py-2 rounded-sm text-red-400">
-            Something went wrong
-          </div>
-          <div className="bg-green-500/20 text-center py-2 rounded-sm text-green-400">
-            Successfully Added !
-          </div> */}
+          {alert.status ? (
+            <Alert msg={alert.msg} type="success" />
+          ) : (
+            <Alert msg={alert.msg} type="failed" />
+          )}
           {inputs.map((input) => (
             <div
               key={input.key}
               className="flex flex-col mt-2 dark:text-white text-lightText"
             >
-              <label htmlFor="">{input.title}</label>
-              <input value={input.inputdata} className="mt-2" type={input.inType} />
+              <label htmlFor={input.key}>{input.title}</label>
+              <input
+                onChange={handleChange}
+                id={input.id}
+                value={courseData[input.id] || ""}
+                className="mt-2"
+                type={input.inType}
+              />
             </div>
           ))}
 
-          <div className="flex flex-col mt-2 dark:text-white text-lightText">
-            <label htmlFor="">Description : </label>
-            <textarea value={courses.description} className="mt-2" />
-          </div>
-
           <div className="flex flex-col mt-2 dark:text-white text-lightText gap-2">
-            <label htmlFor="">Category : </label>
+            <label htmlFor="category">Category : </label>
 
             <select
+              onChange={handleChange}
               className="bg-transparent border dark:border-[#888] border-borderLight rounded-sm dark:text-white text-lightText focus:outline-none p-2 text-lg appearance-none w-full mt-2"
               name="courses"
-              id=""
+              id="category"
             >
               {category.map((category) => (
                 <option
@@ -124,54 +255,112 @@ export default function EditCourse({ setActiveStatus }) {
               ))}
             </select>
           </div>
+          <div className="flex flex-col mt-2 dark:text-white text-lightText ">
+            <label htmlFor="image">Image : </label>
 
-          {courses.lessons.map((lesson) => (
-            <div
-              key={lesson.id}
-              className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white text-lightText"
-            >
-              <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
-                Lesson {lesson.id}
-              </div>
-              <div className="flex flex-col gap-3 mt-3">
-                <div>
-                  <div className="flex flex-col gap-2">
-                    <div>Title: </div>
-                    <input
-                      className="w-full"
-                      type="text"
-                      placeholder="Lessson title"
-                      value={lesson.title}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex flex-col gap-2">
-                    <div>Sub Title: </div>
-                    <input
-                      className="w-full"
-                      type="text"
-                      placeholder="Lessson sub title"
-                      value={lesson.subTitle}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex flex-col gap-2">
-                    <div>Lesson Url: </div>
-                    <input
-                      className="w-full"
-                      type="text"
-                      placeholder="Lessson url"
-                      value={lesson.lessonUrl}
-                    />
-                  </div>
-                </div>
+            <div className="image-handle relative cursor-pointer mt-2">
+              <div className="border_platform all rounded-md flex justify-center py-10">
+                <div className="text-xl "> Update Course Image</div>
+                <input
+                  id="image"
+                  onChange={handleChange}
+                  type="file"
+                  className="rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
+                />
               </div>
             </div>
-          ))}
+          </div>
 
-          <ButtonAdmin text="EDIT" />
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between mt-2 dark:text-white text-lightText ">
+              <label htmlFor="">Videos : </label>
+
+              <div
+                onClick={() => {
+                  addLesson();
+                }}
+              >
+                <ButtonAdmin text="Add Lesson" />
+              </div>
+            </div>
+            {courseData.materials.map((obj) => (
+              <div
+                key={obj.id}
+                className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
+              >
+                <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
+                  Lesson 
+                </div>
+                <div className="flex flex-col gap-3 mt-3">
+                  <div>
+                    <div className="flex flex-col gap-2">
+                      <div>Title: </div>
+                      <input
+                        onChange={(e) => {
+                          handleLessonChange(e, obj.id);
+                        }}
+                        id="title"
+                        className="w-full"
+                        type="text"
+                        placeholder="Lessson title"
+                        value={obj.title || " "}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex flex-col gap-2">
+                      <div>Sub Title: </div>
+                      <input
+                        onChange={(e) => {
+                          handleLessonChange(e, obj.id);
+                        }}
+                        id="subtitle"
+                        className="w-full"
+                        type="text"
+                        placeholder="Lessson sub title"
+                        value={obj.subtitle || " "}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex flex-col gap-2">
+                      <div>Lesson Url: </div>
+                      <input
+                        onChange={(e) => {
+                          handleLessonChange(e, obj.id);
+                        }}
+                        id="url"
+                        className="w-full"
+                        type="text"
+                        placeholder="Lessson url"
+                        value={obj.url || " "}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col mt-2 dark:text-white text-lightText">
+            <label htmlFor="description">Description : </label>
+            <textarea
+              id="description"
+              onChange={handleChange}
+              className="mt-2"
+              value={courseData.description || ""}
+            />
+          </div>
+
+          {isLoading ? (
+            <div>
+              <ButtonAdmin text="LOADING ... " />
+            </div>
+          ) : (
+            <div onClick={editData}>
+              <ButtonAdmin text="EDIT" />
+            </div>
+          )}
         </div>
       </div>
     </div>

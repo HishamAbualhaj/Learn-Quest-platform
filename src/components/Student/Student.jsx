@@ -52,7 +52,7 @@ function Student() {
       onClick={() => {
         setActive(false);
       }}
-      className="section_student border-none "
+      className="section_student border-none"
     >
       <div className="border-b dark:border-borderDark border-borderLight px-5 pb-2">
         <div className="flex justify-between lg:gap-0 gap-5 items-center relative">

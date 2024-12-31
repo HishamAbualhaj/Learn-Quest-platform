@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Route, Routes, Link, useLocation, Outlet } from "react-router-dom";
+import { Link, useLocation, Outlet } from "react-router-dom";
 import {
   faUsers,
   faPersonChalkboard,
