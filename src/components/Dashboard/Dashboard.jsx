@@ -91,7 +91,6 @@ function Dashboard() {
           }`}
         >
           {resize ? "" : <Logo />}
-
           <FontAwesomeIcon
             onClick={() => {
               setResize(!resize);
@@ -151,7 +150,7 @@ function Dashboard() {
               <div className="dark:text-white text-black uppercase max-sm:hidden">
                 admin dashboard management
               </div>
-              <Link to="">
+              <Link to="/logout">
                 <FontAwesomeIcon
                   className="text-lg cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-3 px-5 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition"
                   icon={faRightFromBracket}
