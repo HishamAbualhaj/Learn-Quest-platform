@@ -18,17 +18,19 @@ function Button({ outlined, size = "px-4 py-2", text, url, props = "" }) {
   return (
     <>
       {outlined ? (
-        <div
+        <a
+          href={url}
           className={`${currentSize} ${props} ${btnProperties} border-lightBtn text-mainClr dark:text-white hover:bg-mainClr hover:text-white hover:border-mainClr`}
         >
-          <a href={url}>{text}</a>
-        </div>
+          {text}
+        </a>
       ) : (
-        <div
+        <a
+          href={url}
           className={`${currentSize} ${props} ${btnProperties} border-mainClr border dark:bg-mainClrDark   bg-mainClr dark:text-lightText text-white hover:bg-mainClrDark hover:border-mainClrDark`}
         >
-          <a href={url}> {text}</a>
-        </div>
+          {text}
+        </a>
       )}
     </>
   );
