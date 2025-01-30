@@ -4,14 +4,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Landing from "./components/Landing-Page/Landing";
 import Student from "./components/Student/Student";
 
-import {
-  Routes,
-  Route,
-  createBrowserRouter,
-  RouterProvider,
-  useNavigate,
-  redirect,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Profile from "./components/Student/Profile";
 import ChatStudent from "./components/Student/ChatStudent";
@@ -20,7 +13,6 @@ import Blog from "./components/Student/Blog";
 import BlogPost from "./components/Student/BlogPost";
 import CoursePage from "./components/Student/CoursePage";
 import AllCourses from "./components/Student/AllCourses";
-
 import Users from "./components/Dashboard/Users";
 import Courses from "./components/Dashboard/Courses";
 import AddCourse from "./components/Dashboard/AddCourse";
@@ -33,6 +25,8 @@ import Maintenance from "./components/Dashboard/Maintenance";
 import ForgotPass from "./components/ForgotPass";
 import useFetch from "./components/Hooks/useFetch";
 import Logout from "./components/logout";
+import IsAuthRoute from "./components/IsAuthRoute";
+import Logo from "./components/Logo";
 function App() {
   const error = (
     <div className="flex items-center justify-center h-[100vh] bg-dark flex-col gap-2">
@@ -45,17 +39,25 @@ function App() {
 
   async function fetchData(url) {
     const response = await useFetch(url, null, "GET");
-    const reDirected = response.msg.loggedIn;
-    return reDirected;
+    console.log(response.msg);
+    return response.msg;
   }
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Landing />,
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
+      errorElement: error,
     },
     {
       path: "/login",
-      element: <Login />,
+      element: (
+        <IsAuthRoute isAllowed={false}>
+          <Login />
+        </IsAuthRoute>
+      ),
       loader: () => {
         return fetchData("http://localhost:3002/session");
       },
@@ -63,7 +65,11 @@ function App() {
     },
     {
       path: "/signup",
-      element: <Signup />,
+      element: (
+        <IsAuthRoute isAllowed={false}>
+          <Signup />
+        </IsAuthRoute>
+      ),
       loader: () => {
         return fetchData("http://localhost:3002/session");
       },
@@ -71,11 +77,22 @@ function App() {
     },
     {
       path: "/forgotpassword",
-      element: <ForgotPass />,
+      element: (
+        <IsAuthRoute isAllowed={false}>
+          <ForgotPass />
+        </IsAuthRoute>
+      ),
     },
     {
       path: "/student",
-      element: <Student />,
+      element: (
+        <IsAuthRoute>
+          <Student />
+        </IsAuthRoute>
+      ),
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
       children: [
         {
           index: true,
@@ -102,14 +119,7 @@ function App() {
             { path: ":blogId", element: <BlogPost /> },
           ],
         },
-        {
-          path: "logout",
-          element: <Logout />,
-          loader: () => {
-            return fetchData("http://localhost:3002/logout");
-          },
-          errorElement: error,
-        },
+
         {
           path: "*",
           element: (
@@ -123,7 +133,14 @@ function App() {
     },
     {
       path: "/dashboard",
-      element: <Dashboard />,
+      element: (
+        <IsAuthRoute role="admin">
+          <Dashboard />
+        </IsAuthRoute>
+      ),
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
       children: [
         { index: true, element: <Users /> },
         { path: "users", element: <Users /> },
@@ -151,11 +168,20 @@ function App() {
       ],
     },
     {
+      path: "logout",
+      element: <Logout />,
+      loader: () => {
+        return fetchData("http://localhost:3002/logout");
+      },
+      errorElement: error,
+    },
+    {
       path: "*",
       element: (
-        <h1 className="text-white text-4xl text-center mt-16">
-          404 - Page Not Found
-        </h1>
+        <div className="dark:text-white dark:bg-dark text-4xl text-center h-[100vh] flex items-center justify-center flex-col gap-4">
+          <div className="font-bold"> 404 - Page Not Found</div>
+          <Logo />
+        </div>
       ),
     },
   ]);
