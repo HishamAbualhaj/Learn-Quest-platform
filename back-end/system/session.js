@@ -22,9 +22,8 @@ const session = (req, res) => {
     );
     return;
   }
-  (async () => {
-    await validateSessionId(sessionId, res);
-  })();
+
+  validateSessionId(sessionId, res);
 };
 
 async function validateSessionId(sessionId, res) {
@@ -49,6 +48,10 @@ async function validateSessionId(sessionId, res) {
       return;
     } else {
       const [{ user_id }] = result[0];
+      const query_fetch_data = "SELECT * FROM user WHERE student_id = ?";
+      const userData = await connection
+        .promise()
+        .query(query_fetch_data, [user_id]);
       handleResponse(
         res,
         null,
@@ -58,7 +61,7 @@ async function validateSessionId(sessionId, res) {
         {
           loggedIn: true,
           msg: "Successfully validating session , redirecting ...",
-          userId: user_id,
+          userData: userData[0],
         },
         ""
       );
