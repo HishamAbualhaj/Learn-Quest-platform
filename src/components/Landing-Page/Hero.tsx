@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 
-function Hero() {
+function Hero({ data }) {
+  const [isLoggedIn, setIsLogged] = useState(false);
+  useEffect(() => {
+    if (data) {
+      let reDirected = data.loggedIn;
+      setIsLogged(reDirected);
+    } else {
+      setIsLogged(true);
+    }
+  }, [data]);
   return (
     <div className="section xl:py-24 py-20">
       <div className="max-container flex items-center justify-between xl:flex-row flex-col xl:gap-0 gap-10">
@@ -14,11 +23,12 @@ function Hero() {
             schedule. Whether you're just beginning or looking to deepen your
             knowledge, our platform offers engaging and accessible content.
           </div>
-          <div className="flex items-start gap-2 lg:flex-row flex-col">
-            <Button outlined={false} text="Sign up" size="xl" url={""} />
-
-            <Button outlined={true} text="Join a course" size="xl" url={""} />
-          </div>
+          {!isLoggedIn && (
+            <div className="flex items-start gap-2 lg:flex-row flex-col">
+              <Button outlined={false} text="Sign up" size="xl" url={""} />
+              <Button outlined={true} text="Join a course" size="xl" url={""} />
+            </div>
+          )}
         </div>
         <img
           className="lg:max-w-[600px] rounded-lg"
