@@ -1,17 +1,14 @@
 import google from "../assets/google.svg";
 import Button from "./Button";
 import { useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useFetch from "./Hooks/useFetch";
 import Alert from "./Alert";
 function Login() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const dataFetched = useLoaderData();
-  useEffect(() => {
-    dataFetched ? navigate("/") : "";
-  }, []);
+
   useEffect(() => {
     {
       alert.redirect && navigate("/");

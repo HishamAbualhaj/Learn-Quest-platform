@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import google from "../assets/google.svg";
 import Alert from "./Alert";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import useFetch from "./Hooks/useFetch";
 function Signup() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const dataFetched = useLoaderData();
-  useEffect(() => {
-    dataFetched ? navigate("/") : "";
-  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setAlert({ status: null, msg: "" });
