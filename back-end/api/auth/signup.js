@@ -14,7 +14,6 @@ const signup = (req, res) => {
   // Triggering received data from client and collect it
   req.on("data", (chunks) => {
     body += chunks.toString();
-    console.log(body)
   });
 
   // Entire body has been received : no more data is coming
