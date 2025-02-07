@@ -22,13 +22,21 @@ const login = (req, res) => {
         // fetching for password if vaild or not
         const isAuth = await getId(email, password);
         if (isAuth) {
-          const [{ student_id, first_name }] = isAuth;
-          await log(
-            response,
-            student_id,
-            `User: ${first_name} just Logined In`,
-            email
-          );
+          const [{ student_id, first_name, role }] = isAuth;
+          role === "admin"
+            ? await log(
+                response,
+                student_id,
+                `Admin just Logined In`,
+                email
+              )
+            : await log(
+                response,
+                student_id,
+                `User: ${first_name} just Logined In`,
+                email
+              );
+
           // Handling session storage at database
           const generateSessionId = () => crypto.randomBytes(8).toString("hex");
           // Generating random session id
@@ -77,7 +85,7 @@ const login = (req, res) => {
 async function getId(email, password) {
   try {
     const query =
-      "SELECT student_id,first_name FROM user WHERE email = ? AND password = ?";
+      "SELECT student_id,first_name,role FROM user WHERE email = ? AND password = ?";
     const result = await connection.promise().query(query, [email, password]);
     const [data] = result;
     return data.length === 0 ? false : data;
@@ -103,6 +111,7 @@ async function handleSession(session_id, user_id, expires) {
       .promise()
       .query(query, [session_id, user_id, expires]);
     const [data] = result;
+    await updateUserStatus(user_id);
     return data.length === 0 ? false : data;
   } catch (error) {
     handleResponse(
@@ -118,4 +127,21 @@ async function handleSession(session_id, user_id, expires) {
   }
 }
 
+async function updateUserStatus(user_id) {
+  try {
+    const query = "UPDATE USER SET status_user = ? WHERE student_id = ?";
+    await connection.promise().query(query, [1, user_id]);
+  } catch (error) {
+    handleResponse(
+      response,
+      error,
+      "Error Update user status : ",
+      201,
+      500,
+      "",
+      "Error to update user status"
+    );
+    return error;
+  }
+}
 export default login;
