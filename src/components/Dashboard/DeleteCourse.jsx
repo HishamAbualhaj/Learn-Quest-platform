@@ -13,9 +13,9 @@ function DeleteCourse({ setdeleteCoursePopup, id }) {
         { course_id: id },
         "POST"
       );
-      console.log(res);
-      window.location.reload();
+      
       setdeleteCoursePopup(false);
+      console.log(res);
     })();
   }
   return (
