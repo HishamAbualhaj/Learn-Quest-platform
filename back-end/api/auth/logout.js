@@ -68,14 +68,13 @@ async function deleteSession(sessionId, res) {
 
     const deleteSessionQuery = "DELETE FROM session WHERE session_id = ?";
     await connection.promise().query(deleteSessionQuery, [sessionId]);
-
     await log(
       res,
       student_id,
       `User: ${first_name_user} just Logged Out`,
       email_user
     );
-
+    await updateUserStatus(student_id);
     handleResponse(
       res,
       null,
@@ -102,4 +101,23 @@ async function deleteSession(sessionId, res) {
     return error;
   }
 }
+
+async function updateUserStatus(user_id) {
+  try {
+    const query = "UPDATE USER SET status_user = ? WHERE student_id = ?";
+    await connection.promise().query(query, [0, user_id]);
+  } catch (error) {
+    handleResponse(
+      response,
+      error,
+      "Error Update user status : ",
+      201,
+      500,
+      "",
+      "Error to update user status"
+    );
+    return error;
+  }
+}
+
 export default logout;
