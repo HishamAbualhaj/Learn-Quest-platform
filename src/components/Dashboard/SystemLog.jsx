@@ -1,79 +1,19 @@
 import React, { useEffect, useState } from "react";
-
+import useFetch from "../Hooks/useFetch";
 function SystemLog() {
-  const logs = [
-    {
-      logId: 812684844,
-      logState: "Hisham just Logged In",
-      userId: 45486864,
-      email: "Hishamraid0@gmail.com",
-      time: "10 sec ago",
-    },
-    {
-      logId: 812684845,
-      logState: "Osama just Logged Out",
-      userId: 45376328,
-      email: "Osama2023@gmail.com",
-      time: "2 mins ago",
-    },
-    {
-      logId: 812684846,
-      logState: "Hesham just Signed Up",
-      userId: 45781234,
-      email: "HeshamCrafters@gmail.com",
-      time: "5 mins ago",
-    },
-    {
-      logId: 812684847,
-      logState: "Ali just Updated Profile",
-      userId: 45867439,
-      email: "AliEngineer@gmail.com",
-      time: "8 mins ago",
-    },
-    {
-      logId: 812684848,
-      logState: "Sara just Logged In",
-      userId: 45987412,
-      email: "SaraDev@gmail.com",
-      time: "10 mins ago",
-    },
-    {
-      logId: 812684849,
-      logState: "John just Changed Password",
-      userId: 45689234,
-      email: "JohnWeb@gmail.com",
-      time: "15 mins ago",
-    },
-    {
-      logId: 812684850,
-      logState: "Mona just Logged Out",
-      userId: 45376284,
-      email: "Mona@outlook.com",
-      time: "20 mins ago",
-    },
-    {
-      logId: 812684851,
-      logState: "Zain just Reset Password",
-      userId: 45897423,
-      email: "ZainReact@gmail.com",
-      time: "25 mins ago",
-    },
-    {
-      logId: 812684852,
-      logState: "Lina just Signed Up",
-      userId: 45719283,
-      email: "LinaUIUX@gmail.com",
-      time: "30 mins ago",
-    },
-    {
-      logId: 812684853,
-      logState: "Ahmed just Deleted Account",
-      userId: 45467321,
-      email: "AhmedCoder@gmail.com",
-      time: "35 mins ago",
-    },
-  ];
 
+  const [logs,setLogs] = useState([])
+  useEffect(() => {
+    (async () => {
+      const res = await useFetch(
+        "http://localhost:3002/getSystemLog",
+        null,
+        "GET"
+      );
+      setLogs(res.msg)
+      console.log(res.msg)
+    })();
+  }, []);
   return (
     <div className="font-terminal">
       <div className="dark:text-white text-lightText text-4xl font-semibold">
@@ -83,10 +23,11 @@ function SystemLog() {
         <div className="dark:text-green-500 text-green-700">
           {logs.map((log) => (
             <Log
-              id={log.logId}
-              logState={log.logState}
+              id={log.log_id}
+              logState={log.message}
               email={log.email}
               time={log.time}
+              userId={log.student_id}
             />
           ))}
         </div>
@@ -107,7 +48,7 @@ function Log({ id, logState, userId, email, time }) {
       className="border-b  border-green-300/40 md:p-6 p-4 hover:bg-gray-500/20 cursor-pointer"
     >
       <div className="flex md:flex-row flex-col md:gap-0 gap-2 items-center justify-between">
-        <div>User: {logState}</div>
+        <div>{logState}</div>
         <div className="">{time}</div>
       </div>
 
