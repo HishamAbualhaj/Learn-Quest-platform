@@ -1,6 +1,7 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
 import isEmailFound from "../../utils/isEmailFound.js";
+import log from "../../system/logs.js";
 const updateUser = (req, res) => {
   let body = "";
   // Triggering received data from client and collect it
@@ -40,7 +41,8 @@ const updateUser = (req, res) => {
           last_name,
           email,
           birthdate,
-          gender
+          gender,
+          res
         );
         handleResponse(
           res,
@@ -73,13 +75,14 @@ async function updateUserProfile(
   last_name,
   email,
   birthdate,
-  gender
+  gender,
+  res
 ) {
   const query = `UPDATE user 
     SET first_name = ?, last_name = ?, email = ?, gender = ?, birthdate = ?
     WHERE student_id = ?`;
 
-  const result = await connection
+  await connection
     .promise()
     .query(query, [
       first_name,
@@ -89,6 +92,13 @@ async function updateUserProfile(
       birthdate,
       student_id,
     ]);
+
+  await log(
+    res,
+    student_id,
+    `User: ${first_name} Updated ${gender === "Male" ? "his" : "her"} profile`,
+    email
+  );
 }
 
 async function isSameEmail(student_id, currentEmail) {
