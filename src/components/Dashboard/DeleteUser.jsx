@@ -1,15 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useFetch from "../Hooks/useFetch";
 import {
   faTriangleExclamation,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 function DeleteUser({ setdeleteUserPopup, id }) {
+
+
+  function handleDelete() {
+    (async () => {
+      const res = await useFetch(
+        "http://localhost:3002/deleteUser",
+        { user_id: id },
+        "POST"
+      );
+      console.log(res);
+      setdeleteUserPopup(false);
+    })();
+  }
+
+
   return (
     <div>
       <div
         onClick={() => {
-            setdeleteUserPopup(false);
+          setdeleteUserPopup(false);
         }}
         className="bg-black/50 w-full h-full absolute top-0 left-0"
       ></div>
@@ -18,7 +34,7 @@ function DeleteUser({ setdeleteUserPopup, id }) {
           WARNING !
           <FontAwesomeIcon
             onClick={() => {
-                setdeleteUserPopup(false);
+              setdeleteUserPopup(false);
             }}
             className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
             icon={faXmark}
@@ -35,7 +51,12 @@ function DeleteUser({ setdeleteUserPopup, id }) {
             This action cannot be undone. Please confirm if you wish to proceed.
           </div>
         </div>
-        <div className="mt-3 bg-red-500/80 text-center px-4 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer">YES !</div>
+        <div
+          onClick={handleDelete}
+          className="mt-3 bg-red-500/80 text-center px-4 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer"
+        >
+          YES !
+        </div>
       </div>
     </div>
   );
