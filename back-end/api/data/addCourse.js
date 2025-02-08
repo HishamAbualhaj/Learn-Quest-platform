@@ -12,25 +12,25 @@ const addCourse = (req, res) => {
   req.on("end", () => {
     try {
       const {
+        course_id,
         title,
         price,
         discount,
         category,
-        image,
+        image_url,
         tabs,
         description,
         materials,
       } = JSON.parse(body);
 
       (async () => {
-        const course_id = Math.round(Math.random() * 100000000);
         await insertCourse(
           course_id,
           title,
           price,
           discount,
           category,
-          image,
+          image_url,
           tabs,
           description,
           materials
@@ -53,7 +53,7 @@ const addCourse = (req, res) => {
         201,
         500,
         "",
-        "Error adding course",
+        "Error adding course"
       );
     }
   });
@@ -70,6 +70,8 @@ async function insertCourse(
   materials
 ) {
   tabs = tabs.toString();
+
+  image = `${course_id}-${image}`;
   const query = `INSERT INTO Courses (course_id,title, description, price, discount, category, tabs, image_url)
     VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 

@@ -8,6 +8,9 @@ import Alert from "../Alert";
 export default function AddCourse() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);
+
+  const [courseId] = useState(Math.round(Math.random() * 100000000));
+  const [file, setFile] = useState(null);
   useEffect(() => {
     const timer = setTimeout(() => {
       setAlert({ status: null, msg: "" });
@@ -48,11 +51,12 @@ export default function AddCourse() {
     },
   ];
   let defaultData = {
+    course_id: courseId,
     title: "",
     price: "",
     discount: "",
     category: "",
-    image: "",
+    image_url: "",
     description: "",
     tabs: [""],
     materials: [
@@ -66,20 +70,40 @@ export default function AddCourse() {
   const [courseData, setCourseData] = useState(defaultData);
 
   async function insertData() {
+    console.log(courseData);
     setIsLoading(true);
     const res = await useFetch(
       "http://localhost:3002/addCourse",
       courseData,
       "POST"
     );
+    await uploadImage();
     setIsLoading(false);
     setAlert(res);
+  }
+
+  async function uploadImage() {
+    //Specific case for uploading image, (No need to manually set Content-Type)
+    const response = await fetch("http://localhost:3002/handleUploads", {
+      method: "POST",
+      body: file,
+    });
+    const result = await response.json();
   }
 
   function handleChange(e) {
     let { id, value } = e.target;
     if (id === "image") {
+      const formdata = new FormData();
       value = e.target.files[0]?.name;
+      formdata.append("image", e.target.files[0]);
+      formdata.append("id", courseId);
+      setCourseData({
+        ...courseData,
+        image_url: value,
+      });
+      setFile(formdata);
+      return;
     }
     if (id === "tabs") {
       value = value.split(" ");
