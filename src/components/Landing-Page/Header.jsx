@@ -101,7 +101,6 @@ export default function Header({
 
   useEffect(() => {
     sendData(active);
-    console.log("Data from child : ", active);
   }, [active]);
   useEffect(() => {
     setActive(activeDrop);
@@ -217,7 +216,7 @@ export default function Header({
             to={`${
               isStudent
                 ? tab.name.replace(/\s+/g, "")
-                : `student/${tab.name.replace(/\s+/g, "")}`
+                : `${tab.name === 'Log out' ? tab.name.replace(/\s+/g, "") : `student/${tab.name.replace(/\s+/g, "")}` }`
             }`}
           >
             <div key={tab.key} className="flex flex-col">

@@ -15,7 +15,6 @@ function Courses() {
       );
       let arrOfCourses = res.msg.map((data) => {
         const { course_id, title, category, price, created_date } = data;
-        console.log(course_id, title, category, price, created_date);
         return {
           key: course_id,
           name: title,

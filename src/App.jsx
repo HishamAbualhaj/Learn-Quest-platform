@@ -39,7 +39,6 @@ function App() {
 
   async function fetchData(url) {
     const response = await useFetch(url, null, "GET");
-    console.log(response.msg);
     return response.msg;
   }
   const router = createBrowserRouter([
@@ -119,7 +118,14 @@ function App() {
             { path: ":blogId", element: <BlogPost /> },
           ],
         },
-
+        {
+          path: "logout",
+          element: <Logout />,
+          loader: () => {
+            return fetchData("http://localhost:3002/logout");
+          },
+          errorElement: error,
+        },
         {
           path: "*",
           element: (
