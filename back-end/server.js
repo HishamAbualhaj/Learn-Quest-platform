@@ -10,6 +10,12 @@ import deleteCourse from "./api/data/deleteCourse.js";
 import getCourseData from "./api/data/getCourseData.js";
 import updateCourse from "./api/data/updateCourse.js";
 import updateUser from "./api/data/updateUser.js";
+import getUsers from "./api/data/getUsers.js";
+import deleteUser from "./api/data/deleteUser.js";
+import getSystemLog from "./api/data/getSystemLog.js";
+
+// Test upload image
+import handleUploads from "./utils/handleUploads.js";
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
@@ -45,6 +51,14 @@ const server = http.createServer((req, res) => {
     updateCourse(req, res);
   } else if (req.url === "/updateUser" && req.method === "PUT") {
     updateUser(req, res);
+  } else if (req.url === "/getUsers" && req.method === "GET") {
+    getUsers(req, res);
+  } else if (req.url === "/deleteUser" && req.method === "POST") {
+    deleteUser(req, res);
+  } else if (req.url === "/getSystemLog" && req.method === "GET") {
+    getSystemLog(req, res);
+  } else if (req.url === "/handleUploads" && req.method === "POST") {
+    handleUploads(req,res);
   } else {
     res.writeHead(404, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Route not found" }));
