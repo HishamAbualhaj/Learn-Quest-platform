@@ -1,5 +1,6 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
+import deleteImage from "../../utils/deleteImage.js";
 
 const updateCourse = (req, res) => {
   let body = "";
@@ -12,14 +13,13 @@ const updateCourse = (req, res) => {
   // Entire body has been received : no more data is coming
   req.on("end", () => {
     try {
-      
       const {
         course_id,
         title,
         price,
         discount,
         category,
-        image,
+        image_url,
         tabs,
         description,
         materials,
@@ -33,7 +33,7 @@ const updateCourse = (req, res) => {
           price,
           discount,
           category,
-          image,
+          image_url,
           tabs,
           description
         );
@@ -77,10 +77,12 @@ async function updateCourseDetails(
   description
 ) {
   tabs = tabs.toString();
+  image = `${course_id}-${image}`;
+
   const query = `UPDATE Courses 
     SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ?
     WHERE course_id = ?`;
-
+  await deleteOldImage(course_id);
   await connection
     .promise()
     .query(query, [
@@ -112,6 +114,17 @@ async function updateCourseMaterials(course_id, data) {
       .promise()
       .query(insertQuery, [material_id, course_id, title, subtitle, url]);
   }
+}
+
+async function deleteOldImage(course_id) {
+  const selectImageQuery = `SELECT image_url from courses WHERE course_id = ?`;
+  const result = await connection
+    .promise()
+    .query(selectImageQuery, [course_id]);
+
+  const [{ image_url }] = result[0];
+
+  await deleteImage(image_url);
 }
 
 export default updateCourse;

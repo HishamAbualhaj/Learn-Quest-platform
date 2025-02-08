@@ -8,6 +8,8 @@ import Alert from "../Alert";
 export default function EditCourse() {
   const location = useLocation();
   const [courseId, setCourseId] = useState(null);
+  // handle file change for uploading
+  const [file, setFile] = useState(null);
   useEffect(() => {
     //getting course id for edit
     const id = location.pathname.split("/").at(-1);
@@ -18,7 +20,7 @@ export default function EditCourse() {
     price: "",
     discount: "",
     category: "",
-    image: "",
+    image_url: "",
     description: "",
     tabs: [""],
     materials: [],
@@ -41,7 +43,6 @@ export default function EditCourse() {
         );
         const { msg } = res.msg;
         const [courseDataFetched, courseMaterial] = msg;
-        console.log(courseDataFetched);
         Object.entries(courseDataFetched).forEach(([id, value]) => {
           setCourseData((pre) => {
             return {
@@ -108,26 +109,40 @@ export default function EditCourse() {
     },
   ];
 
-  useEffect(() => {
-    console.log(courseData);
-  }, [courseData]);
-
   async function editData() {
     setIsLoading(true);
-    console.log("Data before sending : ", courseData);
     const res = await useFetch(
       "http://localhost:3002/updateCourse",
       courseData,
       "PUT"
     );
+    await uploadImage();
     setIsLoading(false);
-    setAlert(res)
+    setAlert(res);
+  }
+
+  async function uploadImage() {
+    //Specific case for uploading image, (No need to manually set Content-Type)
+    const response = await fetch("http://localhost:3002/handleUploads", {
+      method: "POST",
+      body: file,
+    });
+    const result = await response.json();
   }
 
   function handleChange(e) {
     let { id, value } = e.target;
     if (id === "image") {
+      const formdata = new FormData();
       value = e.target.files[0]?.name;
+      formdata.append("image", e.target.files[0]);
+      formdata.append("id", courseId);
+      setCourseData({
+        ...courseData,
+        image_url: value,
+      });
+      setFile(formdata);
+      return;
     }
     if (id === "tabs") {
       value = value.split(" ");
@@ -164,7 +179,6 @@ export default function EditCourse() {
   }
 
   function addLessonForEdit(courseMaterials) {
-    console.log(courseMaterials);
     let courseMaterialsArr = [];
     courseMaterials.forEach((obj) => {
       const { title, subtitle, url } = obj;
@@ -289,7 +303,7 @@ export default function EditCourse() {
                 className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
               >
                 <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
-                  Lesson 
+                  Lesson
                 </div>
                 <div className="flex flex-col gap-3 mt-3">
                   <div>
