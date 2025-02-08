@@ -17,7 +17,7 @@ async function useFetch(url, data = null, method) {
     const result = await res.json();
     if (res.status === 404) {
       response = {
-        status: "0",
+        status: false,
         msg: "Page is not found",
         redirect: false,
       };
