@@ -1,6 +1,7 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
-
+import archiveLog from "../../system/archiveLogs.js";
+import deleteImage from "../../utils/deleteImage.js";
 const deleteCourse = (req, res) => {
   let body = "";
   req.on("data", (chunks) => {
@@ -15,10 +16,21 @@ const deleteCourse = (req, res) => {
 async function deleteCourseQ(course_id, res) {
   try {
     const query = "DELETE FROM courses WHERE course_id = ?";
-    const query_2 = `DELETE FROM coursematerials WHERE course_id = ?`;
-    await connection.promise().query(query_2, [course_id]);
-    await connection.promise().query(query, [course_id]);
 
+    const get_name_query = `SELECT title,image_url from courses WHERE course_id = ?`;
+    const [data] = await connection
+      .promise()
+      .query(get_name_query, [course_id]);
+    const [{ title, image_url }] = data;
+    await deleteImage(image_url);
+    await archiveLog(
+      res,
+      course_id,
+      "COURSE",
+      `Admin: Deleted Course ${title}`,
+      "Admin@gmail.com"
+    );
+    await connection.promise().query(query, [course_id]);
     handleResponse(
       res,
       null,
@@ -34,7 +46,7 @@ async function deleteCourseQ(course_id, res) {
   } catch (error) {
     handleResponse(null, error, "Error Deleting course: ", 201, 500, "", {
       isDeleted: false,
-      msg: "Course deleted Successfully, ",
+      msg: "Course deleted Failed, ",
     });
   }
 }
