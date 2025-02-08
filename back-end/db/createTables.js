@@ -1,13 +1,5 @@
 import connection from "./db.js";
 // SQL queries to create tables
-const createAdminTable = `
-CREATE TABLE IF NOT EXISTS Admin (
-  admin_id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(50) NOT NULL,
-  password VARCHAR(50) NOT NULL
-);
-`;
-
 const createUserTable = `
 CREATE TABLE IF NOT EXISTS User (
   student_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -21,7 +13,6 @@ CREATE TABLE IF NOT EXISTS User (
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
-
 const createCoursesTable = `
 CREATE TABLE IF NOT EXISTS Courses (
   course_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -45,7 +36,7 @@ CREATE TABLE IF NOT EXISTS CourseMaterials (
   isCompleted BOOLEAN DEFAULT FALSE,
   url VARCHAR(2083),
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (course_id) REFERENCES Courses(course_id)
+  FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
 );
 `;
 const createSystemLogsTable = `
@@ -55,28 +46,51 @@ CREATE TABLE IF NOT EXISTS SystemLogs (
   message TEXT NOT NULL,
   email VARCHAR(100),
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (student_id) REFERENCES User(student_id)
+  FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE
 );
 `;
-
+const createArchiveSystemLogsTable = `
+CREATE TABLE IF NOT EXISTS archiveSystemLogs (
+  archive_id INT AUTO_INCREMENT PRIMARY KEY,
+  data_id INT NOT NULL,
+  type VARCHAR(200),
+  message TEXT NOT NULL,
+  email VARCHAR(100),
+  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+`;
 const createSessionTable = `
 CREATE TABLE IF NOT EXISTS session (
     session_id VARCHAR(255) NOT NULL PRIMARY KEY,  
     user_id INT NOT NULL,                       
     data TEXT,                                    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-    expires_at DATETIME NOT NULL                  
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(student_id) ON DELETE CASCADE
 );`;
+
+const createEnrollmentsTable = `
+CREATE TABLE IF NOT EXISTS enrollments (
+    enrollment_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completion_status bool,
+    certificate_url VARCHAR(255),
+    FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+)
+`;
 // Execute the queries
 const tables = [
-  createAdminTable,
   createUserTable,
   createCoursesTable,
   createSystemLogsTable,
   createSessionTable,
   createCoursesMaterials,
+  createEnrollmentsTable,
+  createArchiveSystemLogsTable,
 ];
-
 tables.forEach((query) => {
   connection.query(query, (err, result) => {
     if (err) {
@@ -86,7 +100,6 @@ tables.forEach((query) => {
     }
   });
 });
-
 // Close the connection
 connection.end((err) => {
   if (err) {
