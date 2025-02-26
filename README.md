@@ -104,4 +104,4 @@ learnquest/
 This project is licensed under [MIT License](LICENSE).
 
 ## Contact
-For any questions, feel free to reach out at **hisham.raid@gmail.com**.
+For any questions, feel free to reach out at **hishamraid0@gmail.com**.
