@@ -13,15 +13,44 @@ import updateUser from "./api/data/updateUser.js";
 import getUsers from "./api/data/getUsers.js";
 import deleteUser from "./api/data/deleteUser.js";
 import getSystemLog from "./api/data/getSystemLog.js";
-
+import getImage from "./utils/getImage.js";
 // Test upload image
 import handleUploads from "./utils/handleUploads.js";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT,OPTIONS"); // Allow specific methods
   res.setHeader("Access-Control-Allow-Headers", "Content-Type"); // Allow specific headers
   res.setHeader("Access-Control-Allow-Credentials", true);
+
+  const routes = {
+    POST: {
+      "/signup": signup,
+      "/login": login,
+      "/getUserData": getUserData,
+      "/addCourse": addCourse,
+      "/deleteCourse": deleteCourse,
+      "/getCourseData": getCourseData,
+      "/deleteUser": deleteUser,
+      "/handleUploads": handleUploads,
+      "/getImage": getImage,
+    },
+    GET: {
+      "/session": session,
+      "/logout": logout,
+      "/getCourses": getCourses,
+      "/getUsers": getUsers,
+      "/getSystemLog": getSystemLog,
+    },
+    PUT: {
+      "/updateCourse": updateCourse,
+      "/updateUser": updateUser,
+    },
+  };
+
   if (req.method === "OPTIONS") {
     // Handle preflight requests
     res.writeHead(204); // No Content
@@ -29,39 +58,38 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (req.url === "/signup" && req.method === "POST") {
-    signup(req, res);
-  } else if (req.url === "/login" && req.method === "POST") {
-    login(req, res);
-  } else if (req.url === "/session" && req.method === "GET") {
-    session(req, res);
-  } else if (req.url === "/logout" && req.method === "GET") {
-    logout(req, res);
-  } else if (req.url === "/getUserData" && req.method === "POST") {
-    getUserData(req, res);
-  } else if (req.url === "/addCourse" && req.method === "POST") {
-    addCourse(req, res);
-  } else if (req.url === "/getCourses" && req.method === "GET") {
-    getCourses(req, res);
-  } else if (req.url === "/deleteCourse" && req.method === "POST") {
-    deleteCourse(req, res);
-  } else if (req.url === "/getCourseData" && req.method === "POST") {
-    getCourseData(req, res);
-  } else if (req.url === "/updateCourse" && req.method === "PUT") {
-    updateCourse(req, res);
-  } else if (req.url === "/updateUser" && req.method === "PUT") {
-    updateUser(req, res);
-  } else if (req.url === "/getUsers" && req.method === "GET") {
-    getUsers(req, res);
-  } else if (req.url === "/deleteUser" && req.method === "POST") {
-    deleteUser(req, res);
-  } else if (req.url === "/getSystemLog" && req.method === "GET") {
-    getSystemLog(req, res);
-  } else if (req.url === "/handleUploads" && req.method === "POST") {
-    handleUploads(req,res);
-  } else {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ message: "Route not found" }));
+  const methodRoutes = routes[req.method];
+  if (methodRoutes && methodRoutes[req.url]) {
+    methodRoutes[req.url](req, res);
+  } else if (req.url.startsWith("/uploads/")) {
+    // No route defined then its an image request
+
+    // find current url from this file , 
+    const __filename = fileURLToPath(import.meta.url);
+    
+    // find current dir for this file 
+    const __dirname = path.dirname(__filename);
+
+    // resolving current dir with another folder
+    const uploadDir = path.resolve(__dirname, "./uploads");
+    // getting image name from url
+    const imagePath = path.join(uploadDir, req.url.split("/")[2]);
+
+    fs.readFile(imagePath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end(`Image not found ${err}`);
+      } else {
+        // Determine content type
+        const ext = path.extname(imagePath).toLowerCase();
+        let contentType = "application/octet-stream";
+        if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
+        else if (ext === ".png") contentType = "image/png";
+
+        res.writeHead(200, { "Content-Type": contentType });
+        res.end(data);
+      }
+    });
   }
 });
 
