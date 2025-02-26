@@ -1,7 +1,7 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
+import log from "../../system/logs.js";
 import deleteImage from "../../utils/deleteImage.js";
-
 const updateCourse = (req, res) => {
   let body = "";
   // Triggering received data from client and collect it
@@ -35,7 +35,8 @@ const updateCourse = (req, res) => {
           category,
           image_url,
           tabs,
-          description
+          description,
+          res
         );
 
         // Then update the associated course materials
@@ -74,7 +75,8 @@ async function updateCourseDetails(
   category,
   image,
   tabs,
-  description
+  description,
+  res
 ) {
   tabs = tabs.toString();
   image = `${course_id}-${image}`;
@@ -95,6 +97,13 @@ async function updateCourseDetails(
       image,
       course_id,
     ]);
+
+  await log(
+    res,
+    course_id,
+    `Admin: Updated course : ${title}`,
+    "admin@gmail.com"
+  );
 }
 
 // Function to update course materials

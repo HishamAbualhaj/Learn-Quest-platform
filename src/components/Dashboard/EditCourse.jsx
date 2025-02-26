@@ -111,12 +111,12 @@ export default function EditCourse() {
 
   async function editData() {
     setIsLoading(true);
+    await uploadImage();
     const res = await useFetch(
       "http://localhost:3002/updateCourse",
       courseData,
       "PUT"
     );
-    await uploadImage();
     setIsLoading(false);
     setAlert(res);
   }
@@ -127,7 +127,7 @@ export default function EditCourse() {
       method: "POST",
       body: file,
     });
-    const result = await response.json();
+    await response.json();
   }
 
   function handleChange(e) {
@@ -177,7 +177,6 @@ export default function EditCourse() {
       };
     });
   }
-
   function addLessonForEdit(courseMaterials) {
     let courseMaterialsArr = [];
     courseMaterials.forEach((obj) => {
