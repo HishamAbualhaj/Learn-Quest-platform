@@ -36,7 +36,8 @@ async function handleUploads(req, res) {
             "uploading image done ! ",
             200,
             {
-              msg: "Uploading image done"
+              status: true,
+              msg: "Uploading image done",
             },
             null,
             true
@@ -44,6 +45,16 @@ async function handleUploads(req, res) {
         }
       });
     } else {
+      handleResponse(
+        res,
+        err,
+        "No File to upload",
+        null,
+        202,
+        null,
+        false
+      );
+      return;
     }
   });
 }
