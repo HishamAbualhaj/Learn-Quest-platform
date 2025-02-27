@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
-import Header from "../Landing-Page/Header";
+import Header from "../pages/Landing-Page/Header";
 function Student() {
   const userDataResponse = useLoaderData();
   const [userData, setUserData] = useState(null);

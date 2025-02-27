@@ -3,7 +3,7 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 
 function Logout() {
   const navigate = useNavigate();
-  const dataFetched = useLoaderData();
+  useLoaderData();
   useEffect(() => {
     navigate("/");
   }, []);

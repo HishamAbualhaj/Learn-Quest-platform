@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import DeleteCourse from "./DeleteCourse";
 import { Link } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
-import useFetch from "../Hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 function Courses() {
   const [courses, setCourses] = useState([]);
 
@@ -15,13 +15,14 @@ function Courses() {
       );
       let arrOfCourses = res.msg.map((data) => {
         const { course_id, title, category, price, created_date } = data;
+        const new_date = created_date.split("T")[0];
         return {
           key: course_id,
           name: title,
           type: category,
           price: price,
           lessons: 0,
-          date: created_date,
+          date: new_date,
           action: ["Edit", "Delete"],
         };
       });

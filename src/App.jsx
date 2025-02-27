@@ -1,31 +1,32 @@
-import Login from "./components/login";
+import Login from "./components/Login";
 import Signup from "./components/Signup";
-import Dashboard from "./components/Dashboard/Dashboard";
-import Landing from "./components/Landing-Page/Landing";
-import Student from "./components/Student/Student";
+
+import Dashboard from "./layouts/DashboardLayout";
+import Landing from "./layouts/LandingLayout";
+import Student from "./layouts/StudentLayout";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Profile from "./components/Student/Profile";
-import ChatStudent from "./components/Student/ChatStudent";
-import MyCourses from "./components/Student/MyCourses";
-import Blog from "./components/Student/Blog";
-import BlogPost from "./components/Student/BlogPost";
-import CoursePage from "./components/Student/CoursePage";
-import AllCourses from "./components/Student/AllCourses";
-import Users from "./components/Dashboard/Users";
-import Courses from "./components/Dashboard/Courses";
-import AddCourse from "./components/Dashboard/AddCourse";
-import EditCourse from "./components/Dashboard/EditCourse";
-import Analytics from "./components/Dashboard/Analytics";
-import Reviews from "./components/Dashboard/Reviews";
-import Chat from "./components/Dashboard/Chat";
-import SystemLog from "./components/Dashboard/SystemLog";
-import Maintenance from "./components/Dashboard/Maintenance";
+import Profile from "./pages/Student/Profile";
+import ChatStudent from "./pages/Student/ChatStudent";
+import MyCourses from "./pages/Student/MyCourses";
+import Blog from "./pages/Student/Blog";
+import BlogPost from "./pages/Student/BlogPost";
+import CoursePage from "./pages/Student/CoursePage";
+import AllCourses from "./pages/Student/AllCourses";
+import Users from "./pages/Dashboard/Users";
+import Courses from "./pages/Dashboard/Courses";
+import AddCourse from "./pages/Dashboard/AddCourse";
+import EditCourse from "./pages/Dashboard/EditCourse";
+import Analytics from "./pages/Dashboard/Analytics";
+import Reviews from "./pages/Dashboard/Reviews";
+import Chat from "./pages/Dashboard/Chat";
+import SystemLog from "./pages/Dashboard/SystemLog";
+import Maintenance from "./pages/Dashboard/Maintenance";
 import ForgotPass from "./components/ForgotPass";
-import useFetch from "./components/Hooks/useFetch";
-import Logout from "./components/logout";
-import IsAuthRoute from "./components/IsAuthRoute";
+import useFetch from "./hooks/useFetch";
+import Logout from "./components/Logout";
+import IsAuthRoute from "./routes/IsAuthRoute";
 import Logo from "./components/Logo";
 function App() {
   const error = (

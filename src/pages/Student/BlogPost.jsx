@@ -3,7 +3,7 @@ import Ai from "../../assets/blog/artical.jpg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Person from "../../assets/Screenshot_1.jpg";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-import Avatar from "../Avatar";
+import Avatar from "../../components/Avatar";
 function BlogPost() {
   const reviews = [
     {

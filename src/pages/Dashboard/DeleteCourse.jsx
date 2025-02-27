@@ -1,31 +1,28 @@
-import React, { useEffect } from "react";
+import React from "react";
+import useFetch from "../../hooks/useFetch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFetch from "../Hooks/useFetch";
 import {
   faTriangleExclamation,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-function DeleteUser({ setdeleteUserPopup, id }) {
-
-
+function DeleteCourse({ setdeleteCoursePopup, id }) {
   function handleDelete() {
     (async () => {
       const res = await useFetch(
-        "http://localhost:3002/deleteUser",
-        { user_id: id },
+        "http://localhost:3002/deleteCourse",
+        { course_id: id },
         "POST"
       );
+      
+      setdeleteCoursePopup(false);
       console.log(res);
-      setdeleteUserPopup(false);
     })();
   }
-
-
   return (
     <div>
       <div
         onClick={() => {
-          setdeleteUserPopup(false);
+          setdeleteCoursePopup(false);
         }}
         className="bg-black/50 w-full h-full absolute top-0 left-0"
       ></div>
@@ -34,7 +31,7 @@ function DeleteUser({ setdeleteUserPopup, id }) {
           WARNING !
           <FontAwesomeIcon
             onClick={() => {
-              setdeleteUserPopup(false);
+              setdeleteCoursePopup(false);
             }}
             className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
             icon={faXmark}
@@ -46,8 +43,8 @@ function DeleteUser({ setdeleteUserPopup, id }) {
             icon={faTriangleExclamation}
           />
           <div className="text-gray-400 text-center mt-5 text-xl leading-10">
-            Warning: You are about to permanently delete the selected user.
-            <span className="bg-red-800 mx-2 text-white p-1">{`	Hisham.raid@yahoo.com`}</span>
+            Warning: You are about to permanently delete the selected course.
+            <span className="bg-red-800 mx-2 text-white p-1">{`Advanced CSS & Sass`}</span>
             This action cannot be undone. Please confirm if you wish to proceed.
           </div>
         </div>
@@ -61,4 +58,5 @@ function DeleteUser({ setdeleteUserPopup, id }) {
     </div>
   );
 }
-export default DeleteUser;
+
+export default DeleteCourse;

@@ -1,13 +1,12 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import web from "../../assets/web.jpg";
 import ui from "../../assets/uiux.jpg";
 import cyber from "../../assets/cyber.jpg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
-import Button from "../Button";
-import { Link } from "react-router-dom";
-function AllCourses() {
-  const courses = [
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import Button from "../../components/Button";
+function MyCourses() {
+  const mycourses = [
     {
       id: 1,
       title: "Web Development for Beginners",
@@ -15,9 +14,8 @@ function AllCourses() {
         "Kickstart your web development journey with this beginner-friendly course. Learn the fundamentals of HTML, CSS, and JavaScript, and build your first website. Ideal for those with no prior experience.",
       categories: ["Web Technologies", "Front End", "IT"],
       image: web,
-      star: "5.0",
-      price: "20.99",
-      isDiscount: [true, "30.99"],
+      progress: "100%",
+      completed: true,
     },
     {
       id: 2,
@@ -26,9 +24,8 @@ function AllCourses() {
         "Master the art of creating user-centered designs. This course will guide you through the principles of UI/UX design, including wireframing, prototyping, and user testing, to ensure great user experiences.",
       categories: ["UI/UX", "Front End", "DESIGN"],
       image: ui,
-      star: "5.0",
-      price: "15.99",
-      isDiscount: [false, "40.99"],
+      progress: "70%",
+      completed: false,
     },
     {
       id: 3,
@@ -37,9 +34,8 @@ function AllCourses() {
         "Gain a solid foundation in cybersecurity. This course covers essential concepts such as network security, cryptography, threat detection, and best practices for protecting information systems. Perfect for beginners looking to start a career in cybersecurity",
       categories: ["Cybersecurity", "Security", "Computer Science"],
       image: cyber,
-      star: "5.0",
-      price: "15.99",
-      isDiscount: [true, "40.99"],
+      progress: "40%",
+      completed: false,
     },
     {
       id: 4,
@@ -48,9 +44,8 @@ function AllCourses() {
         "Gain a solid foundation in cybersecurity. This course covers essential concepts such as network security, cryptography, threat detection, and best practices for protecting information systems. Perfect for beginners looking to start a career in cybersecurity",
       categories: ["Cybersecurity", "Security", "Computer Science"],
       image: cyber,
-      star: "4.5",
-      price: "Free",
-      isDiscount: [false, "40.99"],
+      progress: "60%",
+      completed: false,
     },
     {
       id: 5,
@@ -59,23 +54,22 @@ function AllCourses() {
         "Gain a solid foundation in cybersecurity. This course covers essential concepts such as network security, cryptography, threat detection, and best practices for protecting information systems. Perfect for beginners looking to start a career in cybersecurity",
       categories: ["Cybersecurity", "Security", "Computer Science"],
       image: cyber,
-      star: "4.0",
-      price: "15.99",
-      isDiscount: [true, "40.99"],
+      progress: "15%",
+      completed: false,
     },
   ];
   return (
     <div className="sm:px-5 px-1 height-vh-adjust flex items-center">
-      <div className=" bg-lightLayout dark:bg-lightDark py-10 overflow-auto h-[800px]">
+      <div className=" bg-lightLayout dark:bg-lightDark py-10 overflow-auto h-[800px] flex-1">
         <div className="md:px-5 px-2">
           <div className="flex items-center justify-between md:flex-row flex-col max-md:gap-5">
-            <div className="font-[600] text-4xl">Courses</div>
+            <div className="font-[600] text-4xl">My Courses</div>
             <div className="flex items-center gap-2 border dark:border-borderDark p-5 relative max-md:w-full max-sm:flex-col">
               <div className="absolute top-0 -translate-y-1/2 left-0 text-lg font-semibold px-5">
                 Filter
               </div>
               <input
-                className="border dark:border-borderDark lg:w-[700px] w-full rounded-md"
+                className="border dark:border-borderDark lg:w-[500px] xl:w-[700px] w-full rounded-md"
                 type="text"
                 placeholder="search by name"
               />
@@ -85,13 +79,7 @@ function AllCourses() {
                 id=""
               >
                 <option className="text-black" value={`Free`}>
-                  Free
-                </option>
-                <option className="text-black" value={`Paid`}>
-                  Paid
-                </option>
-                <option className="text-black" value={`Discount`}>
-                  Discount
+                  Completed
                 </option>
                 <option className="text-black" value={`Top Rated`}>
                   Top Rated
@@ -104,7 +92,7 @@ function AllCourses() {
             </div>
           </div>
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-5 gap-8  mt-5">
-            {courses.map((course) => (
+            {mycourses.map((course) => (
               <div
                 key={course.id}
                 className="border dark:border-borderDark rounded-xl bg-white dark:bg-dark"
@@ -117,17 +105,8 @@ function AllCourses() {
                   />
                 </div>
                 <div className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div className="font-[600] lg:text-xl line-clamp-1">
-                      {course.title}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FontAwesomeIcon
-                        className="text-yellow-400"
-                        icon={faStar}
-                      />
-                      <div className="text-yellow-400">{course.star}</div>
-                    </div>
+                  <div className="font-[600] lg:text-xl line-clamp-1">
+                    {course.title}
                   </div>
                   <div className="text-black/50 leading-7 dark:text-white/50 mt-5 line-clamp-4  max-w-[400px]">
                     {course.description}
@@ -139,22 +118,23 @@ function AllCourses() {
                       </div>
                     ))}
                   </div>
-                  <div className="text-lg mt-4 flex gap-2">
-                    Price :
-                    {course.isDiscount[0] && (
-                      <div className="line-through dark:text-white/50 text-black/40">
-                        {course.isDiscount[1]} $
-                      </div>
-                    )}
-                    <div className="">
-                      {course.price === "Free"
-                        ? course.price
-                        : course.price + " $"}
+                  <div className="flex items-center mt-5 gap-2">
+                    <div className=" w-full h-2 border border-borderDark rounded-md ">
+                      <div
+                        style={{ width: `${course.progress}` }}
+                        className={`bg-green-400 h-full rounded-md`}
+                      ></div>
                     </div>
+                    <div className="">{course.progress}</div>
                   </div>
-                  <Link to={`/student/CoursePage/${course.title.replace(/[\s/]/g, "")}`}>
-                    <Button text="Join Now" />
-                  </Link>
+                  {course.completed && (
+                    <div className="flex items-center text-center gap-2 mt-5">
+                      <div className="bg-green-700/70 py-2 rounded-md flex-1 text-white">
+                        Completed !
+                      </div>
+                      <Button props="flex-1" margin="mt-0" text="Get Certificate" />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -165,4 +145,4 @@ function AllCourses() {
   );
 }
 
-export default AllCourses;
+export default MyCourses;

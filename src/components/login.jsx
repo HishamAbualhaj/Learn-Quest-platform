@@ -2,7 +2,7 @@ import google from "../assets/google.svg";
 import Button from "./Button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useFetch from "./Hooks/useFetch";
+import useFetch from "../hooks/useFetch";
 import Alert from "./Alert";
 function Login() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });

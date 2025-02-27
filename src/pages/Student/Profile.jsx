@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Avatar from "../Avatar";
+import Avatar from "../../components/Avatar";
 import { faGear, faUpload, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFetch from "../Hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import ButtonAdmin from "../Dashboard/ButtonAdmin";
-import Alert from "../Alert";
+import Alert from "../../components/Alert";
+
 function Profile() {
   const [state, setState] = useState("Profile");
   const [isEdit, setIsEdit] = useState(false);

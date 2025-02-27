@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import useFetch from "../Hooks/useFetch";
-import Logo from "../Logo";
+import Logo from "../../components/Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faDashboard } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 import Person from "../../assets/Screenshot_1.jpg";
-import Avatar from "../Avatar";
+import Avatar from "../../components/Avatar";
 import {
   faMessage,
   faPersonChalkboard,

@@ -3,7 +3,7 @@ import Ai from "../../assets/blog/artical.jpg";
 import cloud from "../../assets/blog/cloud_computing.jpg";
 import web from "../../assets/blog/web.jpg";
 import cyber from "../../assets/blog/cyber.jpg";
-import Button from "../Button";
+import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 function Blog() {
   const posts = [

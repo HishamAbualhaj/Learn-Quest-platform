@@ -7,10 +7,10 @@ import {
   faStar,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import Button from "../Button";
+import Button from "../../components/Button"
 import { faCcVisa } from "@fortawesome/free-brands-svg-icons";
 import Person from "../../assets/Screenshot_1.jpg";
-import Avatar from "../Avatar";
+import Avatar from "../../components/Avatar";
 function CoursePage() {
   const [isTranslate, setIsTranslate] = useState(false);
   const courseVideos = [

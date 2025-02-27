@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
-import useFetch from "../Hooks/useFetch";
-import Alert from "../Alert";
+import useFetch from "../../hooks/useFetch";
+import Alert from "../../components/Alert";
 export default function AddCourse() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);

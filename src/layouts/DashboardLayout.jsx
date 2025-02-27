@@ -15,8 +15,7 @@ import {
 
 import { useState, useEffect } from "react";
 
-import Logo from "../Logo";
-import ButtonAdmin from "./ButtonAdmin";
+import Logo from "../components/Logo";
 function Dashboard() {
   const tabs = [
     {

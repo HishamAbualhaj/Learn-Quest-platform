@@ -1,28 +1,31 @@
 import React from "react";
-import useFetch from "../Hooks/useFetch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useFetch from "../../hooks/useFetch";
 import {
   faTriangleExclamation,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-function DeleteCourse({ setdeleteCoursePopup, id }) {
+function DeleteUser({ setdeleteUserPopup, id }) {
+
+
   function handleDelete() {
     (async () => {
       const res = await useFetch(
-        "http://localhost:3002/deleteCourse",
-        { course_id: id },
+        "http://localhost:3002/deleteUser",
+        { user_id: id },
         "POST"
       );
-      
-      setdeleteCoursePopup(false);
       console.log(res);
+      setdeleteUserPopup(false);
     })();
   }
+
+
   return (
     <div>
       <div
         onClick={() => {
-          setdeleteCoursePopup(false);
+          setdeleteUserPopup(false);
         }}
         className="bg-black/50 w-full h-full absolute top-0 left-0"
       ></div>
@@ -31,7 +34,7 @@ function DeleteCourse({ setdeleteCoursePopup, id }) {
           WARNING !
           <FontAwesomeIcon
             onClick={() => {
-              setdeleteCoursePopup(false);
+              setdeleteUserPopup(false);
             }}
             className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
             icon={faXmark}
@@ -43,8 +46,8 @@ function DeleteCourse({ setdeleteCoursePopup, id }) {
             icon={faTriangleExclamation}
           />
           <div className="text-gray-400 text-center mt-5 text-xl leading-10">
-            Warning: You are about to permanently delete the selected course.
-            <span className="bg-red-800 mx-2 text-white p-1">{`Advanced CSS & Sass`}</span>
+            Warning: You are about to permanently delete the selected user.
+            <span className="bg-red-800 mx-2 text-white p-1">{`	Hisham.raid@yahoo.com`}</span>
             This action cannot be undone. Please confirm if you wish to proceed.
           </div>
         </div>
@@ -58,5 +61,4 @@ function DeleteCourse({ setdeleteCoursePopup, id }) {
     </div>
   );
 }
-
-export default DeleteCourse;
+export default DeleteUser;

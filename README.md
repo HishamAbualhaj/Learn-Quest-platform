@@ -80,16 +80,35 @@ npm run dev
 
 ## Project Structure
 ```
-This folder structure will be modified soon !
-learnquest/
-├── public/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── App.jsx
-│   └── index.css
-├── package.json
-└── tailwind.config.js
+📂 LEARNQUEST
+├── 📂 back-end
+│ ├── 📂 api
+│ ├── 📂 db
+│ ├── 📂 system
+│ ├── 📂 uploads
+│ ├── 📂 utils
+│ ├── 📄 server.js
+├── 📂 public
+├── 📂 src
+│ ├── 📂 assets
+│ ├── 📂 components
+│ ├── 📂 global
+│ ├── 📂 hooks
+│ ├── 📂 layouts
+│ ├── 📂 pages
+│ ├── 📂 routes
+│ ├── 📄 App.jsx
+│ ├── 📄 index.css
+│ ├── 📄 main.jsx
+├── 📄 .gitignore
+├── 📄 eslint.config.js
+├── 📄 index.html
+├── 📄 package-lock.json
+├── 📄 package.json
+├── 📄 postcss.config.js
+├── 📄 README.md
+├── 📄 tailwind.config.js
+└── 📄 vite.config.js
 ```
 
 ## Future Enhancements

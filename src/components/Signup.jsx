@@ -3,7 +3,7 @@ import google from "../assets/google.svg";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
-import useFetch from "./Hooks/useFetch";
+import useFetch from "../hooks/useFetch";
 function Signup() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);

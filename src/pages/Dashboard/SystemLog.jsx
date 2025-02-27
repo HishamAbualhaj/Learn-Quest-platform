@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useFetch from "../Hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 function SystemLog() {
 
   const [logs,setLogs] = useState([])

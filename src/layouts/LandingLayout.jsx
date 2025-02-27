@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import useFetch from "../Hooks/useFetch";
-import Header from "./Header";
-import Hero from "./Hero";
-import Feature from "./Feature";
-import FeatureDetails from "./FeatureDetails";
-import Testimonials from "./Testimonials";
-import CoursePreview from "./CoursePreview";
-import FrequentlyQuestions from "./FrequentlyQuestions";
-import DemoPage from "./DemoPage";
-import Footer from "./Footer";
+import Header from "../pages/Landing-Page/Header";
+import Hero from "../pages/Landing-Page/Hero";
+import Feature from "../pages/Landing-Page/Feature";
+import FeatureDetails from "../pages/Landing-Page/FeatureDetails";
+import Testimonials from "../pages/Landing-Page/Testimonials";
+import CoursePreview from "../pages/Landing-Page/CoursePreview";
+import FrequentlyQuestions from "../pages/Landing-Page/FrequentlyQuestions";
+import DemoPage from "../pages/Landing-Page/DemoPage";
+import Footer from "../pages/Landing-Page/Footer";
 import { useLoaderData } from "react-router-dom";
 function Landing() {
   const userDataResponse = useLoaderData();
@@ -38,7 +37,7 @@ function Landing() {
       <Testimonials />
       <CoursePreview />
       <FrequentlyQuestions />
-      <DemoPage />
+      <DemoPage /> 
       <Footer />
     </div>
   );

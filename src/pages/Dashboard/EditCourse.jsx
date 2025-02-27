@@ -3,8 +3,8 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
 import { useEffect, useState } from "react";
-import useFetch from "../Hooks/useFetch";
-import Alert from "../Alert";
+import useFetch from "../../hooks/useFetch";
+import Alert from "../../components/Alert";
 export default function EditCourse() {
   const location = useLocation();
   const [courseId, setCourseId] = useState(null);

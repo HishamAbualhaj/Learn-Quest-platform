@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DeleteUser from "./DeleteUser";
-import useFetch from "../Hooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 function Users() {
  
 
