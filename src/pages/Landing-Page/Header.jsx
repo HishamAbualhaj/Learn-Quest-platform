@@ -14,6 +14,8 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { faBlogger } from "@fortawesome/free-brands-svg-icons";
+import { useContext } from "react";
+import { UserData } from "../../context/UserDataContext";
 const tabs = [
   {
     key: 1,
@@ -69,7 +71,6 @@ const navs = [
   },
 ];
 export default function Header({
-  data,
   isStudent = false,
   activeDrop = false,
   sendData,
@@ -81,6 +82,7 @@ export default function Header({
   const [isLoggedIn, setIsLogged] = useState(false);
   const [firstName, setFirstName] = useState(null);
   const [role, setRole] = useState(null);
+  const data = useContext(UserData);
   useEffect(() => {
     if (data) {
       if (data.loggedIn) {
@@ -92,7 +94,6 @@ export default function Header({
       } else {
         setIsLogged(false);
       }
-      console.log(data);
     } else {
       setIsLogged(true);
     }
@@ -215,7 +216,11 @@ export default function Header({
             to={`${
               isStudent
                 ? tab.name.replace(/\s+/g, "")
-                : `${tab.name === 'Log out' ? tab.name.replace(/\s+/g, "") : `student/${tab.name.replace(/\s+/g, "")}` }`
+                : `${
+                    tab.name === "Log out"
+                      ? tab.name.replace(/\s+/g, "")
+                      : `student/${tab.name.replace(/\s+/g, "")}`
+                  }`
             }`}
           >
             <div key={tab.key} className="flex flex-col">

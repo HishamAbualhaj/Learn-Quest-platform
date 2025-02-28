@@ -28,6 +28,8 @@ import useFetch from "./hooks/useFetch";
 import Logout from "./components/Logout";
 import IsAuthRoute from "./routes/IsAuthRoute";
 import Logo from "./components/Logo";
+
+import UserDataContext, { UserData } from "./context/UserDataContext";
 function App() {
   const error = (
     <div className="flex items-center justify-center h-[100vh] bg-dark flex-col gap-2">
@@ -45,7 +47,11 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Landing />,
+      element: (
+        <UserDataContext>
+          <Landing />
+        </UserDataContext>
+      ),
       loader: () => {
         return fetchData("http://localhost:3002/session");
       },
@@ -86,9 +92,11 @@ function App() {
     {
       path: "/student",
       element: (
-        <IsAuthRoute>
-          <Student />
-        </IsAuthRoute>
+        <UserDataContext>
+          <IsAuthRoute>
+            <Student />
+          </IsAuthRoute>
+        </UserDataContext>
       ),
       loader: () => {
         return fetchData("http://localhost:3002/session");
