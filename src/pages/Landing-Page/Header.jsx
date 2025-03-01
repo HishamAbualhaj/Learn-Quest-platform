@@ -1,75 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Logo from "../../components/Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faDashboard } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faDashboard, faMoon } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { Link } from "react-router-dom";
-import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../../components/Avatar";
-import {
-  faMessage,
-  faPersonChalkboard,
-  faRightFromBracket,
-  faShare,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { faBlogger } from "@fortawesome/free-brands-svg-icons";
-import { useContext } from "react";
+import Person from "../../assets/person.png";
+import { tabs, navs } from "../../global/global";
+import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../../context/UserDataContext";
-const tabs = [
-  {
-    key: 1,
-    name: "Profile",
-    icon: faUser,
-  },
-  {
-    key: 2,
-    name: "All Courses",
-    icon: faPersonChalkboard,
-  },
-  {
-    key: 3,
-    name: "My Courses",
-    icon: faPersonChalkboard,
-  },
-  {
-    key: 4,
-    name: "Chat",
-    icon: faMessage,
-  },
-  {
-    key: 5,
-    name: "Blog",
-    icon: faBlogger,
-  },
-  {
-    key: 6,
-    name: "Log out",
-    icon: faRightFromBracket,
-  },
-];
-const navs = [
-  {
-    id: 1,
-    name: "Home",
-    url: "/Home",
-  },
-  {
-    id: 2,
-    name: "Features",
-    url: "/Home",
-  },
-  {
-    id: 3,
-    name: "Courses",
-    url: "/Home",
-  },
-  {
-    id: 4,
-    name: "Blog",
-    url: "/Home",
-  },
-];
+import { Theme } from "../../context/ThemeContext";
 export default function Header({
   isStudent = false,
   activeDrop = false,
@@ -80,17 +20,26 @@ export default function Header({
   // controls the dropdown for user
   const [active, setActive] = useState(false);
   const [isLoggedIn, setIsLogged] = useState(false);
-  const [firstName, setFirstName] = useState(null);
-  const [role, setRole] = useState(null);
+  const [userDataClient, setUserDataClient] = useState({
+    first_name: null,
+    role: null,
+    image_url: null,
+  });
   const data = useContext(UserData);
+  const { theme, setTheme } = useContext(Theme);
   useEffect(() => {
     if (data) {
       if (data.loggedIn) {
         let reDirected = data.loggedIn;
-        let [{ first_name, role }] = data.userData;
+        let [{ first_name, role, image_url }] = data.userData;
         setIsLogged(reDirected);
-        setRole(role);
-        setFirstName(first_name);
+        [first_name, role, image_url].forEach((attr, index) => {
+          const arr = ["first_name", "role", "image_url"];
+          setUserDataClient((prev) => ({
+            ...prev,
+            [arr[index]]: attr,
+          }));
+        });
       } else {
         setIsLogged(false);
       }
@@ -102,6 +51,7 @@ export default function Header({
   useEffect(() => {
     sendData(active);
   }, [active]);
+
   useEffect(() => {
     setActive(activeDrop);
   }, [activeDrop]);
@@ -152,56 +102,87 @@ export default function Header({
           )}
 
           {/*Check user status if logged in or not */}
-          {!isLoggedIn ? (
-            <div className="md:flex hidden gap-2 lg:flex-row flex-col">
-              <Button outlined={true} text="Sign up" size="lg" url={"signup"} />
-              <Button outlined={false} text="Log in" size="lg" url={"login"} />
-            </div>
-          ) : (
-            <div className=" dark:border-borderDark border-borderLight md:px-5 pb-2">
-              <div className="relative">
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActive(!active);
-                  }}
-                  className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
-                >
-                  <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
-                    <Avatar img={Person} className={"h-[50px] w-[50px]"} />
-                  </div>
-                  <div className="text-lg">
-                    {!firstName ? "Loading data" : firstName}
-                  </div>
-                  <FontAwesomeIcon
-                    className="text-lg text-slate-400 dark:text-white"
-                    icon={faShare}
-                    rotation={90}
-                  />
-                </div>
-                {active && ///
-                  (role === "admin" ? (
-                    <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:left-0 -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
-                      <Link to={`dashboard`}>
-                        <div className="flex flex-col">
-                          <div
-                            className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
-                          >
-                            <FontAwesomeIcon
-                              className="text-gray-400/80 dark:text-white"
-                              icon={faDashboard}
-                            />
-                            <div>Dashboard</div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  ) : (
-                    <DropDown />
-                  ))}
+          <div className="flex items-center">
+            {!isLoggedIn ? (
+              <div className="md:flex hidden gap-2 lg:flex-row flex-col">
+                <Button
+                  outlined={true}
+                  text="Sign up"
+                  size="lg"
+                  url={"signup"}
+                />
+                <Button
+                  outlined={false}
+                  text="Log in"
+                  size="lg"
+                  url={"login"}
+                />
               </div>
+            ) : (
+              <div className=" dark:border-borderDark border-borderLight md:px-5 pb-2">
+                <div className="relative">
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActive(!active);
+                    }}
+                    className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
+                  >
+                    <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
+                      <Avatar
+                        img={`${
+                          userDataClient.image_url
+                            ? `http://localhost:3002/uploads/${userDataClient.image_url}`
+                            : Person
+                        }`}
+                        className={"h-[50px] w-[50px]"}
+                      />
+                    </div>
+                    <div className="text-lg">
+                      {!userDataClient.first_name
+                        ? "Loading data"
+                        : userDataClient.first_name}
+                    </div>
+                    <FontAwesomeIcon
+                      className="text-lg text-slate-400 dark:text-white"
+                      icon={faShare}
+                      rotation={90}
+                    />
+                  </div>
+                  {active && ///
+                    (userDataClient.role === "admin" ? (
+                      <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:left-0 -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
+                        <Link to={`dashboard`}>
+                          <div className="flex flex-col">
+                            <div
+                              className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
+                            >
+                              <FontAwesomeIcon
+                                className="text-gray-400/80 dark:text-white"
+                                icon={faDashboard}
+                              />
+                              <div>Dashboard</div>
+                            </div>
+                          </div>
+                        </Link>
+                      </div>
+                    ) : (
+                      <DropDown />
+                    ))}
+                </div>
+              </div>
+            )}
+            <div
+              onClick={() => {
+                theme === "dark" ? setTheme("light") : setTheme("dark");
+              }}
+            >
+              <FontAwesomeIcon
+                className="cursor-pointer w-7 h-7 hover:bg-gray-700 rounded-md p-2"
+                icon={faMoon}
+              />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
@@ -240,7 +221,6 @@ export default function Header({
     );
   }
 }
-
 function NavMobile({ isStudent, isLoggedIn }) {
   const [activeNav, setActiveNav] = useState("Home");
   return (

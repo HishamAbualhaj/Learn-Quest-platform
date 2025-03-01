@@ -29,8 +29,19 @@ import Logout from "./components/Logout";
 import IsAuthRoute from "./routes/IsAuthRoute";
 import Logo from "./components/Logo";
 
-import UserDataContext, { UserData } from "./context/UserDataContext";
+import UserDataContext from "./context/UserDataContext";
+import { useContext, useEffect } from "react";
+import { Theme } from "./context/ThemeContext";
 function App() {
+  // using  react hook to get the theme value from the context theme
+  const { theme } = useContext(Theme);
+  useEffect(() => {
+    console.log(`Theme value from app : ${theme}`);
+    document
+      .querySelector("body")
+      .classList.remove(`${theme === "dark" ? "light" : "dark"}`);
+    document.querySelector("body").classList.add(theme);
+  }, [theme]);
   const error = (
     <div className="flex items-center justify-center h-[100vh] bg-dark flex-col gap-2">
       <h1 className="md:text-4xl text-xl text-center   text-red-400 ">
