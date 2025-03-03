@@ -4,6 +4,15 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      keyframes: {
+        syncPuls: {
+          "0%, 100%": { opacity: "0.9" },
+          "50%": { opacity: "0.4" },
+        },
+      },
+      animation: {
+        syncPuls: 'syncPuls 1.5s infinite ease-in-out'
+      },
       colors: {
         // dark mode
         dark: "#12131A",
