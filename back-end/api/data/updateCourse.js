@@ -24,9 +24,8 @@ const updateCourse = (req, res) => {
         description,
         materials,
       } = JSON.parse(body);
-
-      (async () => {
-        // First, update the course details
+      updateCourseQ();
+      async function updateCourseQ() {
         await updateCourseDetails(
           course_id,
           title,
@@ -38,10 +37,7 @@ const updateCourse = (req, res) => {
           description,
           res
         );
-
-        // Then update the associated course materials
         await updateCourseMaterials(course_id, materials);
-
         handleResponse(
           res,
           null,
@@ -51,7 +47,7 @@ const updateCourse = (req, res) => {
           "Course updated successfully!",
           ""
         );
-      })();
+      }
     } catch (error) {
       handleResponse(
         res,
@@ -78,29 +74,47 @@ async function updateCourseDetails(
   description,
   res
 ) {
+  console.log("Curren image", image);
   tabs = tabs.toString();
-  image = `${course_id}-${image}`;
-
-  const query = `UPDATE Courses 
-    SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ?
+  let query = "";
+  if (image) {
+    image = `${course_id}-${image}`;
+    query = `UPDATE Courses 
+      SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ?
+      WHERE course_id = ?`;
+    await deleteOldImage(course_id);
+    await connection
+      .promise()
+      .query(query, [
+        title,
+        description,
+        price,
+        discount,
+        category,
+        tabs,
+        image,
+        course_id,
+      ]);
+  } else {
+    query = `UPDATE Courses 
+    SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?
     WHERE course_id = ?`;
-  await deleteOldImage(course_id);
-  await connection
-    .promise()
-    .query(query, [
-      title,
-      description,
-      price,
-      discount,
-      category,
-      tabs,
-      image,
-      course_id,
-    ]);
+    await connection
+      .promise()
+      .query(query, [
+        title,
+        description,
+        price,
+        discount,
+        category,
+        tabs,
+        course_id,
+      ]);
+  }
 
   await log(
     res,
-    course_id,
+    64928871,
     `Admin: Updated course : ${title}`,
     "admin@gmail.com"
   );

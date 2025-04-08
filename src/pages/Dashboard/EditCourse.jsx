@@ -5,7 +5,7 @@ import ButtonAdmin from "./ButtonAdmin";
 import { useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import Alert from "../../components/Alert";
-export default function EditCourse() {
+function EditCourse() {
   const location = useLocation();
   const [courseId, setCourseId] = useState(null);
   // handle file change for uploading
@@ -111,15 +111,25 @@ export default function EditCourse() {
 
   async function editData() {
     setIsLoading(true);
-    await uploadImage();
+    if (file) {
+      await uploadImage();
+    }
+    const updatedCourseData = {
+      ...courseData,
+      image_url: file ? courseData.image_url : null,
+    };
     const res = await useFetch(
       "http://localhost:3002/updateCourse",
-      courseData,
+      updatedCourseData,
       "PUT"
     );
     setIsLoading(false);
     setAlert(res);
   }
+
+  useEffect(() => {
+    console.log(courseData);
+  }, [courseData]);
 
   async function uploadImage() {
     //Specific case for uploading image, (No need to manually set Content-Type)
@@ -379,3 +389,5 @@ export default function EditCourse() {
     </div>
   );
 }
+
+export default EditCourse;
