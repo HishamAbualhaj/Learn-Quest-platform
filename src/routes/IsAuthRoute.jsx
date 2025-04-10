@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
-function IsAuthRoute({ children, isAllowed = true, role = "user" }) {
+function IsAuthRoute({ children, isAllowed = true, isAdmin = false }) {
   const [isLoading, setIsLoading] = useState(false);
   const dataFetched = useLoaderData();
-  const { loggedIn, userData: [{ student_id }] = [{}] } = dataFetched;
+  const { loggedIn, userData: [{ role }] = [{}] } = dataFetched;
 
   const navigate = useNavigate();
 
   useEffect(() => {
     if (loggedIn) {
       if (isAllowed) {
-        if (student_id === 64928871) {
+        if (isAdmin) {
           role === "admin" ? setIsLoading(true) : navigate("/");
         } else {
-          role === "user" ? setIsLoading(true) : navigate("/");
+          role === "admin" ? navigate("/") : setIsLoading(true);
         }
       } else {
         navigate("/");
