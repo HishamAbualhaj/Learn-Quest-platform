@@ -14,6 +14,7 @@ import getUsers from "./api/data/getUsers.js";
 import deleteUser from "./api/data/deleteUser.js";
 import getSystemLog from "./api/data/getSystemLog.js";
 import getImage from "./utils/getImage.js";
+import completeCourse from "./api/data/completeCourse.js";
 // Test upload image
 import handleUploads from "./utils/handleUploads.js";
 import path from "path";
@@ -48,6 +49,7 @@ const server = http.createServer((req, res) => {
     PUT: {
       "/updateCourse": updateCourse,
       "/updateUser": updateUser,
+      "/completeCourse": completeCourse,
     },
   };
 
@@ -64,10 +66,10 @@ const server = http.createServer((req, res) => {
   } else if (req.url.startsWith("/uploads/")) {
     // No route defined then its an image request
 
-    // find current url from this file , 
+    // find current url from this file ,
     const __filename = fileURLToPath(import.meta.url);
-    
-    // find current dir for this file 
+
+    // find current dir for this file
     const __dirname = path.dirname(__filename);
 
     // resolving current dir with another folder

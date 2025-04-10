@@ -32,11 +32,12 @@ import Logo from "./components/Logo";
 import UserDataContext from "./context/UserDataContext";
 import { useContext, useEffect } from "react";
 import { Theme } from "./context/ThemeContext";
+
+import InfiniteScroll from "./components/InfiniteScroll";
 function App() {
   // using  react hook to get the theme value from the context theme
   const { theme } = useContext(Theme);
   useEffect(() => {
-    console.log(`Theme value from app : ${theme}`);
     document
       .querySelector("body")
       .classList.remove(`${theme === "dark" ? "light" : "dark"}`);
@@ -67,6 +68,10 @@ function App() {
         return fetchData("http://localhost:3002/session");
       },
       errorElement: error,
+    },
+    {
+      path: "/InfiniteScroll",
+      element: <InfiniteScroll></InfiniteScroll>,
     },
     {
       path: "/login",
@@ -123,12 +128,32 @@ function App() {
         },
         { path: "chat", element: <ChatStudent /> },
         { path: "allcourses", element: <AllCourses /> },
-        { path: "CoursePage/:courseName", element: <CoursePage /> },
+        {
+          path: "CoursePage/:courseName",
+          element: (
+            <UserDataContext>
+              <CoursePage />
+            </UserDataContext>
+          ),
+          loader: () => {
+            return fetchData("http://localhost:3002/session");
+          },
+        },
         {
           path: "mycourses",
           children: [
             { index: true, element: <MyCourses /> },
-            { path: ":courseName", element: <CoursePage /> },
+            {
+              path: ":courseName",
+              element: (
+                <UserDataContext>
+                  <CoursePage />
+                </UserDataContext>
+              ),
+              loader: () => {
+                return fetchData("http://localhost:3002/session");
+              },
+            },
           ],
         },
         {
@@ -160,7 +185,7 @@ function App() {
     {
       path: "/dashboard",
       element: (
-        <IsAuthRoute role="admin">
+        <IsAuthRoute isAdmin={true}>
           <Dashboard />
         </IsAuthRoute>
       ),

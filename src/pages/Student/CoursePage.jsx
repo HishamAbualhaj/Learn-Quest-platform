@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,69 +7,114 @@ import {
   faStar,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import Button from "../../components/Button"
+import Button from "../../components/Button";
 import { faCcVisa } from "@fortawesome/free-brands-svg-icons";
 import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../../components/Avatar";
+import { useLocation } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import useFetch from "../../hooks/useFetch";
+import Loading from "../../components/Loading";
+import { UserData } from "../../context/UserDataContext";
 function CoursePage() {
   const [isTranslate, setIsTranslate] = useState(false);
-  const courseVideos = [
-    {
-      key: 1,
-      title: "Introduction to Artificial Intelligence",
-      subtitle: "Overview of AI: History, Applications, and Future Trends",
+  const [course_id, setCourseId] = useState(null);
+  const [user_data, setUserData] = useState(null);
+
+  const [videoUrl, setVideoUrl] = useState(null);
+
+  const course_url = useLocation();
+
+  const data_user = useContext(UserData);
+
+  useEffect(() => {
+    const course_data = course_url.pathname.split("/").at(-1);
+    const id = course_data.split("-")[0];
+    setCourseId(id);
+  }, [course_url]);
+
+  useEffect(() => {
+    if (data_user) {
+      const [{ student_id, email, first_name }] = data_user?.userData;
+      setUserData({ student_id, email, first_name });
+    }
+  }, [data_user]);
+  const { data, isLoading } = useQuery({
+    queryFn: async () => {
+      if (!course_id) return;
+      return await useFetch(
+        "http://localhost:3002/getCourseData",
+        { course_id: course_id },
+        "POST"
+      );
     },
-    {
-      key: 2,
-      title: "Understanding Machine Learning",
-      subtitle:
-        "Types of Machine Learning: Supervised, Unsupervised, and Reinforcement Learning",
-    },
-    {
-      key: 3,
-      title: "Deep Learning Basics",
-      subtitle: "Introduction to Neural Networks and Key Concepts",
-    },
-    {
-      key: 4,
-      title: "Data Preprocessing for AI Models",
-      subtitle: "Techniques for Cleaning, Transforming, and Normalizing Data",
-    },
-    {
-      key: 5,
-      title: "Building Your First AI Model",
-      subtitle:
-        "A Step-by-Step Guide to Creating and Training a Simple AI Model",
-    },
-    {
-      key: 6,
-      title: "Natural Language Processing (NLP) Fundamentals",
-      subtitle: "Text Analysis and Sentiment Detection with AI",
-    },
-    {
-      key: 7,
-      title: "Computer Vision Essentials",
-      subtitle:
-        "Image Recognition and Object Detection Using Convolutional Neural Networks",
-    },
-    {
-      key: 8,
-      title: "AI Ethics and Bias",
-      subtitle:
-        "Understanding Ethical Challenges and Reducing Bias in AI Systems",
-    },
-    {
-      key: 9,
-      title: "Deploying AI Models",
-      subtitle: "Introduction to Model Deployment in Real-World Applications",
-    },
-    {
-      key: 10,
-      title: "Future of AI",
-      subtitle:
-        "Emerging Trends, Tools, and Career Opportunities in Artificial Intelligence",
-    },
-  ];
+    queryKey: ["videos", course_id],
+    enabled: !!course_id,
+  });
+  const [courseVideos, setCourseVideos] = useState(null);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setCourseVideos(data?.msg?.msg);
+    }
+  }, [isLoading, data]);
+  // const courseVideos = [
+  //   {
+  //     key: 1,
+  //     title: "Introduction to Artificial Intelligence",
+  //     subtitle: "Overview of AI: History, Applications, and Future Trends",
+  //   },
+  //   {
+  //     key: 2,
+  //     title: "Understanding Machine Learning",
+  //     subtitle:
+  //       "Types of Machine Learning: Supervised, Unsupervised, and Reinforcement Learning",
+  //   },
+  //   {
+  //     key: 3,
+  //     title: "Deep Learning Basics",
+  //     subtitle: "Introduction to Neural Networks and Key Concepts",
+  //   },
+  //   {
+  //     key: 4,
+  //     title: "Data Preprocessing for AI Models",
+  //     subtitle: "Techniques for Cleaning, Transforming, and Normalizing Data",
+  //   },
+  //   {
+  //     key: 5,
+  //     title: "Building Your First AI Model",
+  //     subtitle:
+  //       "A Step-by-Step Guide to Creating and Training a Simple AI Model",
+  //   },
+  //   {
+  //     key: 6,
+  //     title: "Natural Language Processing (NLP) Fundamentals",
+  //     subtitle: "Text Analysis and Sentiment Detection with AI",
+  //   },
+  //   {
+  //     key: 7,
+  //     title: "Computer Vision Essentials",
+  //     subtitle:
+  //       "Image Recognition and Object Detection Using Convolutional Neural Networks",
+  //   },
+  //   {
+  //     key: 8,
+  //     title: "AI Ethics and Bias",
+  //     subtitle:
+  //       "Understanding Ethical Challenges and Reducing Bias in AI Systems",
+  //   },
+  //   {
+  //     key: 9,
+  //     title: "Deploying AI Models",
+  //     subtitle: "Introduction to Model Deployment in Real-World Applications",
+  //   },
+  //   {
+  //     key: 10,
+  //     title: "Future of AI",
+  //     subtitle:
+  //       "Emerging Trends, Tools, and Career Opportunities in Artificial Intelligence",
+  //   },
+  // ];
   const courseContent = [
     {
       key: "key-topics",
@@ -203,209 +248,278 @@ function CoursePage() {
   ];
 
   return (
-    <div className=" px-5 relative  overflow-hidden">
-      <div className="flex items-center justify-between  py-3">
-        <div className="text-2xl font-bold">Artificial Intelligence Course</div>
-        <FontAwesomeIcon
-          onClick={() => {
-            setIsTranslate(!isTranslate);
-          }}
-          className="text-2xl dark:text-white cursor-pointer xl:hidden self-end py-2"
-          icon={faBars}
-        />
-      </div>
-      <div className="flex justify-between border dark:border-borderDark border-borderLight p-5 gap-5">
-        <div className="bg-gray-400 flex-1 w-full h-[700px]"></div>
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : data?.status ? (
+        <div className=" px-5 relative overflow-hidden">
+          <div className="flex items-center justify-between  py-3">
+            <div className="text-2xl font-bold">
+              {courseVideos && courseVideos[0].title}
+            </div>
+            <FontAwesomeIcon
+              onClick={() => {
+                setIsTranslate(!isTranslate);
+              }}
+              className="text-2xl dark:text-white cursor-pointer xl:hidden self-end py-2"
+              icon={faBars}
+            />
+          </div>
+          <div className="flex justify-between border dark:border-borderDark border-borderLight p-5 gap-5">
+            <div className="bg-gray-400 flex-1 w-full h-[700px]">
+              {videoUrl && (
+                <iframe width="100%" height="100%" src={videoUrl}></iframe>
+              )}
+            </div>
+            <div
+              className={`
+          ${
+            isTranslate ? "!translate-x-0" : ""
+          } transition xl:relative absolute xl:max-w-[600px] max-xl:translate-x-full right-0 max-h-[800px] sm:min-w-[500px] flex flex-col border_platform all xl:dark:bg-gray-800/40 dark:bg-gray-700 bg-gray-300 xl:bg-lightLayout overflow-auto top-12 xl:top-0`}
+            >
+              {courseVideos &&
+                courseVideos[1].map((video) => (
+                  <CourseVideos
+                    key={video.material_id}
+                    {...user_data}
+                    {...video}
+                    setVideoUrl={setVideoUrl}
+                  />
+                ))}
+            </div>
+          </div>
+          <div className="border_platform all mt-5">
+            <div className="flex justify-between xl:flex-row flex-col-reverse">
+              <div className="xl:py-16 py-12 xl:pl-10 px-8">
+                <div className="flex items-center gap-2">
+                  <FontAwesomeIcon
+                    className="dark:text-white text-2xl border p-3 rounded-[50%]"
+                    icon={faUser}
+                  />
+                  <div className="font-semibold">
+                    ADMIN
+                    <div className="text-black/50 dark:text-white/50 font-normal">
+                      Professional web developer
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-8">
+                  <div className="leading-8 text-xl max-w-[900px]">
+                    {courseVideos && courseVideos[0].description}
+                  </div>
+
+                  {/* TESTING DATA  */}
+                  {courseContent.map((content) => (
+                    <div className="mt-10">
+                      <div key={content.key} className="font-bold text-xl">
+                        {content.title}
+                      </div>
+                      <ul>
+                        {content.data.map((data) =>
+                          typeof data === "object" ? (
+                            <div className="lg:ml-8 mt-2">
+                              <li className="list-decimal font-semibold">
+                                {data.title}
+                              </li>
+                              <div className="list-disc mt-2 ">
+                                {data.description}
+                              </div>
+                            </div>
+                          ) : (
+                            <li className="list-disc lg:ml-8 mt-2 max-w-[900px]">
+                              {data}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  ))}
+                  {/* TESTING DATA  */}
+                </div>
+              </div>
+
+              <div className="border_platform all h-fit m-5">
+                <ul>
+                  <li className="flex items-center gap-2 text-lg border_platform b p-5">
+                    <FontAwesomeIcon icon={faHandHoldingDollar} />
+                    30 Days Money Guarantee
+                  </li>
+                  <li className="flex items-center gap-2 text-lg border_platform b mt-2 p-5">
+                    <FontAwesomeIcon icon={faCcVisa} />
+                    Secure Payment Gateway
+                  </li>
+                </ul>
+                <div className="p-5">
+                  <Button
+                    props="px-4 py-3 text-xl !mt-0"
+                    text={`Enroll Today  – ${
+                      courseVideos && courseVideos[0].price
+                    } $`}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* reviews  */}
+            <div className="m-5 rounded-md">
+              <div className="font-semibold text-2xl">Reviews</div>
+              <div className="mt-3 p-5">
+                <div className="flex gap-5">
+                  <Avatar className={"h-[50px] w-[50px]"} img={Person} />
+                  <div className="flex flex-1 gap-2">
+                    <input
+                      placeholder="Write a review"
+                      className="w-full rounded-sm"
+                      type="text"
+                    />
+                    <select className="px-5" name="" id="">
+                      <option className="text-black" value="1">
+                        1
+                      </option>
+                      <option className="text-black" value="2">
+                        2
+                      </option>
+                      <option className="text-black" value="3">
+                        3
+                      </option>
+                      <option className="text-black" value="4">
+                        4
+                      </option>
+                      <option className="text-black" value="5">
+                        5
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div className="border_platform l pl-5">
+                  {reviews.map((review) => (
+                    <Review
+                      key={review.id}
+                      name={review.name}
+                      image={review.image}
+                      text={review.text}
+                      stars={review.stars}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* reviews  */}
+          </div>
+        </div>
+      ) : (
+        <div className="h-[100vh] text-2xl flex justify-center mt-10">
+          No Course Found
+        </div>
+      )}
+    </>
+  );
+}
+function CourseVideos({
+  student_id,
+  email,
+  first_name,
+  material_id,
+  title,
+  subtitle,
+  isCompleted,
+  url,
+  setVideoUrl,
+}) {
+
+  const [checked, setChecked] = useState(isCompleted);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      return await useFetch(
+        "http://localhost:3002/completeCourse",
+        {
+          user_id: student_id,
+          email: email,
+          first_name: first_name,
+          id: material_id,
+          value: isCompleted,
+          title: title,
+        },
+        "PUT"
+      );
+    },
+    onSuccess: () => {
+      setChecked((prev) => !prev);
+    },
+  });
+
+  return (
+    <div className="flex items-center border_platform b sm:p-6 p-4 gap-5 dark:hover:bg-gray-500/20 hover:bg-lightLayout/10">
+      {!isPending ? (
         <div
-          className={`
-            ${
-              isTranslate ? "!translate-x-0" : ""
-            } transition xl:relative absolute xl:max-w-[600px] max-xl:translate-x-full right-0 max-h-[800px] flex flex-col border_platform all xl:dark:bg-gray-800/40 dark:bg-gray-700 bg-gray-300 xl:bg-lightLayout overflow-auto top-12 xl:top-0`}
+          onClick={() => {
+            mutate();
+          }}
+          className={`min-w-5 min-h-5 rounded-full border-[2px] border-gray-400 ${
+            checked ? "bg-green-400/90" : "bg-none"
+          }  cursor-pointer`}
+        ></div>
+      ) : (
+        <svg
+          className="mr-3 -ml-1 size-5 animate-spin dark:text-white text-black"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
         >
-          {courseVideos.map((video) => (
-            <CourseVideos
-              id={video.key}
-              title={video.title}
-              subtitle={video.subtitle}
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      )}
+
+      <div
+        onClick={() => {
+          setVideoUrl(url);
+        }}
+        className="text-lg cursor-pointer"
+      >
+        {title}
+        <div className="ml-5 text-sm mt-2 dark:text-white/50 text-black/50 line-clamp-1">
+          {subtitle}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Review({ name, image, text, stars }) {
+  return (
+    <>
+      <div className="flex justify-between mt-5">
+        <div className="flex items-center gap-5">
+          <Avatar className={"h-[50px] w-[50px]"} img={image} />
+          <div className="text-lg">{name}</div>
+        </div>
+        <div className="flex items-center gap-2">
+          {[...Array(stars)].map(() => (
+            <FontAwesomeIcon
+              key={Math.random()}
+              className="text-yellow-400"
+              icon={faStar}
             />
           ))}
         </div>
       </div>
-      <div className="border_platform all mt-5">
-        <div className="flex justify-between xl:flex-row flex-col-reverse">
-          <div className="xl:py-16 py-12 xl:pl-10 px-8">
-            <div className="flex items-center gap-2">
-              <FontAwesomeIcon
-                className="dark:text-white text-2xl border p-3 rounded-[50%]"
-                icon={faUser}
-              />
-              <div className="font-semibold">
-                ADMIN
-                <div className="text-black/50 dark:text-white/50 font-normal">
-                  Professional web developer
-                </div>
-              </div>
-            </div>
-            <div className="mt-8">
-              <div className="leading-8 text-xl max-w-[900px]">
-                The Artificial Intelligence (AI) Course is designed to introduce
-                students to the foundational concepts, tools, and applications
-                of AI. This course explores the principles of intelligent
-                systems, machine learning, data-driven decision-making, and the
-                ethical implications of AI technologies. Students will gain
-                theoretical knowledge and practical skills to develop AI models
-                and solve real-world problems across various domains.
-              </div>
-
-              {/* TESTING DATA  */}
-              {courseContent.map((content) => (
-                <div className="mt-10">
-                  <div key={content.key} className="font-bold text-xl">
-                    {content.title}
-                  </div>
-                  <ul>
-                    {content.data.map((data) =>
-                      typeof data === "object" ? (
-                        <div className="lg:ml-8 mt-2">
-                          <li className="list-decimal font-semibold">
-                            {data.title}
-                          </li>
-                          <div className="list-disc mt-2 ">
-                            {data.description}
-                          </div>
-                        </div>
-                      ) : (
-                        <li className="list-disc lg:ml-8 mt-2 max-w-[900px]">
-                          {data}
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-              ))}
-              {/* TESTING DATA  */}
-            </div>
-          </div>
-
-          <div className="border_platform all h-fit m-5">
-            <ul>
-              <li className="flex items-center gap-2 text-lg border_platform b p-5">
-                <FontAwesomeIcon icon={faHandHoldingDollar} />
-                30 Days Money Guarantee
-              </li>
-              <li className="flex items-center gap-2 text-lg border_platform b mt-2 p-5">
-                <FontAwesomeIcon icon={faCcVisa} />
-                Secure Payment Gateway
-              </li>
-            </ul>
-            <div className="p-5">
-              <Button
-                props="px-4 py-3 text-xl !mt-0"
-                text={"Enroll Today – Only $199!"}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* reviews  */}
-        <div className="m-5 rounded-md">
-          <div className="font-semibold text-2xl">Reviews</div>
-          <div className="mt-3 p-5">
-            <div className="flex gap-5">
-              <Avatar className={"h-[50px] w-[50px]"} img={Person} />
-              <div className="flex flex-1 gap-2">
-                <input
-                  placeholder="Write a review"
-                  className="w-full rounded-sm"
-                  type="text"
-                />
-                <select className="px-5" name="" id="">
-                  <option className="text-black" value="1">
-                    1
-                  </option>
-                  <option className="text-black" value="2">
-                    2
-                  </option>
-                  <option className="text-black" value="3">
-                    3
-                  </option>
-                  <option className="text-black" value="4">
-                    4
-                  </option>
-                  <option className="text-black" value="5">
-                    5
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div className="border_platform l pl-5">
-              {reviews.map((review) => (
-                <Review
-                  key={review.id}
-                  name={review.name}
-                  image={review.image}
-                  text={review.text}
-                  stars={review.stars}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* reviews  */}
+      <div className="mt-3 lg:ml-8 dark:text-white/50 text-black/50 max-w-[900px]">
+        {text}
       </div>
-    </div>
+    </>
   );
-
-  function CourseVideos({ id, title, subtitle }) {
-    const [checked, isChecked] = useState(false);
-    return (
-      <div
-        key={id}
-        className="flex items-center border_platform b sm:p-6 p-4 gap-5 cursor-pointer dark:hover:bg-gray-500/20 hover:bg-lightLayout/10"
-      >
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            isChecked(!checked);
-          }}
-          className={`min-w-5 min-h-5 rounded-md ${
-            checked ? "bg-green-400" : "bg-white"
-          }  cursor-pointer`}
-        ></div>
-        <div className="text-lg">
-          {title}
-          <div className="ml-5 text-sm mt-2 dark:text-white/50 text-black/50 line-clamp-1">
-            {subtitle}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function Review({name, image, text, stars}) {
-    return (
-      <>
-        <div className="flex justify-between mt-5">
-          <div className="flex items-center gap-5">
-            <Avatar className={"h-[50px] w-[50px]"} img={image} />
-            <div className="text-lg">{name}</div>
-          </div>
-          <div className="flex items-center gap-2">
-            {[...Array(stars)].map(() => (
-              <FontAwesomeIcon
-                key={Math.random()}
-                className="text-yellow-400"
-                icon={faStar}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="mt-3 lg:ml-8 dark:text-white/50 text-black/50 max-w-[900px]">
-          {text}
-        </div>
-      </>
-    );
-  }
 }
-
 export default CoursePage;
