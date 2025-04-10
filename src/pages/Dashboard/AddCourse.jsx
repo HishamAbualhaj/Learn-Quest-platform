@@ -242,60 +242,62 @@ export default function AddCourse() {
                 <ButtonAdmin text="Add Lesson" />
               </div>
             </div>
-            {lessons.map((id) => (
-              <div
-                key={id}
-                className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
-              >
-                <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
-                  Lesson {id}
+            <div className="h-[450px] overflow-auto border-2 dark:border-borderDark rounded-md p-4 mt-2">
+              {lessons.map((id) => (
+                <div
+                  key={id}
+                  className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
+                >
+                  <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
+                    Lesson {id}
+                  </div>
+                  <div className="flex flex-col gap-3 mt-3">
+                    <div>
+                      <div className="flex flex-col gap-2">
+                        <div>Title: </div>
+                        <input
+                          onChange={(e) => {
+                            handleLessonChange(e, id);
+                          }}
+                          id="title"
+                          className="w-full"
+                          type="text"
+                          placeholder="Lessson title"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex flex-col gap-2">
+                        <div>Sub Title: </div>
+                        <input
+                          onChange={(e) => {
+                            handleLessonChange(e, id);
+                          }}
+                          id="subtitle"
+                          className="w-full"
+                          type="text"
+                          placeholder="Lessson sub title"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex flex-col gap-2">
+                        <div>Lesson Url: </div>
+                        <input
+                          onChange={(e) => {
+                            handleLessonChange(e, id);
+                          }}
+                          id="url"
+                          className="w-full"
+                          type="text"
+                          placeholder="Lessson url"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-3 mt-3">
-                  <div>
-                    <div className="flex flex-col gap-2">
-                      <div>Title: </div>
-                      <input
-                        onChange={(e) => {
-                          handleLessonChange(e, id);
-                        }}
-                        id="title"
-                        className="w-full"
-                        type="text"
-                        placeholder="Lessson title"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex flex-col gap-2">
-                      <div>Sub Title: </div>
-                      <input
-                        onChange={(e) => {
-                          handleLessonChange(e, id);
-                        }}
-                        id="subtitle"
-                        className="w-full"
-                        type="text"
-                        placeholder="Lessson sub title"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex flex-col gap-2">
-                      <div>Lesson Url: </div>
-                      <input
-                        onChange={(e) => {
-                          handleLessonChange(e, id);
-                        }}
-                        id="url"
-                        className="w-full"
-                        type="text"
-                        placeholder="Lessson url"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-col mt-2 dark:text-white text-lightText">
