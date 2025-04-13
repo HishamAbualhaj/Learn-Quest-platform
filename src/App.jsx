@@ -28,7 +28,7 @@ import useFetch from "./hooks/useFetch";
 import Logout from "./components/Logout";
 import IsAuthRoute from "./routes/IsAuthRoute";
 import Logo from "./components/Logo";
-
+import ErrorPage from "./components/ErrorPage";
 import UserDataContext from "./context/UserDataContext";
 import { useContext, useEffect } from "react";
 import { Theme } from "./context/ThemeContext";
@@ -43,14 +43,6 @@ function App() {
       .classList.remove(`${theme === "dark" ? "light" : "dark"}`);
     document.querySelector("body").classList.add(theme);
   }, [theme]);
-  const error = (
-    <div className="flex items-center justify-center h-[100vh] bg-dark flex-col gap-2">
-      <h1 className="md:text-4xl text-xl text-center   text-red-400 ">
-        Something went wrong
-      </h1>
-      <div className="text-gray-400 text-lg">Try to reload page, </div>
-    </div>
-  );
 
   async function fetchData(url) {
     const response = await useFetch(url, null, "GET");
@@ -67,7 +59,7 @@ function App() {
       loader: () => {
         return fetchData("http://localhost:3002/session");
       },
-      errorElement: error,
+      errorElement: <ErrorPage />,
     },
     {
       path: "/InfiniteScroll",
@@ -83,7 +75,7 @@ function App() {
       loader: () => {
         return fetchData("http://localhost:3002/session");
       },
-      errorElement: error,
+      errorElement: <ErrorPage />,
     },
     {
       path: "/signup",
@@ -95,7 +87,7 @@ function App() {
       loader: () => {
         return fetchData("http://localhost:3002/session");
       },
-      errorElement: error,
+      errorElement: <ErrorPage />,
     },
     {
       path: "/forgotpassword",
@@ -138,6 +130,7 @@ function App() {
           loader: () => {
             return fetchData("http://localhost:3002/session");
           },
+          errorElement: <ErrorPage />,
         },
         {
           path: "mycourses",
@@ -169,7 +162,7 @@ function App() {
           loader: () => {
             return fetchData("http://localhost:3002/logout");
           },
-          errorElement: error,
+          errorElement: <ErrorPage />,
         },
         {
           path: "*",
@@ -200,7 +193,17 @@ function App() {
           children: [
             { index: true, element: <Courses /> },
             { path: "add", element: <AddCourse /> },
-            { path: "edit/:id", element: <EditCourse /> },
+            {
+              path: "edit/:id",
+              element: (
+                <UserDataContext>
+                  <EditCourse />
+                </UserDataContext>
+              ),
+              loader: () => {
+                return fetchData("http://localhost:3002/session");
+              },
+            },
           ],
         },
         { path: "analytics", element: <Analytics /> },
@@ -224,7 +227,7 @@ function App() {
       loader: () => {
         return fetchData("http://localhost:3002/logout");
       },
-      errorElement: error,
+      errorElement: <ErrorPage />,
     },
     {
       path: "*",
