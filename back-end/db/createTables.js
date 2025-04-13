@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS User (
   password VARCHAR(50) NOT NULL,
   gender VARCHAR(10),
   birthdate DATE,
+  role VARCHAR(50) NOT NULL DEFAULT 'user',
+  image_url VARCHAR(200),
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
@@ -33,9 +35,9 @@ CREATE TABLE IF NOT EXISTS CourseMaterials (
   course_id INT NOT NULL,
   title VARCHAR(100) NOT NULL,
   subtitle VARCHAR(100) NOT NULL,
-  isCompleted BOOLEAN DEFAULT FALSE,
   url VARCHAR(2083),
-  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  allowed BOOLEAN DEFAULT 0,
+  created_date TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
   FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
 );
 `;
@@ -75,8 +77,31 @@ CREATE TABLE IF NOT EXISTS enrollments (
     student_id INT,
     course_id INT,
     enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    completion_status bool,
+    completion_status bool DEFAULT 0,
     certificate_url VARCHAR(255),
+    FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Courses(material_id) ON DELETE CASCADE
+)
+`;
+const createCompleteionMaterialTable = `
+CREATE TABLE IF NOT EXISTS completeionMaterial (
+    completeion_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    student_id INT,
+    material_id INT,
+    isCompleted BOOLEAN DEFAULT 0,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (material_id) REFERENCES CourseMaterials(material_id) ON DELETE CASCADE
+)
+`;
+
+const createReviewsTable = `
+CREATE TABLE IF NOT EXISTS reviews (
+    review_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    stars INT,
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
 )
@@ -90,6 +115,8 @@ const tables = [
   createCoursesMaterials,
   createEnrollmentsTable,
   createArchiveSystemLogsTable,
+  createCompleteionMaterialTable,
+  createReviewsTable,
 ];
 tables.forEach((query) => {
   connection.query(query, (err, result) => {
