@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
-import web from "../../assets/web.jpg";
-import ui from "../../assets/uiux.jpg";
-import cyber from "../../assets/cyber.jpg";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button";
@@ -16,11 +13,6 @@ function AllCourses() {
     },
     queryKey: ["courses"],
   });
-
-  useEffect(() => {
-    
-  }, [isLoading]);
-
 
   // const courses = [
   //   {
@@ -122,8 +114,12 @@ function AllCourses() {
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-5 gap-8  mt-5">
             {isLoading ? (
               <Loader />
+            ) : !data?.msg?.length ? (
+              <div className="flex justify-center xl:text-4xl text-xl font-bold absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                No courses are available
+              </div>
             ) : (
-              data.msg.map((course) => (
+              data?.msg?.map((course) => (
                 <div
                   key={course.course_id}
                   className="border dark:border-borderDark rounded-xl bg-white dark:bg-dark"
@@ -174,10 +170,9 @@ function AllCourses() {
                       </div>
                     </div>
                     <Link
-                      to={`/student/CoursePage/${course.title.replace(
-                        /[\s/]/g,
-                        ""
-                      )}`}
+                      to={`/student/CoursePage/${
+                        course.course_id
+                      }-${course.title.replace(/[\s/]/g, "")}`}
                     >
                       <Button text="Join Now" />
                     </Link>
