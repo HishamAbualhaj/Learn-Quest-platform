@@ -9,7 +9,7 @@ const addCourse = (req, res) => {
   });
 
   // Entire body has been received : no more data is coming
-  req.on("end", () => {
+  req.on("end", async () => {
     try {
       const {
         course_id,
@@ -23,28 +23,26 @@ const addCourse = (req, res) => {
         materials,
       } = JSON.parse(body);
 
-      (async () => {
-        await insertCourse(
-          course_id,
-          title,
-          price,
-          discount,
-          category,
-          image_url,
-          tabs,
-          description,
-          materials
-        );
-        handleResponse(
-          res,
-          null,
-          "",
-          201,
-          500,
-          "Course added successfully !",
-          ""
-        );
-      })();
+      await insertCourse(
+        course_id,
+        title,
+        price,
+        discount,
+        category,
+        image_url,
+        tabs,
+        description,
+        materials
+      );
+      handleResponse(
+        res,
+        null,
+        "",
+        201,
+        500,
+        "Course added successfully !",
+        ""
+      );
     } catch (error) {
       handleResponse(
         res,

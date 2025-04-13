@@ -15,59 +15,53 @@ const login = (req, res) => {
   });
 
   // Entire body has been received : no more data is coming
-  req.on("end", () => {
+  req.on("end", async () => {
     try {
       const { email, password } = JSON.parse(body);
-      (async () => {
-        // fetching for password if vaild or not
-        const isAuth = await getId(email, password);
-        if (isAuth) {
-          const [{ student_id, first_name, role }] = isAuth;
-          role === "admin"
-            ? await log(
-                response,
-                student_id,
-                `Admin just Logined In`,
-                email
-              )
-            : await log(
-                response,
-                student_id,
-                `User: ${first_name} just Logined In`,
-                email
-              );
 
-          // Handling session storage at database
-          const generateSessionId = () => crypto.randomBytes(8).toString("hex");
-          // Generating random session id
-          const sessionId = generateSessionId();
-          const expires = new Date(Date.now() + 3600000 * 24); // 1 day
-          const isSession = await handleSession(sessionId, student_id, expires);
-          if (isSession) {
-            res.writeHead(200, {
-              "Content-Type": "application/json",
-              "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400`,
-            });
-            res.end(
-              JSON.stringify({
-                status: true,
-              })
+      // fetching for password if vaild or not
+      const isAuth = await getId(email, password, res);
+      if (isAuth) {
+        const [{ student_id, first_name, role }] = isAuth;
+        role === "admin"
+          ? await log(response, student_id, `Admin just Logined In`, email)
+          : await log(
+              response,
+              student_id,
+              `User: ${first_name} just Logined In`,
+              email
             );
-            return;
-          }
-        } else {
-          handleResponse(
-            response,
-            null,
-            "",
-            201,
-            500,
-            "Email or password is incorrect",
-            "",
-            false
+
+        // Handling session storage at database
+        const generateSessionId = () => crypto.randomBytes(8).toString("hex");
+        // Generating random session id
+        const sessionId = generateSessionId();
+        const expires = new Date(Date.now() + 3600000 * 24); // 1 day
+        const isSession = await handleSession(sessionId, student_id, expires);
+        if (isSession) {
+          res.writeHead(200, {
+            "Content-Type": "application/json",
+            "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400`,
+          });
+          res.end(
+            JSON.stringify({
+              status: true,
+            })
           );
+          return;
         }
-      })();
+      } else {
+        handleResponse(
+          response,
+          null,
+          "",
+          201,
+          500,
+          "Email or password is incorrect",
+          "",
+          false
+        );
+      }
     } catch (error) {
       handleResponse(
         res,
@@ -82,7 +76,7 @@ const login = (req, res) => {
   });
 };
 
-async function getId(email, password) {
+async function getId(email, password, res) {
   try {
     const query =
       "SELECT student_id,first_name,role FROM user WHERE email = ? AND password = ?";
