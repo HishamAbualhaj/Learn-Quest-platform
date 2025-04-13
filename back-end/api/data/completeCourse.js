@@ -18,19 +18,38 @@ async function completeCourseQ(
   res
 ) {
   try {
-    let query =
-      "UPDATE coursematerials SET isCompleted = ? WHERE material_id = ?";
-    await connection.promise().query(query, [!value, id]);
-    console.log("Value", !value);
-    !value &&
-      (await log(
-        res,
-        user_id,
-        `User: ${first_name} completed course video : ${title} `,
-        email
-      ));
+    let query_addMaterialCompleteion = "";
+    let query_updatMaterialCompleteion = "";
 
-    handleResponse(res, null, null, 200, null, "UPDATED SUCCESSFULLY", null);
+    let query_findMaterial =
+      "SELECT completeion_id from completeionMaterial WHERE material_id = ? AND student_id = ?";
+
+    const isFound = await connection.promise().query(query_findMaterial, [id,user_id]);
+
+    if (!isFound[0].length) {
+      const completeion_id = Math.round(Math.random() * 100000000);
+      query_addMaterialCompleteion =
+        "INSERT INTO completeionMaterial (completeion_id,student_id,material_id,isCompleted) VALUES (?,?,?,?)";
+      
+      await connection
+        .promise()
+        .query(query_addMaterialCompleteion, [
+          completeion_id,
+          user_id,
+          id,
+          !value,
+        ]);
+
+      await addToLog();
+      return;
+    }
+    query_updatMaterialCompleteion =
+      "UPDATE completeionMaterial SET isCompleted = ? WHERE material_id = ?";
+    await connection
+      .promise()
+      .query(query_updatMaterialCompleteion, [!value, id]);
+
+    await addToLog();
   } catch (error) {
     handleResponse(
       res,
@@ -41,6 +60,17 @@ async function completeCourseQ(
       null,
       "Failed to check course video"
     );
+  }
+
+  async function addToLog() {
+    !value &&
+      (await log(
+        res,
+        user_id,
+        `User: ${first_name} completed course video : ${title} `,
+        email
+      ));
+    handleResponse(res, null, null, 200, null, "UPDATED SUCCESSFULLY", null);
   }
 }
 
