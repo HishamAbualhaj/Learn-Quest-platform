@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faHandHoldingDollar,
-  faStar,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button";
@@ -16,6 +15,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import useFetch from "../../hooks/useFetch";
 import Loading from "../../components/Loading";
 import { UserData } from "../../context/UserDataContext";
+import CourseVideos from "./CourseVideos";
+import Review from "./Review";
 function CoursePage() {
   const [isTranslate, setIsTranslate] = useState(false);
   const [course_id, setCourseId] = useState(null);
@@ -23,6 +24,7 @@ function CoursePage() {
 
   const [videoUrl, setVideoUrl] = useState(null);
 
+  const [enrolled, setEnrolled] = useState(null);
   const course_url = useLocation();
 
   const data_user = useContext(UserData);
@@ -35,29 +37,62 @@ function CoursePage() {
 
   useEffect(() => {
     if (data_user) {
-      const [{ student_id, email, first_name }] = data_user?.userData;
-      setUserData({ student_id, email, first_name });
+      const userDataArray = data_user?.userData;
+
+      const { student_id, email, first_name, role } = userDataArray[0];
+      setUserData({ student_id, email, first_name, role });
     }
   }, [data_user]);
+
   const { data, isLoading } = useQuery({
     queryFn: async () => {
-      if (!course_id) return;
+      if (!course_id || !user_data) return;
       return await useFetch(
         "http://localhost:3002/getCourseData",
-        { course_id: course_id },
+        {
+          course_id: course_id,
+          user_data: user_data,
+        },
         "POST"
       );
     },
-    queryKey: ["videos", course_id],
-    enabled: !!course_id,
+    queryKey: ["videos"],
+    enabled: !!course_id && !!user_data,
   });
   const [courseVideos, setCourseVideos] = useState(null);
 
   useEffect(() => {
-    if (!isLoading) {
-      setCourseVideos(data?.msg?.msg);
+    if (!isLoading && data) {
+      const arr = [...(data?.msg?.msg[1] || []), ...(data?.msg?.msg[2] || [])];
+
+      arr.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+
+      setCourseVideos([data?.msg?.msg[0], arr]);
+      setEnrolled(data?.msg?.enrolled);
     }
   }, [isLoading, data]);
+
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: async () => {
+      return await useFetch(
+        "http://localhost:3002/enrollCourse",
+        {
+          student_id: user_data?.student_id,
+          course_id: course_id,
+          course_title: courseVideos?.[0].title,
+          first_name: user_data?.first_name,
+          email: user_data?.email,
+        },
+        "PUT"
+      );
+    },
+    onSuccess: () => {
+      setEnrolled(true);
+    },
+    onError: () => {
+      console.log("Error ", error);
+    },
+  });
   // const courseVideos = [
   //   {
   //     key: 1,
@@ -256,6 +291,7 @@ function CoursePage() {
           <div className="flex items-center justify-between  py-3">
             <div className="text-2xl font-bold">
               {courseVideos && courseVideos[0].title}
+              {/* {courseVideos && courseVideos?.[0].title} */}
             </div>
             <FontAwesomeIcon
               onClick={() => {
@@ -337,27 +373,34 @@ function CoursePage() {
                   {/* TESTING DATA  */}
                 </div>
               </div>
-
-              <div className="border_platform all h-fit m-5">
-                <ul>
-                  <li className="flex items-center gap-2 text-lg border_platform b p-5">
-                    <FontAwesomeIcon icon={faHandHoldingDollar} />
-                    30 Days Money Guarantee
-                  </li>
-                  <li className="flex items-center gap-2 text-lg border_platform b mt-2 p-5">
-                    <FontAwesomeIcon icon={faCcVisa} />
-                    Secure Payment Gateway
-                  </li>
-                </ul>
-                <div className="p-5">
-                  <Button
-                    props="px-4 py-3 text-xl !mt-0"
-                    text={`Enroll Today  – ${
-                      courseVideos && courseVideos[0].price
-                    } $`}
-                  />
+              {!enrolled && (
+                <div className="border_platform all h-fit m-5">
+                  <ul>
+                    <li className="flex items-center gap-2 text-lg border_platform b p-5">
+                      <FontAwesomeIcon icon={faHandHoldingDollar} />
+                      30 Days Money Guarantee
+                    </li>
+                    <li className="flex items-center gap-2 text-lg border_platform b mt-2 p-5">
+                      <FontAwesomeIcon icon={faCcVisa} />
+                      Secure Payment Gateway
+                    </li>
+                  </ul>
+                  <div
+                    onClick={() => {
+                      mutate();
+                    }}
+                    className="p-5"
+                  >
+                    <Button
+                      isloading={isPending}
+                      props="px-4 py-3 text-xl !mt-0"
+                      text={`Enroll Today  – ${
+                        courseVideos && courseVideos[0].price
+                      } $`}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* reviews  */}
@@ -415,111 +458,5 @@ function CoursePage() {
     </>
   );
 }
-function CourseVideos({
-  student_id,
-  email,
-  first_name,
-  material_id,
-  title,
-  subtitle,
-  isCompleted,
-  url,
-  setVideoUrl,
-}) {
 
-  const [checked, setChecked] = useState(isCompleted);
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async () => {
-      return await useFetch(
-        "http://localhost:3002/completeCourse",
-        {
-          user_id: student_id,
-          email: email,
-          first_name: first_name,
-          id: material_id,
-          value: isCompleted,
-          title: title,
-        },
-        "PUT"
-      );
-    },
-    onSuccess: () => {
-      setChecked((prev) => !prev);
-    },
-  });
-
-  return (
-    <div className="flex items-center border_platform b sm:p-6 p-4 gap-5 dark:hover:bg-gray-500/20 hover:bg-lightLayout/10">
-      {!isPending ? (
-        <div
-          onClick={() => {
-            mutate();
-          }}
-          className={`min-w-5 min-h-5 rounded-full border-[2px] border-gray-400 ${
-            checked ? "bg-green-400/90" : "bg-none"
-          }  cursor-pointer`}
-        ></div>
-      ) : (
-        <svg
-          className="mr-3 -ml-1 size-5 animate-spin dark:text-white text-black"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
-      )}
-
-      <div
-        onClick={() => {
-          setVideoUrl(url);
-        }}
-        className="text-lg cursor-pointer"
-      >
-        {title}
-        <div className="ml-5 text-sm mt-2 dark:text-white/50 text-black/50 line-clamp-1">
-          {subtitle}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Review({ name, image, text, stars }) {
-  return (
-    <>
-      <div className="flex justify-between mt-5">
-        <div className="flex items-center gap-5">
-          <Avatar className={"h-[50px] w-[50px]"} img={image} />
-          <div className="text-lg">{name}</div>
-        </div>
-        <div className="flex items-center gap-2">
-          {[...Array(stars)].map(() => (
-            <FontAwesomeIcon
-              key={Math.random()}
-              className="text-yellow-400"
-              icon={faStar}
-            />
-          ))}
-        </div>
-      </div>
-      <div className="mt-3 lg:ml-8 dark:text-white/50 text-black/50 max-w-[900px]">
-        {text}
-      </div>
-    </>
-  );
-}
 export default CoursePage;
