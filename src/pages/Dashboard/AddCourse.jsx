@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
 import useFetch from "../../hooks/useFetch";
 import Alert from "../../components/Alert";
+import { UserData } from "../../context/UserDataContext";
+import { useContext } from "react";
 export default function AddCourse() {
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);
-
-  const [courseId] = useState(Math.round(Math.random() * 100000000));
-  const [file, setFile] = useState(null);
+  const [user_data, setUserData] = useState(null);
+  const [image, setImage] = useState(null);
   useEffect(() => {
     const timer = setTimeout(() => {
       setAlert({ status: null, msg: "" });
@@ -20,6 +21,15 @@ export default function AddCourse() {
       clearTimeout(timer);
     };
   }, [alert]);
+
+  const data_user = useContext(UserData);
+  useEffect(() => {
+    if (data_user) {
+      const [{ student_id, role }] = data_user?.userData;
+      setUserData({ student_id, role });
+    }
+  }, [data_user]);
+
   const inputs = [
     {
       key: 1,
@@ -50,12 +60,23 @@ export default function AddCourse() {
       placeholder: "UI/UX FRONT-END etc ...",
     },
   ];
+  const category = [
+    { id: 1, name: "Introduction to Computer Science" },
+    { id: 2, name: "Web Development with HTML, CSS, and JavaScript" },
+    { id: 3, name: "Data Structures and Algorithms" },
+    { id: 4, name: "Database Management Systems" },
+    { id: 5, name: "Object-Oriented Programming with Java" },
+    { id: 6, name: "Cloud Computing Fundamentals" },
+    { id: 7, name: "Cybersecurity Basics" },
+    { id: 8, name: "Mobile App Development with React Native" },
+    { id: 9, name: "Machine Learning and Artificial Intelligence" },
+    { id: 10, name: "DevOps and Continuous Integration/Delivery" },
+  ];
   let defaultData = {
-    course_id: courseId,
     title: "",
     price: "",
     discount: "",
-    category: "",
+    category: category[0].name,
     image_url: "",
     description: "",
     tabs: [""],
@@ -70,39 +91,49 @@ export default function AddCourse() {
   const [courseData, setCourseData] = useState(defaultData);
 
   async function insertData() {
-    console.log(courseData);
     setIsLoading(true);
+    const updatedCourseData = {
+      ...courseData,
+      student_id: user_data.student_id,
+      role: user_data.role,
+    };
     const res = await useFetch(
       "http://localhost:3002/addCourse",
-      courseData,
+      updatedCourseData,
       "POST"
     );
-    await uploadImage();
+    const { id } = res.msg;
+    if (image) {
+      const formData = new FormData();
+      formData.append("image", image.files[0]);
+      formData.append("id", id);
+      await uploadImage(formData);
+    }
+
     setIsLoading(false);
     setAlert(res);
   }
 
-  async function uploadImage() {
+  async function uploadImage(file) {
     //Specific case for uploading image, (No need to manually set Content-Type)
     const response = await fetch("http://localhost:3002/handleUploads", {
       method: "POST",
       body: file,
     });
-    const result = await response.json();
+    await response.json();
   }
 
   function handleChange(e) {
     let { id, value } = e.target;
     if (id === "image") {
-      const formdata = new FormData();
       value = e.target.files[0]?.name;
-      formdata.append("image", e.target.files[0]);
-      formdata.append("id", courseId);
+      setImage(e.target);
+
       setCourseData({
         ...courseData,
         image_url: value,
       });
-      setFile(formdata);
+
       return;
     }
     if (id === "tabs") {
@@ -112,6 +143,8 @@ export default function AddCourse() {
       ...courseData,
       [id]: value,
     });
+
+    console.log(courseData);
   }
   // handle lesson change
   function handleLessonChange(e, lesson_id) {
@@ -144,18 +177,6 @@ export default function AddCourse() {
       ],
     });
   }
-  const category = [
-    { id: 1, name: "Introduction to Computer Science" },
-    { id: 2, name: "Web Development with HTML, CSS, and JavaScript" },
-    { id: 3, name: "Data Structures and Algorithms" },
-    { id: 4, name: "Database Management Systems" },
-    { id: 5, name: "Object-Oriented Programming with Java" },
-    { id: 6, name: "Cloud Computing Fundamentals" },
-    { id: 7, name: "Cybersecurity Basics" },
-    { id: 8, name: "Mobile App Development with React Native" },
-    { id: 9, name: "Machine Learning and Artificial Intelligence" },
-    { id: 10, name: "DevOps and Continuous Integration/Delivery" },
-  ];
 
   return (
     <div>
@@ -172,9 +193,9 @@ export default function AddCourse() {
 
         <div className="p-3">
           {alert.status ? (
-            <Alert msg={alert.msg} type="success" />
+            <Alert msg={alert.msg.msg} type="success" />
           ) : (
-            <Alert msg={alert.msg} type="failed" />
+            <Alert msg={alert.msg.msg} type="failed" />
           )}
           {inputs.map((input) => (
             <div
