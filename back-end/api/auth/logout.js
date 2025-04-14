@@ -1,7 +1,10 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
 import log from "../../system/logs.js";
+
+let response = "";
 const logout = (req, res) => {
+  response = res;
   const cookies = req.headers.cookie || "";
   let sessionId = "";
   if (cookies) {
@@ -10,24 +13,24 @@ const logout = (req, res) => {
   // if you were redirected to logout using url request
   if (!sessionId) {
     handleResponse(
-      res,
+      response,
       null,
-      "",
-      201,
-      500,
+      null,
+      200,
+      null,
       {
         loggedIn: false,
         msg: "No session to logout",
         userId: undefined,
       },
-      ""
+      null
     );
     return;
   }
-  deleteSession(sessionId, res);
+  deleteSession(sessionId);
 };
 
-async function deleteSession(sessionId, res) {
+async function deleteSession(sessionId) {
   try {
     let student_id = null;
     let first_name_user = null;
@@ -40,17 +43,17 @@ async function deleteSession(sessionId, res) {
 
     if (resultUserIdQuery[0].length === 0) {
       handleResponse(
-        res,
+        response,
         null,
-        "",
-        201,
-        500,
+        null,
+        200,
+        null,
         {
           loggedIn: false,
           msg: "Session not found or expired.",
           userId: undefined,
         },
-        ""
+        null
       );
       return;
     } else {
@@ -69,33 +72,33 @@ async function deleteSession(sessionId, res) {
     const deleteSessionQuery = "DELETE FROM session WHERE session_id = ?";
     await connection.promise().query(deleteSessionQuery, [sessionId]);
     await log(
-      res,
+      response,
       student_id,
       `User: ${first_name_user} just Logged Out`,
       email_user
     );
     await updateUserStatus(student_id);
     handleResponse(
-      res,
+      response,
       null,
-      "",
-      201,
-      500,
+      null,
+      200,
+      null,
       {
         loggedIn: false,
         msg: "Successfully deleting session , redirecting ...",
         userId: undefined,
       },
-      ""
+      null
     );
   } catch (error) {
     handleResponse(
-      res,
+      response,
       error,
       "Error Deleting session: ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error to delete session"
     );
     return error;
@@ -111,9 +114,9 @@ async function updateUserStatus(user_id) {
       response,
       error,
       "Error Update user status : ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error to update user status"
     );
     return error;

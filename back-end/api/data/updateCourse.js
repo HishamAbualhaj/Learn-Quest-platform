@@ -7,14 +7,15 @@ const updateCourse = (req, res) => {
   // Triggering received data from client and collect it
   req.on("data", (chunks) => {
     body += chunks.toString();
-    console.log(body);
   });
 
   // Entire body has been received : no more data is coming
-  req.on("end", () => {
+  req.on("end", async () => {
     try {
       const {
         course_id,
+        student_id,
+        role,
         title,
         price,
         discount,
@@ -24,38 +25,36 @@ const updateCourse = (req, res) => {
         description,
         materials,
       } = JSON.parse(body);
-      updateCourseQ();
-      async function updateCourseQ() {
-        await updateCourseDetails(
-          course_id,
-          title,
-          price,
-          discount,
-          category,
-          image_url,
-          tabs,
-          description,
-          res
-        );
-        await updateCourseMaterials(course_id, materials);
-        handleResponse(
-          res,
-          null,
-          "",
-          200,
-          500,
-          "Course updated successfully!",
-          ""
-        );
-      }
+      await updateCourseDetails(
+        course_id,
+        student_id,
+        title,
+        price,
+        discount,
+        category,
+        image_url,
+        tabs,
+        description,
+        res
+      );
+      await updateCourseMaterials(course_id, materials);
+      handleResponse(
+        res,
+        null,
+        null,
+        200,
+        null,
+        "Course updated successfully!",
+        null
+      );
     } catch (error) {
       handleResponse(
         res,
         error,
         "Error parsing request body: ",
-        400,
+        null,
         500,
-        "",
+        null,
         "Error updating course"
       );
     }
@@ -65,6 +64,7 @@ const updateCourse = (req, res) => {
 // Function to update course details
 async function updateCourseDetails(
   course_id,
+  student_id,
   title,
   price,
   discount,
@@ -74,7 +74,6 @@ async function updateCourseDetails(
   description,
   res
 ) {
-  console.log("Curren image", image);
   tabs = tabs.toString();
   let query = "";
   if (image) {
@@ -114,7 +113,7 @@ async function updateCourseDetails(
 
   await log(
     res,
-    64928871,
+    student_id,
     `Admin: Updated course : ${title}`,
     "admin@gmail.com"
   );

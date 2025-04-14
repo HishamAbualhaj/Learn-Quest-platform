@@ -20,7 +20,7 @@ const login = (req, res) => {
       const { email, password } = JSON.parse(body);
 
       // fetching for password if vaild or not
-      const isAuth = await getId(email, password, res);
+      const isAuth = await getId(email, password);
       if (isAuth) {
         const [{ student_id, first_name, role }] = isAuth;
         role === "admin"
@@ -54,29 +54,29 @@ const login = (req, res) => {
         handleResponse(
           response,
           null,
-          "",
-          201,
-          500,
+          null,
+          200,
+          null,
           "Email or password is incorrect",
-          "",
+          null,
           false
         );
       }
     } catch (error) {
       handleResponse(
-        res,
+        response,
         error,
         "Error parsing request body: ",
-        201,
+        null,
         500,
-        "",
+        null,
         "Error to Sign up"
       );
     }
   });
 };
 
-async function getId(email, password, res) {
+async function getId(email, password) {
   try {
     const query =
       "SELECT student_id,first_name,role FROM user WHERE email = ? AND password = ?";
@@ -85,12 +85,12 @@ async function getId(email, password, res) {
     return data.length === 0 ? false : data;
   } catch (error) {
     handleResponse(
-      res,
+      response,
       error,
       "Error Inserting user data : ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error to Insert user"
     );
     return error;
@@ -112,9 +112,9 @@ async function handleSession(session_id, user_id, expires) {
       response,
       error,
       "Error Inserting sesssion data : ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error to Insert session"
     );
     return error;
@@ -130,9 +130,9 @@ async function updateUserStatus(user_id) {
       response,
       error,
       "Error Update user status : ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error to update user status"
     );
     return error;

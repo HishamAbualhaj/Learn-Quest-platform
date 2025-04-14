@@ -11,7 +11,7 @@ const updateUser = (req, res) => {
   });
 
   // Entire body has been received : no more data is coming
-  req.on("end", () => {
+  req.on("end", async () => {
     try {
       const {
         first_name,
@@ -23,46 +23,45 @@ const updateUser = (req, res) => {
         image_url,
         isImageChange,
       } = JSON.parse(body);
-      (async () => {
-        const isEmail = await isEmailFound(email, res);
-        if (isEmail) {
-          if (await isSameEmail(student_id, email)) {
-            // you can edit , its your email
-          } else {
-            handleResponse(
-              res,
-              null,
-              "",
-              200,
-              500,
-              "Email is Already found !",
-              "",
-              false
-            );
-            return;
-          }
+
+      const isEmail = await isEmailFound(email, res);
+      if (isEmail) {
+        if (await isSameEmail(student_id, email)) {
+          // you can edit , its your email
+        } else {
+          handleResponse(
+            res,
+            null,
+            null,
+            200,
+            null,
+            "Email is Already found !",
+            null,
+            false
+          );
+          return;
         }
-        await updateUserProfile(
-          student_id,
-          first_name,
-          last_name,
-          email,
-          birthdate,
-          gender,
-          image_url,
-          isImageChange,
-          res
-        );
-        handleResponse(
-          res,
-          null,
-          "",
-          200,
-          500,
-          "Profile updated successfully!",
-          ""
-        );
-      })();
+      }
+      await updateUserProfile(
+        student_id,
+        first_name,
+        last_name,
+        email,
+        birthdate,
+        gender,
+        image_url,
+        isImageChange,
+        res
+      );
+      handleResponse(
+        res,
+        null,
+        null,
+        200,
+        null,
+        "Profile updated successfully!",
+        null
+      );
     } catch (error) {
       handleResponse(
         res,
@@ -89,22 +88,40 @@ async function updateUserProfile(
   isImageChange,
   res
 ) {
-  isImageChange ? (image_url = `${student_id}-${image_url}`) : image_url;
   const query = `UPDATE user 
     SET first_name = ?, last_name = ?, email = ?, gender = ?, birthdate = ? , image_url = ?
     WHERE student_id = ?`;
 
-  await connection
-    .promise()
-    .query(query, [
-      first_name,
-      last_name,
-      email,
-      gender,
-      birthdate,
-      image_url,
-      student_id,
-    ]);
+  const query_2 = `UPDATE user 
+    SET first_name = ?, last_name = ?, email = ?, gender = ?, birthdate = ? 
+    WHERE student_id = ?`;
+
+  if (isImageChange) {
+    image_url = `${student_id}-${image_url}`;
+    await deleteOldImage(student_id);
+    await connection
+      .promise()
+      .query(query, [
+        first_name,
+        last_name,
+        email,
+        gender,
+        birthdate,
+        image_url,
+        student_id,
+      ]);
+  } else {
+    await connection
+      .promise()
+      .query(query_2, [
+        first_name,
+        last_name,
+        email,
+        gender,
+        birthdate,
+        student_id,
+      ]);
+  }
 
   await log(
     res,

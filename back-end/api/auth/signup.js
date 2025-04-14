@@ -4,20 +4,19 @@ import isEmailFound from "../../utils/isEmailFound.js";
 import log from "../../system/logs.js";
 let response = null;
 let request = null;
-let errDatabase = null;
 
 const signup = (req, res) => {
   response = res;
   request = req;
   let body = "";
- 
+
   // Triggering received data from client and collect it
   req.on("data", (chunks) => {
     body += chunks.toString();
   });
 
   // Entire body has been received : no more data is coming
-  req.on("end", () => {
+  req.on("end", async () => {
     try {
       const {
         first_name,
@@ -28,71 +27,71 @@ const signup = (req, res) => {
         gender,
         birthdate,
       } = JSON.parse(body);
-      if(password.length < 8) {
+      if (password.length < 8) {
         handleResponse(
           response,
-          errDatabase,
-          "",
-          201,
-          500,
+          null,
+          null,
+          200,
+          null,
           "Password should be more than 8 charcater",
-          "",
+          null,
           false
         );
         return;
       }
-      (async () => {
-        const isFound = await isEmailFound(email, response);
 
-        if (isFound) {
+      const isFound = await isEmailFound(email, response);
+
+      if (isFound) {
+        handleResponse(
+          response,
+          null,
+          "",
+          200,
+          500,
+          "Email Already Found",
+          "",
+          false
+        );
+      } else {
+        const student_id = Math.round(Math.random() * 100000000);
+        const signup = signUpPromise(
+          student_id,
+          first_name,
+          last_name,
+          status_user,
+          email,
+          password,
+          gender,
+          birthdate
+        );
+        const intoLog = log(
+          response,
+          student_id,
+          `User: ${first_name} just Signed Up`,
+          email
+        );
+        Promise.all([signup, intoLog]).then(([]) => {
           handleResponse(
             response,
-            errDatabase,
-            "",
-            201,
-            500,
-            "Email Already Found",
-            "",
-            false
+            null,
+            null,
+            200,
+            null,
+            "Sign up successfully !",
+            null
           );
-        } else {
-          const student_id = Math.round(Math.random() * 100000000);
-          const signup = signUpPromise(
-            student_id,
-            first_name,
-            last_name,
-            status_user,
-            email,
-            password,
-            gender,
-            birthdate
-          );
-          const intoLog = log(
-            response,
-            student_id,
-            `User: ${first_name} just Signed Up`,
-            email
-          );
-          Promise.all([signup, intoLog]).then(([]) => {
-            handleResponse(
-              res,
-              null,
-              "",
-              201,
-              500,
-              "Sign up successfully !",
-              ""
-            );
-          });
-        }
-      })();
+        });
+      }
     } catch (error) {
       handleResponse(
-        res,
+        response,
         error,
         "Error parsing request body: ",
-        201,
+        null,
         500,
+        null,
         "Error to Sign up"
       );
     }
@@ -126,12 +125,12 @@ async function signUpPromise(
       ]);
   } catch (error) {
     handleResponse(
-      null,
+      response,
       error,
       "Error inserting into user: ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error to sign up"
     );
     return error;

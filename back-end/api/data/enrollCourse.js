@@ -31,7 +31,6 @@ async function enrollCourseQ(
     );
     handleResponse(res, null, null, 200, null, "ENROLLED SUCCESSFULLY", null);
   } catch (error) {
-    console.log(error)
     handleResponse(
       res,
       error,

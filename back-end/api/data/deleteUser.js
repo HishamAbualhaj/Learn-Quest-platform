@@ -31,18 +31,18 @@ async function deleteUserQ(user_id, res) {
     handleResponse(
       res,
       null,
-      "",
-      201,
-      500,
+      null,
+      200,
+      null,
       {
         isDeleted: true,
         msg: "User deleted Successfully, ",
       },
-      ""
+      null
     );
     return;
   } catch (error) {
-    handleResponse(res, error, "Error Deleting user: ", 201, 500, "", {
+    handleResponse(res, error, "Error Deleting user: ", null, 500, null, {
       isDeleted: false,
       msg: "User deletion failed, ",
     });

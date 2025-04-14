@@ -34,17 +34,17 @@ async function deleteCourseQ(course_id, res) {
     handleResponse(
       res,
       null,
-      "",
-      201,
-      500,
+      null,
+      200,
+      null,
       {
         isDeleted: true,
         msg: "Course deleted Successfully, ",
       },
-      ""
+      null
     );
   } catch (error) {
-    handleResponse(null, error, "Error Deleting course: ", 201, 500, "", {
+    handleResponse(res, error, "Error Deleting course: ", null, 500, null, {
       isDeleted: false,
       msg: "Course deleted Failed, ",
     });
