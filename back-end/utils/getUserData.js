@@ -5,49 +5,48 @@ function getUserData(req, response) {
   req.on("data", (chunks) => {
     body += chunks;
   });
-  req.on("end", () => {
+  req.on("end", async () => {
     try {
       const { id } = JSON.parse(body);
-      (async () => {
-        const query = `SELECT * from user WHERE student_id = ?`;
-        const result = await connection.promise().query(query, [id]);
-        const [data] = result;
-        if (data.length === 0) {
-          handleResponse(
-            response,
-            null,
-            "",
-            201,
-            500,
-            {
-              data: undefined,
-              msg: "No student found",
-            },
-            ""
-          );
-        } else {
-          handleResponse(
-            response,
-            null,
-            "",
-            201,
-            500,
-            {
-              data: data,
-              msg: "Successfully data fetched",
-            },
-            "Something went wrong"
-          );
-        }
-      })();
+
+      const query = `SELECT * from user WHERE student_id = ?`;
+      const result = await connection.promise().query(query, [id]);
+      const [data] = result;
+      if (data.length === 0) {
+        handleResponse(
+          response,
+          null,
+          null,
+          200,
+          null,
+          {
+            data: undefined,
+            msg: "No student found",
+          },
+          null
+        );
+      } else {
+        handleResponse(
+          response,
+          null,
+          null,
+          200,
+          null,
+          {
+            data: data,
+            msg: "Successfully data fetched",
+          },
+          null
+        );
+      }
     } catch (error) {
       handleResponse(
         response,
         error,
         "Error Internal server at getUserData : ",
-        201,
+        null,
         500,
-        "",
+        null,
         "Something went wrong"
       );
     }
