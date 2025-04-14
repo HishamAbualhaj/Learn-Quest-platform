@@ -192,7 +192,18 @@ function App() {
           path: "courses",
           children: [
             { index: true, element: <Courses /> },
-            { path: "add", element: <AddCourse /> },
+            {
+              path: "add",
+              element: (
+                <UserDataContext>
+                  <AddCourse />
+                </UserDataContext>
+              ),
+              errorElement: <ErrorPage />,
+              loader: () => {
+                return fetchData("http://localhost:3002/session");
+              },
+            },
             {
               path: "edit/:id",
               element: (
