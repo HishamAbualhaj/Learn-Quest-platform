@@ -13,9 +13,9 @@ async function archiveLog(res, data_id, type = "LOG", log_message, email) {
       res,
       error,
       "Error inserting into archive Log: ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error system server"
     );
     return error;

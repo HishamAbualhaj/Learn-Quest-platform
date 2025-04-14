@@ -13,9 +13,9 @@ async function log(res, student_id, log_message, email) {
       res,
       error,
       "Error inserting into log: ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error system server"
     );
     return error;

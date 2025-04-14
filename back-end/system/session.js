@@ -10,15 +10,15 @@ const session = (req, res) => {
     handleResponse(
       res,
       null,
-      "",
-      201,
-      500,
+      null,
+      200,
+      null,
       {
         loggedIn: false,
         msg: "No session found",
         userId: undefined,
       },
-      ""
+      null
     );
     return;
   }
@@ -35,15 +35,15 @@ async function validateSessionId(sessionId, res) {
       handleResponse(
         res,
         null,
-        "",
-        201,
-        500,
+        null,
+        200,
+        null,
         {
           loggedIn: false,
           msg: "Session not found or expired.",
           userId: undefined,
         },
-        ""
+        null
       );
       return;
     } else {
@@ -55,15 +55,15 @@ async function validateSessionId(sessionId, res) {
       handleResponse(
         res,
         null,
-        "",
-        201,
-        500,
+        null,
+        200,
+        null,
         {
           loggedIn: true,
           msg: "Successfully validating session , redirecting ...",
           userData: userData[0],
         },
-        ""
+        null
       );
     }
   } catch (error) {
@@ -71,9 +71,9 @@ async function validateSessionId(sessionId, res) {
       res,
       error,
       "Error at selecting session",
-      201,
+      null,
       500,
-      "",
+      null,
       "Error at selecting session"
     );
     return error;
