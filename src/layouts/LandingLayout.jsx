@@ -9,7 +9,7 @@ import FrequentlyQuestions from "../pages/Landing-Page/FrequentlyQuestions";
 import DemoPage from "../pages/Landing-Page/DemoPage";
 import Footer from "../pages/Landing-Page/Footer";
 
-
+import ThemeContext from "../context/ThemeContext";
 function Landing() {
   const [activeDrop, setActiveDrop] = useState(false);
   useEffect(() => {

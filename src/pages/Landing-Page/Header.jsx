@@ -28,6 +28,7 @@ export default function Header({
   const data = useContext(UserData);
   const { theme, setTheme } = useContext(Theme);
   useEffect(() => {
+    console.log(data)
     if (data) {
       if (data.loggedIn) {
         let reDirected = data.loggedIn;

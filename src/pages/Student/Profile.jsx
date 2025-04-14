@@ -194,8 +194,7 @@ function Profile() {
         method: "POST",
         body: file,
       });
-      const res = await response.json();
-      console.log(res);
+      await response.json();
     }
 
     const handleChange = (e) => {
@@ -243,7 +242,6 @@ function Profile() {
       };
 
       setIsLoading(true);
-      console.log(obj);
 
       {
         imageChange && (await uploadImage());
@@ -254,7 +252,7 @@ function Profile() {
         obj,
         "PUT"
       );
-      console.log(res);
+
       setIsLoading(false);
       setAlert(res);
     }

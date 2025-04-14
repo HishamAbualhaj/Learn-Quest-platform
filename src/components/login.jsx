@@ -44,7 +44,6 @@ function Login() {
     );
     setIsLoading(false);
     setAlert(response);
-    console.log(response);
   }
 
   return (

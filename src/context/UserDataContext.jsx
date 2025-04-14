@@ -7,7 +7,6 @@ function UserDataContext({ children }) {
   const [userData, setUserData] = useState(null);
   useEffect(() => {
     setUserData(userDataResponse);
-    console.log(userDataResponse.userData[0]);
   }, []);
   return <UserData.Provider value={userData}>{children}</UserData.Provider>;
 }

@@ -38,9 +38,7 @@ function Users() {
   const [deleteUserPopup, setdeleteUserPopup] = useState(false);
 
   const [idUser, setIdUser] = useState(null);
-  useEffect(() => {
-    console.log(idUser)
-  }, [idUser]);
+
   return (
     <>
       <div className="dark:text-white text-black font-semibold text-4xl ">
