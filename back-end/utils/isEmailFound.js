@@ -11,9 +11,9 @@ async function isEmailFound(email, response) {
       response,
       error,
       "Error Internal server at isEmailFound : ",
-      201,
+      null,
       500,
-      "",
+      null,
       "Something went wrong"
     );
   }

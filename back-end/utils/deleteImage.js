@@ -10,7 +10,6 @@ async function deleteImage(imageName) {
 
   const uploadDir = path.resolve(__dirname, "../uploads");
   const oldImagePath = path.join(uploadDir, imageName);
-  console.log(oldImagePath);
   if (fs.existsSync(oldImagePath)) {
     fs.unlink(oldImagePath, (err) => {
       console.log(err);
