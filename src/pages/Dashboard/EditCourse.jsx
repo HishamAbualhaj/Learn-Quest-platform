@@ -2,14 +2,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import Alert from "../../components/Alert";
+import { UserData } from "../../context/UserDataContext";
 function EditCourse() {
   const location = useLocation();
   const [courseId, setCourseId] = useState(null);
+  const [user_data, setUserData] = useState(null);
   // handle file change for uploading
   const [file, setFile] = useState(null);
+
+  const data_user = useContext(UserData);
+  useEffect(() => {
+    if (data_user) {
+      const [{ student_id, role }] = data_user?.userData;
+      setUserData({ student_id, role });
+    }
+  }, [data_user]);
   useEffect(() => {
     //getting course id for edit
     const id = location.pathname.split("/").at(-1);
@@ -28,7 +38,7 @@ function EditCourse() {
 
   const [courseData, setCourseData] = useState(defaultData);
   useEffect(() => {
-    if (courseId) {
+    if (courseId && user_data) {
       setCourseData((pre) => {
         return {
           ...pre,
@@ -38,7 +48,7 @@ function EditCourse() {
       async function getData() {
         const res = await useFetch(
           "http://localhost:3002/getCourseData",
-          { course_id: courseId },
+          { course_id: courseId, user_data: user_data },
           "POST"
         );
         const { msg } = res.msg;
@@ -55,7 +65,7 @@ function EditCourse() {
       }
       getData();
     }
-  }, [courseId]);
+  }, [courseId, user_data]);
 
   const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
   const [isLoading, setIsLoading] = useState(false);
@@ -117,6 +127,8 @@ function EditCourse() {
     const updatedCourseData = {
       ...courseData,
       image_url: file ? courseData.image_url : null,
+      student_id: user_data.student_id,
+      role: user_data.role,
     };
     const res = await useFetch(
       "http://localhost:3002/updateCourse",
