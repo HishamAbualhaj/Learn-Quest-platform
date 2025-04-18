@@ -101,6 +101,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     student_id INT,
     course_id INT,
     stars INT,
+    image_url VARCHAR(200),
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE

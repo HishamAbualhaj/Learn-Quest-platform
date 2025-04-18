@@ -15,11 +15,15 @@ import deleteUser from "./api/data/deleteUser.js";
 import getSystemLog from "./api/data/getSystemLog.js";
 import getImage from "./utils/getImage.js";
 import completeCourse from "./api/data/completeCourse.js";
+import enrollCourse from "./api/data/enrollCourse.js";
+import addReview from "./api/data/addReview.js";
 // Test upload image
 import handleUploads from "./utils/handleUploads.js";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import getReviews from "./api/data/getReviews.js";
+
 const server = http.createServer((req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
@@ -38,6 +42,8 @@ const server = http.createServer((req, res) => {
       "/deleteUser": deleteUser,
       "/handleUploads": handleUploads,
       "/getImage": getImage,
+      "/addReview": addReview,
+      "/getReviews": getReviews,
     },
     GET: {
       "/session": session,
@@ -50,6 +56,7 @@ const server = http.createServer((req, res) => {
       "/updateCourse": updateCourse,
       "/updateUser": updateUser,
       "/completeCourse": completeCourse,
+      "/enrollCourse": enrollCourse,
     },
   };
 
