@@ -1,26 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+function Alert({
+  msg = "",
+  type,
+  setCloseButton = (x) => {
+    return x;
+  },
+}) {
+  const [isMsg, setIsMsg] = useState(null);
 
-function Alert({ msg, type }) {
-  let isMsg = false;
-  isMsg = msg === "" ? false : true;
+  useEffect(() => {
+    msg === "" ? setIsMsg(false) : setIsMsg(true);
+  }, []);
   {
     return type === "success" ? (
       <div
-        className={`dark:bg-green-900/40 bg-green-200 dark:text-green-400 text-green-800 py-3 pl-5 rounded-md text-xl relative mb-2 ${
+        className={`flex items-center justify-between  dark:bg-green-900/40 bg-green-200 dark:text-green-400 text-green-800 py-3 px-5 rounded-md text-xl relative mb-2 ${
           isMsg ? "" : "hidden"
         }`}
       >
         <div className="absolute left-0 top-0 h-full w-3 dark:bg-green-900 bg-green-500/80 rounded-tl-md rounded-bl-md"></div>
         {msg}
+        <FontAwesomeIcon
+          onClick={() => {
+            setCloseButton(true);
+          }}
+          className="cursor-pointer"
+          icon={faXmark}
+        />
       </div>
     ) : (
       <div
-        className={`dark:bg-red-900/40 bg-red-200 dark:text-red-400 text-red-800 py-3 pl-5 rounded-md text-xl relative mb-2 ${
+        className={`flex items-center justify-between dark:bg-red-900/40 bg-red-200 dark:text-red-400 text-red-800 py-3 px-5 rounded-md text-xl relative mb-2 ${
           isMsg ? "" : "hidden"
         }`}
       >
         <div className="absolute left-0 top-0 h-full w-3 dark:bg-red-900 bg-red-500/80 rounded-tl-md rounded-bl-md"></div>
         {msg}
+        <FontAwesomeIcon
+          onClick={() => {
+            setCloseButton(true);
+          }}
+          className="cursor-pointer"
+          icon={faXmark}
+        />
       </div>
     );
   }
