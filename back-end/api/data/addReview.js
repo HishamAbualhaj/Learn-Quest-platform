@@ -30,6 +30,7 @@ const addReview = (req, res) => {
           null,
           "Review can't be empty",
           null,
+          null,
           false
         );
         return;
@@ -80,15 +81,16 @@ const addReview = (req, res) => {
 };
 async function insertReview(
   review_id,
-  { student_id, course_id, image_url, review_text, stars }
+  { student_id, course_id, image_url, review_text, stars, first_name }
 ) {
   const query =
-    "INSERT INTO reviews (review_id , student_id , course_id , image_url ,review_text ,stars) VALUES (?,?,?,?,?,?)";
+    "INSERT INTO reviews (review_id , student_id ,first_name, course_id , image_url ,review_text ,stars) VALUES (?,?,?,?,?,?,?)";
   await connection
     .promise()
     .query(query, [
       review_id,
       student_id,
+      first_name,
       course_id,
       image_url,
       review_text,
