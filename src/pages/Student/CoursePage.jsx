@@ -8,8 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button";
 import { faCcVisa } from "@fortawesome/free-brands-svg-icons";
-import Person from "../../assets/Screenshot_1.jpg";
-import Avatar from "../../components/Avatar";
+
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useFetch from "../../hooks/useFetch";
@@ -39,8 +38,9 @@ function CoursePage() {
     if (data_user) {
       const userDataArray = data_user?.userData;
 
-      const { student_id, email, first_name, role } = userDataArray[0];
-      setUserData({ student_id, email, first_name, role });
+      const { student_id, email, first_name, image_url, role } =
+        userDataArray[0];
+      setUserData({ student_id, email, first_name, image_url, role , course_id });
     }
   }, [data_user]);
 
@@ -69,6 +69,7 @@ function CoursePage() {
 
       setCourseVideos([data?.msg?.msg[0], arr]);
       setEnrolled(data?.msg?.enrolled);
+      console.log("Arr ", arr);
     }
   }, [isLoading, data]);
 
@@ -93,6 +94,7 @@ function CoursePage() {
       console.log("Error ", error);
     },
   });
+
   // const courseVideos = [
   //   {
   //     key: 1,
@@ -244,44 +246,6 @@ function CoursePage() {
     },
   ];
 
-  const reviews = [
-    {
-      id: 1,
-      name: "Sarah T.",
-      text: "I had no prior experience in AI, but this course made it so easy to understand. The lessons are structured perfectly for beginners, and the examples are practical. The instructor’s explanations of machine learning algorithms were clear and engaging. Now, I’ve built my first AI-powered chatbot! Highly recommended for anyone just starting in AI.",
-      image: "Person1.png",
-      stars: 5,
-    },
-    {
-      id: 2,
-      name: "James R.",
-      text: "As someone already familiar with AI concepts, I was looking for something more advanced. This course didn’t disappoint! The deep dive into neural networks and reinforcement learning was particularly helpful for my ongoing projects. However, I would have appreciated a bit more focus on hyperparameter tuning.",
-      image: "Person2.png",
-      stars: 4,
-    },
-    {
-      id: 3,
-      name: "Linda M.",
-      text: "This course changed my career trajectory. I was a graphic designer, and now I’ve transitioned into AI development. The mentorship and real-world projects included in the curriculum gave me the confidence to land a job as a Junior AI Engineer. The section on deploying AI models was a game-changer for me.",
-      image: "Person3.png",
-      stars: 5,
-    },
-    {
-      id: 4,
-      name: "Ahmed K.",
-      text: "As a small business owner, I took this course to understand how AI can optimize my operations. It was amazing to learn how to implement AI for customer segmentation and demand forecasting. The lessons are practical, and the tools recommended are cost-effective. Now, I use AI to improve my business processes, and it’s been transformative!",
-      image: "Person4.png",
-      stars: 5,
-    },
-    {
-      id: 5,
-      name: "Emily J.",
-      text: "This course was a perfect supplement to my university studies. The practical projects helped me solidify the theoretical concepts I learned in class. I especially liked the hands-on sections on natural language processing and computer vision. Thanks to this course, my final-year AI project received top marks!",
-      image: "Person5.png",
-      stars: 5,
-    },
-  ];
-
   return (
     <>
       {isLoading ? (
@@ -289,10 +253,7 @@ function CoursePage() {
       ) : data?.status ? (
         <div className=" px-5 relative overflow-hidden">
           <div className="flex items-center justify-between  py-3">
-            <div className="text-2xl font-bold">
-              {courseVideos && courseVideos[0].title}
-              {/* {courseVideos && courseVideos?.[0].title} */}
-            </div>
+            <div className="text-2xl font-bold">{courseVideos?.[0].title}</div>
             <FontAwesomeIcon
               onClick={() => {
                 setIsTranslate(!isTranslate);
@@ -313,15 +274,15 @@ function CoursePage() {
             isTranslate ? "!translate-x-0" : ""
           } transition xl:relative absolute xl:max-w-[600px] max-xl:translate-x-full right-0 max-h-[800px] sm:min-w-[500px] flex flex-col border_platform all xl:dark:bg-gray-800/40 dark:bg-gray-700 bg-gray-300 xl:bg-lightLayout overflow-auto top-12 xl:top-0`}
             >
-              {courseVideos &&
-                courseVideos[1].map((video) => (
-                  <CourseVideos
-                    key={video.material_id}
-                    {...user_data}
-                    {...video}
-                    setVideoUrl={setVideoUrl}
-                  />
-                ))}
+              {courseVideos?.[1].map((video) => (
+                <CourseVideos
+                  key={video.material_id}
+                  {...user_data}
+                  {...video}
+                  setVideoUrl={setVideoUrl}
+                  isEnrolled={enrolled}
+                />
+              ))}
             </div>
           </div>
           <div className="border_platform all mt-5">
@@ -341,13 +302,13 @@ function CoursePage() {
                 </div>
                 <div className="mt-8">
                   <div className="leading-8 text-xl max-w-[900px]">
-                    {courseVideos && courseVideos[0].description}
+                    {courseVideos?.[0].description}
                   </div>
 
                   {/* TESTING DATA  */}
-                  {courseContent.map((content) => (
-                    <div className="mt-10">
-                      <div key={content.key} className="font-bold text-xl">
+                  {/* {courseContent.map((content) => (
+                    <div key={content.key}  className="mt-10">
+                      <div className="font-bold text-xl">
                         {content.title}
                       </div>
                       <ul>
@@ -362,14 +323,14 @@ function CoursePage() {
                               </div>
                             </div>
                           ) : (
-                            <li className="list-disc lg:ml-8 mt-2 max-w-[900px]">
+                            <li key className="list-disc lg:ml-8 mt-2 max-w-[900px]">
                               {data}
                             </li>
                           )
                         )}
                       </ul>
                     </div>
-                  ))}
+                  ))} */}
                   {/* TESTING DATA  */}
                 </div>
               </div>
@@ -394,9 +355,7 @@ function CoursePage() {
                     <Button
                       isloading={isPending}
                       props="px-4 py-3 text-xl !mt-0"
-                      text={`Enroll Today  – ${
-                        courseVideos && courseVideos[0].price
-                      } $`}
+                      text={`Enroll Today  – ${courseVideos?.[0].price} $`}
                     />
                   </div>
                 </div>
@@ -404,49 +363,9 @@ function CoursePage() {
             </div>
 
             {/* reviews  */}
-            <div className="m-5 rounded-md">
-              <div className="font-semibold text-2xl">Reviews</div>
-              <div className="mt-3 p-5">
-                <div className="flex gap-5">
-                  <Avatar className={"h-[50px] w-[50px]"} img={Person} />
-                  <div className="flex flex-1 gap-2">
-                    <input
-                      placeholder="Write a review"
-                      className="w-full rounded-sm"
-                      type="text"
-                    />
-                    <select className="px-5" name="" id="">
-                      <option className="text-black" value="1">
-                        1
-                      </option>
-                      <option className="text-black" value="2">
-                        2
-                      </option>
-                      <option className="text-black" value="3">
-                        3
-                      </option>
-                      <option className="text-black" value="4">
-                        4
-                      </option>
-                      <option className="text-black" value="5">
-                        5
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div className="border_platform l pl-5">
-                  {reviews.map((review) => (
-                    <Review
-                      key={review.id}
-                      name={review.name}
-                      image={review.image}
-                      text={review.text}
-                      stars={review.stars}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
+            <Review
+              {...{ course_id, course_title: courseVideos?.[0].title, ...user_data }}
+            />
             {/* reviews  */}
           </div>
         </div>
