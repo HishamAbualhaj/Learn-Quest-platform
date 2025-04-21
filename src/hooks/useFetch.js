@@ -28,11 +28,13 @@ async function useFetch(url, data = null, method) {
             status: result.status,
             msg: result.data,
             redirect: true,
+            nextPage: result?.nextPage,
           })
         : (response = {
             status: result.status,
             msg: result.data,
             redirect: false,
+            nextPage: result?.nextPage,
           });
     }
   } catch (error) {

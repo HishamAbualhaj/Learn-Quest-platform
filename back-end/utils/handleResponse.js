@@ -6,6 +6,7 @@ const handleResponse = (
   status_code_failed,
   responseData,
   failData,
+  nextPage = null,
   color = true
 ) => {
   if (err) {
@@ -15,7 +16,9 @@ const handleResponse = (
     return;
   } else {
     res.writeHead(status_code_success, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: color, data: responseData }));
+    res.end(
+      JSON.stringify({ status: color, data: responseData, nextPage: nextPage })
+    );
     return;
   }
 };
