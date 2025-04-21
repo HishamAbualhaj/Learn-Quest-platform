@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     review_id VARCHAR(255) NOT NULL PRIMARY KEY,
     student_id INT,
     course_id INT,
+    first_name VARCHAR(255) NOT NULL,
     stars INT,
     image_url VARCHAR(200),
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
