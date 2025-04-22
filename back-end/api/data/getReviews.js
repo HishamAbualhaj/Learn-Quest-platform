@@ -7,17 +7,17 @@ const getReviews = (req, res) => {
     body += chunks.toString();
   });
   req.on("end", async () => {
-    const { page } = JSON.parse(body);
-    await getReviewsQ(res, page);
+    const { page, course_id } = JSON.parse(body);
+    await getReviewsQ(res, page, course_id);
   });
 };
 
-async function getReviewsQ(res, page) {
+async function getReviewsQ(res, page, course_id) {
   try {
-    const query = `SELECT * FROM reviews ORDER BY review_date DESC LIMIT ? OFFSET ?`;
+    const query = `SELECT * FROM reviews WHERE course_id = ? ORDER BY  review_date DESC LIMIT ? OFFSET ? `;
     const result = await connection
       .promise()
-      .query(query, [5, page === 1 ? 0 : (page - 1) * 5]);
+      .query(query, [course_id, 5, page === 1 ? 0 : (page - 1) * 5]);
 
     result[0].length === 0
       ? handleResponse(res, null, null, 200, null, result[0], null, null)
