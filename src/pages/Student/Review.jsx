@@ -11,6 +11,7 @@ import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../../components/Avatar";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import Alert from "../../components/Alert";
+import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 function Review(user_data) {
   // const reviews = [
   //   {
@@ -87,31 +88,32 @@ function Review(user_data) {
       setAlert(null);
     }
   }, [closeButton]);
-  
+
   function handleChange(e) {
     const { id, value } = e.target;
     setReviewData((prev) => ({ ...prev, [id]: value }));
   }
 
-  const { isFetching, fetchNextPage, data, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ["reviews", user_data.course_id],
-      queryFn: async ({ pageParam = 1 }) => {
-        return await useFetch(
+  const [lastNode, setLastNode] = useState(null);
+  const reviewContainer = useRef();
+  
+  const { isFetching, isFetchingNextPage, data, hasNextPage } =
+    useInfiniteScroll({
+      fetchFn: (pageParam) => {
+        return useFetch(
           `${API_BASE_URL}/getReviews`,
-          { page: pageParam },
+          { page: pageParam, course_id: user_data.course_id },
           "POST"
         );
       },
-      getNextPageParam: (lastPage, _) => lastPage?.nextPage ?? undefined,
-      refetchOnWindowFocus: false,
+      queryKey: ["reviews", user_data.course_id],
+      scrollContainer: reviewContainer,
+      observedEle: lastNode,
     });
 
-  const [lastNode, setLastNode] = useState(null);
-  const reviewContainer = useRef();
-  let observer = useRef();
+
   useEffect(() => {
-    if (!isFetching && data) {
+    if (!isFetching) {
       // extracting review array from each response object
       // combining all reviews[] in one array
       // storing them in Map to avoid duplication
@@ -130,24 +132,8 @@ function Review(user_data) {
         }
         return newReviews;
       });
-
-      if (observer) observer.current?.disconnect();
-      if (!lastNode) return;
-      let options = {
-        root: reviewContainer.current,
-        rootMargin: "0px",
-        threshold: 1.0,
-      };
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          if (isFetching || !hasNextPage) return;
-          fetchNextPage();
-        }
-      }, options);
-
-      observer.current.observe(lastNode);
     }
-  }, [data, isFetching, lastNode]);
+  }, [isFetching, lastNode]);
 
   const observeEle = (node) => {
     setLastNode(node);
@@ -212,7 +198,7 @@ function Review(user_data) {
                   <FontAwesomeIcon
                     onClick={async () => {
                       await reviewData?.mutateAsync();
-                      queryClient.invalidateQueries(['reviews'])
+                      queryClient.invalidateQueries(["reviews"]);
                     }}
                     className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
                     icon={faPaperPlane}
@@ -236,7 +222,7 @@ function Review(user_data) {
                 date={review.review_date}
               />
             ))}
-            {isFetching ? (
+            {isFetchingNextPage ? (
               <div className="border_platform b pb-5">
                 <div className="flex justify-between mt-5 items-center">
                   <div className="flex items-center gap-5">
@@ -299,8 +285,8 @@ const ReviewData = forwardRef(function ReviewData(
             {text}
           </div>
           <div className="dark:text-white/50 text-black/50 mt-5 text-sm lg:ml-8">{`${
-            date.split("T")[0]
-          } - ${date.split("T")[1].split(".")[0]}`}</div>
+            date?.split("T")[0]
+          } - ${date?.split("T")[1].split(".")[0]}`}</div>
         </div>
       </div>
     </>
