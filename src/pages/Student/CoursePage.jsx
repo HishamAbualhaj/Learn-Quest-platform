@@ -40,11 +40,18 @@ function CoursePage() {
 
       const { student_id, email, first_name, image_url, role } =
         userDataArray[0];
-      setUserData({ student_id, email, first_name, image_url, role , course_id });
+      setUserData({
+        student_id,
+        email,
+        first_name,
+        image_url,
+        role,
+        course_id,
+      });
     }
   }, [data_user]);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryFn: async () => {
       if (!course_id || !user_data) return;
       return await useFetch(
@@ -73,7 +80,7 @@ function CoursePage() {
     }
   }, [isLoading, data]);
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutateAsync, isPending, error } = useMutation({
     mutationFn: async () => {
       return await useFetch(
         "http://localhost:3002/enrollCourse",
@@ -95,63 +102,6 @@ function CoursePage() {
     },
   });
 
-  // const courseVideos = [
-  //   {
-  //     key: 1,
-  //     title: "Introduction to Artificial Intelligence",
-  //     subtitle: "Overview of AI: History, Applications, and Future Trends",
-  //   },
-  //   {
-  //     key: 2,
-  //     title: "Understanding Machine Learning",
-  //     subtitle:
-  //       "Types of Machine Learning: Supervised, Unsupervised, and Reinforcement Learning",
-  //   },
-  //   {
-  //     key: 3,
-  //     title: "Deep Learning Basics",
-  //     subtitle: "Introduction to Neural Networks and Key Concepts",
-  //   },
-  //   {
-  //     key: 4,
-  //     title: "Data Preprocessing for AI Models",
-  //     subtitle: "Techniques for Cleaning, Transforming, and Normalizing Data",
-  //   },
-  //   {
-  //     key: 5,
-  //     title: "Building Your First AI Model",
-  //     subtitle:
-  //       "A Step-by-Step Guide to Creating and Training a Simple AI Model",
-  //   },
-  //   {
-  //     key: 6,
-  //     title: "Natural Language Processing (NLP) Fundamentals",
-  //     subtitle: "Text Analysis and Sentiment Detection with AI",
-  //   },
-  //   {
-  //     key: 7,
-  //     title: "Computer Vision Essentials",
-  //     subtitle:
-  //       "Image Recognition and Object Detection Using Convolutional Neural Networks",
-  //   },
-  //   {
-  //     key: 8,
-  //     title: "AI Ethics and Bias",
-  //     subtitle:
-  //       "Understanding Ethical Challenges and Reducing Bias in AI Systems",
-  //   },
-  //   {
-  //     key: 9,
-  //     title: "Deploying AI Models",
-  //     subtitle: "Introduction to Model Deployment in Real-World Applications",
-  //   },
-  //   {
-  //     key: 10,
-  //     title: "Future of AI",
-  //     subtitle:
-  //       "Emerging Trends, Tools, and Career Opportunities in Artificial Intelligence",
-  //   },
-  // ];
   const courseContent = [
     {
       key: "key-topics",
@@ -246,11 +196,12 @@ function CoursePage() {
     },
   ];
 
+  if (isLoading || !data) {
+    return <Loading />;
+  }
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : data?.status ? (
+      {data?.status ? (
         <div className=" px-5 relative overflow-hidden">
           <div className="flex items-center justify-between  py-3">
             <div className="text-2xl font-bold">{courseVideos?.[0].title}</div>
@@ -347,8 +298,9 @@ function CoursePage() {
                     </li>
                   </ul>
                   <div
-                    onClick={() => {
-                      mutate();
+                    onClick={async () => {
+                      await mutateAsync();
+                      refetch();
                     }}
                     className="p-5"
                   >
@@ -364,7 +316,10 @@ function CoursePage() {
 
             {/* reviews  */}
             <Review
-              {...{ course_id, course_title: courseVideos?.[0].title, ...user_data }}
+              {...{
+                course_title: courseVideos?.[0].title,
+                ...user_data,
+              }}
             />
             {/* reviews  */}
           </div>
