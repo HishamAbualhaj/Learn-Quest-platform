@@ -96,7 +96,7 @@ function CourseVideos({
           {subtitle}
         </div>
         {!isEnrolled && !Boolean(url) && (
-          <div className="absolute top-0 left-0 bg-purple-600/20 text-purple-300 w-full h-full lg:text-md text-sm flex gap-3 justify-center items-center">
+          <div className="absolute top-0 left-0 dark:bg-purple-600/20 bg-purple-800/20  dark:text-purple-300 w-full h-full lg:text-md text-sm flex gap-3 justify-center items-center">
             You are not Enrolled <FontAwesomeIcon icon={faLock} />
           </div>
         )}
