@@ -35,6 +35,21 @@ const addReview = (req, res) => {
         );
         return;
       }
+
+      if (!(await checkCourseEnrollment(student_id, course_id))) {
+        handleResponse(
+          res,
+          null,
+          null,
+          200,
+          null,
+          "You should enroll this course to add review ...",
+          null,
+          null,
+          false
+        );
+        return;
+      }
       if (await checkHasReview(student_id, course_id)) {
         handleResponse(
           res,
@@ -43,6 +58,7 @@ const addReview = (req, res) => {
           200,
           null,
           "You have already submited a review for this course",
+          null,
           null,
           false
         );
@@ -107,5 +123,29 @@ async function checkHasReview(student_id, course_id) {
     .query(query, [student_id, course_id]);
 
   return result[0].length ? true : false;
+}
+
+async function checkCourseEnrollment(user_id, course_id) {
+  try {
+    const query = `SELECT enrollment_id FROM enrollments WHERE student_id = ? AND course_id = ?`;
+
+    const result = await connection
+      .promise()
+      .query(query, [user_id, course_id]);
+
+    return Boolean(result[0].length);
+  } catch (error) {
+    handleResponse(
+      response,
+      error,
+      "Error SELECT enrollment data: ",
+      null,
+      500,
+      null,
+      {
+        msg: "Error to SELECT enrollments",
+      }
+    );
+  }
 }
 export default addReview;
