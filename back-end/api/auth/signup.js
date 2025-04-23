@@ -36,6 +36,7 @@ const signup = (req, res) => {
           null,
           "Password should be more than 8 charcater",
           null,
+          null,
           false
         );
         return;
@@ -51,7 +52,8 @@ const signup = (req, res) => {
           200,
           500,
           "Email Already Found",
-          "",
+          null,
+          null,
           false
         );
       } else {

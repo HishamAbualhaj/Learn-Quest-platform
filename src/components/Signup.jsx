@@ -4,23 +4,17 @@ import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import useFetch from "../hooks/useFetch";
+import API_BASE_URL from "../config/config";
+import { useMutation } from "@tanstack/react-query";
 function Signup() {
-  const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
-  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAlert({ status: null, msg: "" });
-      {
-        alert.redirect && navigate("/login");
-      }
-    }, 2000);
+  // useEffect(() => {
+  //   alert?.redirect && navigate("/login");
+  // }, [alert]);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [alert]);
   const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
@@ -38,19 +32,22 @@ function Signup() {
       [id]: value,
     });
   }
+  const [closeButton, setCloseButton] = useState(false);
+  useEffect(() => {
+    if (closeButton) {
+      setAlert(null);
+    }
+  }, [closeButton]);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setIsLoading(true);
-    const response = await useFetch(
-      "http://localhost:3002/signup",
-      userData,
-      "POST"
-    );
-    setIsLoading(false);
-    setAlert(response);
-    console.log(response);
-  }
+  const { mutate, isPending, data } = useMutation({
+    mutationFn: async () => {
+      return await useFetch(`${API_BASE_URL}/signup`, userData, "POST");
+    },
+  });
+
+  useEffect(() => {
+    setAlert(data);
+  }, [data]);
 
   return (
     <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 h-[100vh]">
@@ -58,11 +55,16 @@ function Signup() {
         LEARN <div className="text-purple-600">QUEST</div>
       </div>
       <div className="mx-auto max-w-[500px] p-7 mt-5 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl relative">
-        {alert.status ? (
-          <Alert msg={alert.msg} type="success" />
-        ) : (
-          <Alert msg={alert.msg} type="failed" />
-        )}
+        {alert &&
+          (alert?.status ? (
+            <Alert
+              msg={alert.msg}
+              type="success"
+              setCloseButton={setCloseButton}
+            />
+          ) : (
+            <Alert msg={alert?.msg} setCloseButton={setCloseButton} />
+          ))}
 
         <div className="lg:text-4xl text-2xl font-bold">Sign up free</div>
         <div className="dark:text-textDark text-lightText mt-2">
@@ -80,7 +82,12 @@ function Signup() {
           OR
           <div className="dark:bg-textDark bg-lightText h-[1px] w-1/2"></div>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            mutate();
+          }}
+        >
           <div className="flex gap-2 mt-6">
             <div className="flex flex-col flex-1">
               <label htmlFor="first_name">First name</label>
@@ -154,7 +161,7 @@ function Signup() {
             type="submit"
             text="Sign up"
             loadingText="Loading"
-            isloading={isLoading}
+            isloading={isPending}
             padding="py-4 w-full font-semibold"
           />
         </form>
