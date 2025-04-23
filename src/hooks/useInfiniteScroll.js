@@ -1,14 +1,17 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
+import useArrange from "./useArrange";
 
 function useInfiniteScroll({
   fetchFn,
   queryKey,
   scrollContainer,
   observedEle,
+  data_id,
 }) {
   const observer = useRef();
 
+  const [dataFetched, setDataFetched] = useState([]);
   const { isFetching, isFetchingNextPage, fetchNextPage, data, hasNextPage } =
     useInfiniteQuery({
       queryKey: queryKey,
@@ -21,6 +24,14 @@ function useInfiniteScroll({
 
   useEffect(() => {
     if (!isFetching) {
+      const dataStored = useArrange(data, data_id);
+      setDataFetched((prev) => {
+        if (JSON.stringify(prev) === JSON.stringify(dataStored)) {
+          return prev;
+        }
+        return dataStored;
+      });
+
       if (observer) observer.current?.disconnect();
 
       if (!observedEle) return;
@@ -41,7 +52,7 @@ function useInfiniteScroll({
     }
   }, [observedEle, isFetching]);
 
-  return { isFetching, isFetchingNextPage, data, hasNextPage };
+  return { isFetching, isFetchingNextPage, dataFetched, hasNextPage };
 }
 
 export default useInfiniteScroll;
