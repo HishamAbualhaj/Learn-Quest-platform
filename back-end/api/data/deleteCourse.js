@@ -22,7 +22,9 @@ async function deleteCourseQ(course_id, res) {
       .promise()
       .query(get_name_query, [course_id]);
     const [{ title, image_url }] = data;
-    await deleteImage(image_url);
+    if (image_url) {
+      await deleteImage(image_url);
+    }
     await archiveLog(
       res,
       course_id,

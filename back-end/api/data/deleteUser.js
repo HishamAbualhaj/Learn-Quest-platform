@@ -2,6 +2,7 @@ import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
 import archiveLog from "../../system/archiveLogs.js";
 import deleteImage from "../../utils/deleteImage.js";
+import log from "../../system/logs.js";
 const deleteUser = (req, res) => {
   let body = "";
   req.on("data", (chunks) => {
@@ -16,10 +17,12 @@ const deleteUser = (req, res) => {
 async function deleteUserQ(user_id, res) {
   try {
     const query = "DELETE FROM user WHERE student_id = ?";
-    const get_name_query = `SELECT first_name,image_url from user WHERE student_id = ?`;
+    const get_name_query = `SELECT first_name,image_url,email from user WHERE student_id = ?`;
     const [data] = await connection.promise().query(get_name_query, [user_id]);
-    const [{ first_name, image_url }] = data;
-    await deleteImage(image_url);
+    const [{ first_name, image_url, email }] = data;
+    if (image_url) {
+      await deleteImage(image_url);
+    }
     await archiveLog(
       res,
       user_id,
@@ -28,6 +31,7 @@ async function deleteUserQ(user_id, res) {
       email
     );
     await connection.promise().query(query, [user_id]);
+
     handleResponse(
       res,
       null,
