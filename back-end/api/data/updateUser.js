@@ -37,6 +37,7 @@ const updateUser = (req, res) => {
             null,
             "Email is Already found !",
             null,
+            null,
             false
           );
           return;
