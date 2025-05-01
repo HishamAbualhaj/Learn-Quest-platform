@@ -40,7 +40,7 @@ select {
   box-shadow: rgba(0, 0, 0, 0.08) 0px 20px 24px -4px;
 }
 .height-vh-adjust {
-  height: calc(100vh - 77px);
+  height: calc(100vh - 83px);
 }
 .max-container {
   @apply max-w-[1600px] mx-auto;
