@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFetch from "../../hooks/useFetch";
 import ButtonAdmin from "../Dashboard/ButtonAdmin";
 import Alert from "../../components/Alert";
+import API_BASE_URL from "../../config/config";
 
 function Profile() {
   const [state, setState] = useState("Profile");
@@ -119,7 +120,7 @@ function Profile() {
           });
           setData(arr);
         }
-        setImageUrl(`http://localhost:3002/uploads/${image_url_temp}`);
+        setImageUrl(`${API_BASE_URL}/uploads/${image_url_temp}`);
       }
     }
   }, [isEdit]);
@@ -190,7 +191,7 @@ function Profile() {
 
     async function uploadImage() {
       //Specific case for uploading image, (No need to manually set Content-Type)
-      const response = await fetch("http://localhost:3002/handleUploads", {
+      const response = await fetch(`${API_BASE_URL}/handleUploads`, {
         method: "POST",
         body: file,
       });
@@ -248,7 +249,7 @@ function Profile() {
       }
 
       const res = await useFetch(
-        "http://localhost:3002/updateUser",
+        `${API_BASE_URL}/updateUser`,
         obj,
         "PUT"
       );
@@ -271,8 +272,8 @@ function Profile() {
       <div>
         <div className="w-fit mx-auto">
           <Avatar img={imageUrl} className="h-[250px] w-[250px]" />
-          <div className="relative">
-            <div className="right-0 absolute text-white -top-14 shadow-custom text-xl dark:bg-lightDark px-4 py-3 cursor-pointer rounded-[100%]">
+          <div className="relative  cursor-pointer ">
+            <div className="right-0 absolute text-white -top-14 shadow-custom text-xl dark:bg-lightDark bg-dark px-4 py-3 rounded-[100%]">
               <FontAwesomeIcon icon={faUpload} />
             </div>
             <input

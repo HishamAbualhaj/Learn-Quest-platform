@@ -10,6 +10,7 @@ import { tabs, navs } from "../../global/global";
 import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../../context/UserDataContext";
 import { Theme } from "../../context/ThemeContext";
+import API_BASE_URL from "../../config/config";
 export default function Header({
   isStudent = false,
   activeDrop = false,
@@ -28,7 +29,6 @@ export default function Header({
   const data = useContext(UserData);
   const { theme, setTheme } = useContext(Theme);
   useEffect(() => {
-    console.log(data)
     if (data) {
       if (data.loggedIn) {
         let reDirected = data.loggedIn;
@@ -133,7 +133,7 @@ export default function Header({
                       <Avatar
                         img={`${
                           userDataClient.image_url
-                            ? `http://localhost:3002/uploads/${userDataClient.image_url}`
+                            ? `${API_BASE_URL}/uploads/${userDataClient.image_url}`
                             : Person
                         }`}
                         className={"h-[50px] w-[50px]"}
