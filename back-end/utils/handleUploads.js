@@ -11,7 +11,7 @@ async function handleUploads(req, res) {
 
   form.parse(req, (err, fields, files) => {
     if (err) {
-      handleResponse(res, err, "Error parsing form : ", null, 500, null, false);
+      handleResponse(res, err, "Error parsing form : ", null, 500, null);
     }
     const uploadedFile = files.image;
     const id = fields.id;
@@ -20,15 +20,7 @@ async function handleUploads(req, res) {
       const newPath = `${uploadDir}/${id}-${uploadedFile[0].originalFilename}`;
       fs.rename(uploadedFile[0].filepath, newPath, (err) => {
         if (err) {
-          handleResponse(
-            res,
-            err,
-            "Error uploading image : ",
-            null,
-            500,
-            null,
-            false
-          );
+          handleResponse(res, err, "Error uploading image : ", null, 500, null);
         } else {
           handleResponse(
             res,
