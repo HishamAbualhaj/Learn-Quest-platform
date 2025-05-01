@@ -12,7 +12,7 @@ function useInfiniteScroll({
   const observer = useRef();
 
   const [dataFetched, setDataFetched] = useState([]);
-  const { isFetching, isFetchingNextPage, fetchNextPage, data, hasNextPage } =
+  const { isFetching, isFetchingNextPage, fetchNextPage, data, hasNextPage , refetch } =
     useInfiniteQuery({
       queryKey: queryKey,
       queryFn: async ({ pageParam = 1 }) => {
@@ -52,7 +52,7 @@ function useInfiniteScroll({
     }
   }, [observedEle, isFetching]);
 
-  return { isFetching, isFetchingNextPage, dataFetched, hasNextPage };
+  return { isFetching, isFetchingNextPage, dataFetched, hasNextPage, refetch };
 }
 
 export default useInfiniteScroll;
