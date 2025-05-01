@@ -23,6 +23,8 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import getReviews from "./api/data/getReviews.js";
+import getAnalystic from "./api/data/getAnalystic.js";
+import getEnrolledCourses from "./api/data/getEnrolledCourses.js";
 
 const server = http.createServer((req, res) => {
   // Add CORS headers
@@ -44,13 +46,15 @@ const server = http.createServer((req, res) => {
       "/getImage": getImage,
       "/addReview": addReview,
       "/getReviews": getReviews,
+      "/getCourses": getCourses,
+      "/getSystemLog": getSystemLog,
+      "/getUsers": getUsers,
+      "/getEnrolledCourses": getEnrolledCourses,
     },
     GET: {
       "/session": session,
       "/logout": logout,
-      "/getCourses": getCourses,
-      "/getUsers": getUsers,
-      "/getSystemLog": getSystemLog,
+      "/getAnalystic": getAnalystic,
     },
     PUT: {
       "/updateCourse": updateCourse,
@@ -81,13 +85,16 @@ const server = http.createServer((req, res) => {
 
     // resolving current dir with another folder
     const uploadDir = path.resolve(__dirname, "./uploads");
+
+    if (!req.url.split("/")[2]) {
+      getNotFoundCourseImage(uploadDir, res);
+      return;
+    }
     // getting image name from url
     const imagePath = path.join(uploadDir, req.url.split("/")[2]);
-
     fs.readFile(imagePath, (err, data) => {
       if (err) {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end(`Image not found ${err}`);
+        getNotFoundCourseImage(uploadDir, res);
       } else {
         // Determine content type
         const ext = path.extname(imagePath).toLowerCase();
@@ -101,7 +108,18 @@ const server = http.createServer((req, res) => {
     });
   }
 });
-
+function getNotFoundCourseImage(uploadDir, res) {
+  fs.readFile(path.join(uploadDir, "course_preview.png"), (err, data) => {
+    if (err) {
+      res.writeHead(500, { "Content-Type": "text/plain" });
+      res.end("Error downloading image");
+      return;
+    }
+    res.writeHead(200, { "Content-Type": "image/png" });
+    res.end(data);
+  });
+  return;
+}
 const PORT = 3002;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
