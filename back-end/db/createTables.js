@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Courses (
   category VARCHAR(50),
   tabs TEXT,
   image_url VARCHAR(250),
+  stars INT DEFAULT 0,
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
@@ -77,7 +78,7 @@ CREATE TABLE IF NOT EXISTS enrollments (
     student_id INT,
     course_id INT,
     enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    completion_status bool DEFAULT 0,
+    progress int DEFAULT 0,
     certificate_url VARCHAR(255),
     FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES Courses(material_id) ON DELETE CASCADE
