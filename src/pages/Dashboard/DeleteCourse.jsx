@@ -5,29 +5,34 @@ import {
   faTriangleExclamation,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-function DeleteCourse({ setdeleteCoursePopup, id }) {
-  function handleDelete() {
-    (async () => {
-      const res = await useFetch(
-        "http://localhost:3002/deleteCourse",
+import { useMutation } from "@tanstack/react-query";
+import API_BASE_URL from "../../config/config";
+function DeleteCourse({ setdeleteCoursePopup, id, title }) {
+  const { isPending, mutate } = useMutation({
+    mutationFn: async () => {
+      return await useFetch(
+        `${API_BASE_URL}/deleteCourse`,
         { course_id: id },
         "POST"
       );
-      
+    },
+    onSuccess: () => {
       setdeleteCoursePopup(false);
-      console.log(res);
-    })();
-  }
+    },
+    onError: (err)=> {
+      console.log(err)
+    }
+  });
   return (
     <div>
       <div
         onClick={() => {
           setdeleteCoursePopup(false);
         }}
-        className="bg-black/50 w-full h-full absolute top-0 left-0"
+        className="dark:bg-black/50 bg-black/20 w-full h-full absolute top-0 left-0"
       ></div>
-      <div className="bg-lightDark rounded-sm md:w-[650px] w-full h-fit overflow-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
-        <div className="text-center text-white text-xl py-5 border-b border-borderDark flex justify-between px-4">
+      <div className="dark:bg-lightDark bg-white rounded-sm md:w-[650px] w-full h-fit overflow-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
+        <div className="text-center dark:text-white text-lightDark text-xl py-5 border-b dark:border-borderDark border-lightDark/20 flex justify-between px-4">
           WARNING !
           <FontAwesomeIcon
             onClick={() => {
@@ -42,17 +47,28 @@ function DeleteCourse({ setdeleteCoursePopup, id }) {
             className="text-4xl text-red-500/90"
             icon={faTriangleExclamation}
           />
-          <div className="text-gray-400 text-center mt-5 text-xl leading-10">
+          <div className="dark:text-gray-400 text-lightDark text-center mt-5 text-xl leading-10 max-w-[500px] max-sm:flex max-sm:flex-col">
             Warning: You are about to permanently delete the selected course.
-            <span className="bg-red-800 mx-2 text-white p-1">{`Advanced CSS & Sass`}</span>
+            <span className="bg-red-800 mx-2 text-white p-1">{title}</span>
             This action cannot be undone. Please confirm if you wish to proceed.
           </div>
         </div>
-        <div
-          onClick={handleDelete}
-          className="mt-3 bg-red-500/80 text-center px-4 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer"
-        >
-          YES !
+        <div className="flex gap-2">
+          <div
+            onClick={mutate}
+            className="mt-3 bg-red-500/80 text-center px-4 w-1/2 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer"
+          >
+            {isPending ? "Loading ... " : "YES !"}
+          </div>
+
+          <div
+            onClick={() => {
+              setdeleteCoursePopup(false);
+            }}
+            className="mt-3 bg-gray-500/80 text-center px-4 w-1/2 py-2 text-white text-xl hover:bg-gray-600/70 cursor-pointer"
+          >
+            Cancel
+          </div>
         </div>
       </div>
     </div>
