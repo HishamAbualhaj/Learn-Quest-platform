@@ -12,6 +12,7 @@ import Avatar from "../../components/Avatar";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import Alert from "../../components/Alert";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
+import ReviewCard from "../../components/ReviewCard";
 function Review(user_data) {
   // const reviews = [
   //   {
@@ -96,44 +97,24 @@ function Review(user_data) {
 
   const [lastNode, setLastNode] = useState(null);
   const reviewContainer = useRef();
-  
-  const { isFetching, isFetchingNextPage, data, hasNextPage } =
-    useInfiniteScroll({
-      fetchFn: (pageParam) => {
-        return useFetch(
-          `${API_BASE_URL}/getReviews`,
-          { page: pageParam, course_id: user_data.course_id },
-          "POST"
-        );
-      },
-      queryKey: ["reviews", user_data.course_id],
-      scrollContainer: reviewContainer,
-      observedEle: lastNode,
-    });
 
+  const { isFetchingNextPage, dataFetched, hasNextPage } = useInfiniteScroll({
+    fetchFn: (pageParam) => {
+      return useFetch(
+        `${API_BASE_URL}/getReviews`,
+        { page: pageParam, course_id: user_data.course_id },
+        "POST"
+      );
+    },
+    queryKey: ["reviews", user_data.course_id],
+    scrollContainer: reviewContainer,
+    observedEle: lastNode,
+    data_id: "review_id",
+  });
 
   useEffect(() => {
-    if (!isFetching) {
-      // extracting review array from each response object
-      // combining all reviews[] in one array
-      // storing them in Map to avoid duplication
-      const newReviews = [
-        ...new Map(
-          data.pages
-            .map((reviewsArr) => reviewsArr.msg)
-            .flatMap((reviews) => reviews)
-            .map((review) => [review.review_id, review])
-        ).values(),
-      ];
-
-      setReviews((prev) => {
-        if (JSON.stringify(prev) === JSON.stringify(newReviews)) {
-          return prev;
-        }
-        return newReviews;
-      });
-    }
-  }, [isFetching, lastNode]);
+    setReviews(dataFetched);
+  }, [dataFetched]);
 
   const observeEle = (node) => {
     setLastNode(node);
@@ -260,37 +241,27 @@ const ReviewData = forwardRef(function ReviewData(
   return (
     <>
       <div ref={ref} className="border_platform b pb-5">
-        <div className="flex justify-between mt-5 ">
-          <div className="flex items-center gap-5">
-            <div className=" bg-slate-400/20 rounded-[50%]">
-              <Avatar
-                img={`${API_BASE_URL}/uploads/${image}`}
-                className={"h-[50px] w-[50px]"}
-              />
+        <ReviewCard review={{ name, image, text, stars, date }}>
+          <div className="flex justify-between mt-5 ">
+            <div className="flex items-center gap-5">
+              <ReviewCard.Avatar />
+              <ReviewCard.username />
             </div>
-            <div className="text-lg">{name}</div>
+            <ReviewCard.Stars />
           </div>
-          <div className="flex items-center gap-2">
-            {[...Array(stars)].map(() => (
-              <FontAwesomeIcon
-                key={Math.random()}
-                className="text-yellow-400"
-                icon={faStar}
-              />
-            ))}
+          <div className="flex xl:items-center justify-between xl:flex-row flex-col">
+            <div className="max-w-[1350px] break-words">
+              <ReviewCard.Text />
+            </div>
+            <ReviewCard.Date />
           </div>
-        </div>
-        <div className="flex xl:items-center justify-between xl:flex-row flex-col">
-          <div className="mt-3 lg:ml-8 dark:text-white/50 text-black max-w-[800px]">
-            {text}
-          </div>
-          <div className="dark:text-white/50 text-black/50 mt-5 text-sm lg:ml-8">{`${
-            date?.split("T")[0]
-          } - ${date?.split("T")[1].split(".")[0]}`}</div>
-        </div>
+        </ReviewCard>
       </div>
     </>
   );
 });
 
 export default Review;
+
+{
+}
