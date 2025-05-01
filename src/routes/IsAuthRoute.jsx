@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 function IsAuthRoute({ children, isAllowed = true, isAdmin = false }) {
   const [isLoading, setIsLoading] = useState(false);
   const dataFetched = useLoaderData();
@@ -22,19 +23,7 @@ function IsAuthRoute({ children, isAllowed = true, isAdmin = false }) {
       !isAllowed ? setIsLoading(true) : navigate("/");
     }
   }, []);
-  return (
-    <>
-      {isLoading ? (
-        children
-      ) : (
-        <>
-          <div className="bg-dark h-[100vh] text-white flex items-center justify-center text-4xl">
-            Loading data ...
-          </div>
-        </>
-      )}
-    </>
-  );
+  return <>{isLoading ? children : <Loading />}</>;
 }
 
 export default IsAuthRoute;
