@@ -9,7 +9,7 @@ function ErrorPage() {
         Something went wrong
       </h1>
       <div className="text-gray-400 text-lg">Try to reload page, </div>
-      <div className="mt-4">{error.message || "Unknown error"}</div>
+      <div className="mt-4 dark:text-white">{error.message || "Unknown error"}</div>
     </div>
   );
 }
