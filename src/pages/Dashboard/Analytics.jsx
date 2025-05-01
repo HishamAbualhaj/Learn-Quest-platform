@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBlog,
@@ -7,7 +7,24 @@ import {
   faStar,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-export default function Analytics() {
+import useFetch from "../../hooks/useFetch";
+import API_BASE_URL from "../../config/config";
+import { useQuery } from "@tanstack/react-query";
+function Analytics() {
+
+
+  const { data } = useQuery({
+    queryFn: async () => {
+      return await useFetch(`${API_BASE_URL}/getAnalystic`, null, "GET");
+    },
+    queryKey: ["analytics"],
+  });
+
+  useEffect(() => {
+    if (data) {
+      console.log("Data from analytics : ", data.msg);
+    }
+  }, [data]);
   return (
     <div className="h-[800px] overflow-auto">
       <div className="flex items-center justify-between sm:flex-row flex-col">
@@ -31,18 +48,18 @@ export default function Analytics() {
               />
             }
             text={"Total users"}
-            number={1000}
+            number={data?.msg?.users}
           />
           <div className="flex gap-3 lg:flex-row flex-col mt-3 ">
             <Panel
               icon={<Ping color={"green"} />}
               text={"Active users"}
-              number={500}
+              number={data?.msg?.active_users}
             />
             <Panel
               icon={<Ping color={"red"} />}
               text={"inactive users"}
-              number={500}
+              number={data?.msg?.inactive_users}
             />
           </div>
         </div>
@@ -56,7 +73,7 @@ export default function Analytics() {
               />
             }
             text={"total courses"}
-            number={25}
+            number={data?.msg?.courses}
           />
         </div>
 
@@ -69,7 +86,7 @@ export default function Analytics() {
               />
             }
             text={"total reviews"}
-            number={550}
+            number={data?.msg?.reviews}
           />
         </div>
         <div className="rounded-md border dark:border-borderDark p-3 mt-3">
@@ -118,11 +135,17 @@ function Panel({ icon, text, number }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {icon}
-          <div className="dark:text-white text-lightText xl:text-2xl text-xl uppercase">{text}</div>
+          <div className="dark:text-white text-lightText xl:text-2xl text-xl uppercase">
+            {text}
+          </div>
         </div>
 
-        <div className="text-2xl font-semibold dark:text-white text-lightText">{number}</div>
+        <div className="text-2xl font-semibold dark:text-white text-lightText">
+          {number}
+        </div>
       </div>
     </div>
   );
 }
+
+export default Analytics;
