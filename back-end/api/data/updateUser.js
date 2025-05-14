@@ -13,6 +13,7 @@ const updateUser = (req, res) => {
   // Entire body has been received : no more data is coming
   req.on("end", async () => {
     try {
+      console.log("Data", JSON.parse(body));
       const {
         first_name,
         last_name,
@@ -97,6 +98,8 @@ async function updateUserProfile(
     SET first_name = ?, last_name = ?, email = ?, gender = ?, birthdate = ? 
     WHERE student_id = ?`;
 
+  const query_review = `UPDATE reviews SET image_url = ? WHERE student_id = ?`;
+
   if (isImageChange) {
     image_url = `${student_id}-${image_url}`;
     await deleteOldImage(student_id);
@@ -111,6 +114,8 @@ async function updateUserProfile(
         image_url,
         student_id,
       ]);
+
+    await connection.promise().query(query_review, [image_url, student_id]);
   } else {
     await connection
       .promise()
@@ -147,7 +152,7 @@ async function deleteOldImage(user_id) {
 
   const [{ image_url }] = result[0];
 
-  await deleteImage(image_url);
+  image_url && (await deleteImage(image_url));
 }
 
 export default updateUser;
