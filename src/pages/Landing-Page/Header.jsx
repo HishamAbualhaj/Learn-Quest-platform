@@ -11,11 +11,7 @@ import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../../context/UserDataContext";
 import { Theme } from "../../context/ThemeContext";
 import API_BASE_URL from "../../config/config";
-export default function Header({
-  isStudent = false,
-  activeDrop = false,
-  sendData,
-}) {
+export default function Header({ isStudent = false }) {
   const [nav, setNav] = useState(false);
   const [activeNav, setActiveNav] = useState("Home");
   // controls the dropdown for user
@@ -33,14 +29,8 @@ export default function Header({
       if (data.loggedIn) {
         let reDirected = data.loggedIn;
         let [{ first_name, role, image_url }] = data.userData;
+        setUserDataClient({ first_name, role, image_url });
         setIsLogged(reDirected);
-        [first_name, role, image_url].forEach((attr, index) => {
-          const arr = ["first_name", "role", "image_url"];
-          setUserDataClient((prev) => ({
-            ...prev,
-            [arr[index]]: attr,
-          }));
-        });
       } else {
         setIsLogged(false);
       }
@@ -49,20 +39,8 @@ export default function Header({
     }
   }, [data]);
 
-  useEffect(() => {
-    sendData(active);
-  }, [active]);
-
-  useEffect(() => {
-    setActive(activeDrop);
-  }, [activeDrop]);
   return (
-    <div
-      onClick={() => {
-        setActive(false);
-      }}
-      className="section relative"
-    >
+    <div className="section relative">
       <div className={`${isStudent ? "" : "max-container"}`}>
         <div className="flex justify-between lg:gap-0 gap-5 items-center">
           {!isStudent && (
@@ -82,7 +60,7 @@ export default function Header({
               {nav && (
                 <NavMobile isStudent={isStudent} isLoggedIn={isLoggedIn} />
               )}
-              <div className="gap-8 md:flex hidden">
+              <div className="gap-8 lg:flex hidden">
                 {navs.map((nav) => (
                   <div
                     key={nav.id}
@@ -186,6 +164,15 @@ export default function Header({
           </div>
         </div>
       </div>
+
+      {active && (
+        <div
+          onClick={() => {
+            setActive(false);
+          }}
+          className="absolute w-full h-screen bg-transparent left-0 top-0 z-[2]"
+        ></div>
+      )}
     </div>
   );
 
@@ -194,6 +181,9 @@ export default function Header({
       <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
         {tabs.map((tab) => (
           <Link
+            onClick={() => {
+              setActive(false);
+            }}
             key={tab.key}
             to={`${
               isStudent
