@@ -9,7 +9,7 @@ function getUserData(req, response) {
     try {
       const { id } = JSON.parse(body);
 
-      const query = `SELECT * from user WHERE student_id = ?`;
+      const query = `SELECT student_id,first_name,last_name,status_user,email,gender,birthdate,role,image_url,joined_at,login_method from user WHERE student_id = ?`;
       const result = await connection.promise().query(query, [id]);
       const [data] = result;
       if (data.length === 0) {
