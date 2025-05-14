@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Avatar from "../../components/Avatar";
 import { faGear, faUpload, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFetch from "../../hooks/useFetch";
 import ButtonAdmin from "../Dashboard/ButtonAdmin";
 import Alert from "../../components/Alert";
+import Person from "../../assets/person.png";
+import { UserData } from "../../context/UserDataContext";
 import API_BASE_URL from "../../config/config";
-
 function Profile() {
   const [state, setState] = useState("Profile");
   const [isEdit, setIsEdit] = useState(false);
   const [userId, setUserId] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
+
+  const data_user = useContext(UserData);
+  useEffect(() => {
+    if (data_user) {
+      const [{ student_id }] = data_user?.userData;
+      setUserId(student_id);
+    }
+  }, [data_user]);
   const [data, setData] = useState([
     {
       key: 1,
@@ -40,7 +49,7 @@ function Profile() {
     {
       key: 5,
       name: "Gender",
-      data: "",
+      data: "Male",
       inType: "select",
     },
     {
@@ -66,23 +75,13 @@ function Profile() {
       getData();
       async function getData() {
         let image_url_temp = "";
-        const response = await useFetch(
-          "http://localhost:3002/session",
-          null,
-          "GET"
-        );
-        let [{ student_id }] = response.msg.userData;
-        setUserId(student_id);
-        // after getting user id then fetch for data
+
+        if (!userId) return;
         const user = {
-          id: student_id,
+          id: userId,
         };
 
-        const res = await useFetch(
-          "http://localhost:3002/getUserData",
-          user,
-          "POST"
-        );
+        const res = await useFetch(`${API_BASE_URL}/getUserData`, user, "POST");
         if (res.msg.data) {
           const [
             {
@@ -120,10 +119,12 @@ function Profile() {
           });
           setData(arr);
         }
-        setImageUrl(`${API_BASE_URL}/uploads/${image_url_temp}`);
+        image_url_temp
+          ? setImageUrl(`${API_BASE_URL}/uploads/${image_url_temp}`)
+          : setImageUrl(Person);
       }
     }
-  }, [isEdit]);
+  }, [isEdit, userId]);
 
   return (
     <div className="sm:px-5 px-1 flex items-center height-vh-adjust">
@@ -181,11 +182,7 @@ function Profile() {
     const [isLoading, setIsLoading] = useState(false);
     const [file, setFile] = useState(null);
     const [imageChange, setImageChange] = useState(false);
-    const [alert, setAlert] = useState({
-      status: "",
-      msg: "",
-      redirect: false,
-    });
+    const [alert, setAlert] = useState(null);
 
     const [dataProfile, setDataProfile] = useState(data);
 
@@ -214,7 +211,9 @@ function Profile() {
       });
       setDataProfile(newProfile);
     };
-
+    useEffect(() => {
+      console.log("Data", dataProfile);
+    }, [dataProfile]);
     const handleImageChange = (e) => {
       const formdata = new FormData();
       formdata.append("image", e.target?.files[0]);
@@ -248,26 +247,12 @@ function Profile() {
         imageChange && (await uploadImage());
       }
 
-      const res = await useFetch(
-        `${API_BASE_URL}/updateUser`,
-        obj,
-        "PUT"
-      );
+      const res = await useFetch(`${API_BASE_URL}/updateUser`, obj, "PUT");
 
       setIsLoading(false);
       setAlert(res);
     }
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        if (alert.status) {
-          setState("Profile");
-          setIsEdit(false);
-        }
-        return () => {
-          clearTimeout(timer);
-        };
-      }, 1500);
-    }, [alert]);
+
     return (
       <div>
         <div className="w-fit mx-auto">
@@ -301,12 +286,25 @@ function Profile() {
                     className="w-full"
                     id={data.key}
                   >
-                    <option className="text-black" value="Male">
-                      Male
-                    </option>
-                    <option className="text-black" value="Female">
-                      Female
-                    </option>
+                    {data.data === "Male" ? (
+                      <>
+                        <option className="text-black" value="Male">
+                          Male
+                        </option>
+                        <option className="text-black" value="Female">
+                          Female
+                        </option>
+                      </>
+                    ) : (
+                      <>
+                        <option className="text-black" value="Female">
+                          Female
+                        </option>
+                        <option className="text-black" value="Male">
+                          Male
+                        </option>
+                      </>
+                    )}
                   </select>
                 ) : (
                   <input
@@ -322,11 +320,14 @@ function Profile() {
             </div>
           )
         )}
-        {alert.status ? (
-          <Alert msg={alert.msg} type="success" />
-        ) : (
-          <Alert msg={alert.msg} type="failed" />
-        )}
+        <div className="mt-5">
+          {alert &&
+            (alert.status ? (
+              <Alert msg={alert.msg} type="success" />
+            ) : (
+              <Alert msg={alert.msg} type="failed" />
+            ))}
+        </div>
         {isEdit &&
           (isLoading ? (
             <div>
