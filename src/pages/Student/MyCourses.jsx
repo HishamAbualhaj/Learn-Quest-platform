@@ -43,13 +43,14 @@ function MyCourses() {
   const { data, isFetching, refetch } = useQuery({
     queryFn: async () => {
       if (!studentId) return;
+      console.log("Data sent " , fetchData)
       return await useFetch(
         `${API_BASE_URL}/getEnrolledCourses`,
         {
           page: currentPagePara,
           student_id: studentId,
-          search_text: fetchData.search_text,
-          select_data: fetchData.select_data,
+          search_text: fetchData.search_text === "null" ? null : fetchData.search_text,
+          select_data: fetchData.select_data === "null" ? null : fetchData.select_data,
         },
         "POST"
       );
@@ -249,7 +250,7 @@ function MyCourses() {
                     setSearchPara({
                       page: currentPagePara - 1,
                       search: fetchData.search_text,
-                      type: e.target.value,
+                      type: fetchData.select_data,
                     });
                     setCurrentPage((prev) => prev - 1);
                   }
@@ -293,8 +294,8 @@ function MyCourses() {
                     if (currentPagePara >= Math.ceil(maxPage / 4)) return;
                     setSearchPara({
                       page: currentPagePara + 1,
-                      search: searchPara.get("search") || null,
-                      type: e.target.value,
+                      search: fetchData.search_text,
+                      type: fetchData.select_data,
                     });
                     setCurrentPage((prev) => prev + 1);
                   }
