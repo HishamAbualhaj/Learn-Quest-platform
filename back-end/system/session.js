@@ -3,6 +3,7 @@ import handleResponse from "../utils/handleResponse.js";
 const session = (req, res) => {
   const cookies = req.headers.cookie || "";
   let sessionId = "";
+
   if (cookies) {
     sessionId = cookies.match(/session_id=([\w\d]+)/)?.[1];
   }
@@ -26,12 +27,16 @@ const session = (req, res) => {
   validateSessionId(sessionId, res);
 };
 
-async function validateSessionId(sessionId, res) {
+export async function validateSessionId(sessionId, res, check = false) {
   try {
     const query =
       "SELECT user_id FROM session WHERE session_id = ? AND expires_at > NOW()";
     const result = await connection.promise().query(query, [sessionId]);
     if (result[0].length === 0) {
+      if (check) {
+        // session not found
+        return false;
+      }
       handleResponse(
         res,
         null,
@@ -45,10 +50,13 @@ async function validateSessionId(sessionId, res) {
         },
         null
       );
-      return;
     } else {
+      if (check) {
+        return true;
+      }
       const [{ user_id }] = result[0];
-      const query_fetch_data = "SELECT * FROM user WHERE student_id = ?";
+      const query_fetch_data =
+        "SELECT student_id,first_name,last_name,role,image_url,status_user,email,gender,birthdate,joined_at FROM user WHERE student_id = ?";
       const userData = await connection
         .promise()
         .query(query_fetch_data, [user_id]);
