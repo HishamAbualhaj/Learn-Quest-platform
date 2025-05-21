@@ -2,7 +2,7 @@ import http from "http";
 import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
 import logout from "./api/auth/logout.js";
-import session from "./system/session.js";
+import session, { validateSessionId } from "./system/session.js";
 import getUserData from "./utils/getUserData.js";
 import addCourse from "./api/data/addCourse.js";
 import getCourses from "./api/data/getCourses.js";
@@ -19,14 +19,22 @@ import enrollCourse from "./api/data/enrollCourse.js";
 import addReview from "./api/data/addReview.js";
 // Test upload image
 import handleUploads from "./utils/handleUploads.js";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
 import getReviews from "./api/data/getReviews.js";
 import getAnalystic from "./api/data/getAnalystic.js";
 import getEnrolledCourses from "./api/data/getEnrolledCourses.js";
 
-const server = http.createServer((req, res) => {
+import handleImage from "./utils/handleImage.js";
+//Google auth
+import url from "url";
+import handleGoogleAuth from "./api/auth/handleGoogleAuth.js";
+import googleAuth from "./api/auth/googleAuth.js";
+import forgotPass from "./api/auth/forgotpass.js";
+import confirmCode from "./api/auth/confirmCode.js";
+import resetPass from "./api/auth/resetpass.js";
+import handleResponse from "./utils/handleResponse.js";
+import getCoursesAdmin from "./api/data/getCoursesAdmin.js";
+
+const server = http.createServer(async (req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT,OPTIONS"); // Allow specific methods
@@ -47,9 +55,13 @@ const server = http.createServer((req, res) => {
       "/addReview": addReview,
       "/getReviews": getReviews,
       "/getCourses": getCourses,
+      "/getCoursesAdmin": getCoursesAdmin,
       "/getSystemLog": getSystemLog,
       "/getUsers": getUsers,
       "/getEnrolledCourses": getEnrolledCourses,
+      "/forgotPass": forgotPass,
+      "/verifyCode": confirmCode,
+      "/resetPass": resetPass,
     },
     GET: {
       "/session": session,
@@ -71,55 +83,43 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  const cookies = req.headers.cookie || "";
+  let sessionId = "";
+
+  if (cookies) {
+    sessionId = cookies.match(/session_id=([\w\d]+)/)?.[1];
+  }
+  const isSessionId = await validateSessionId(sessionId, res, true);
+
   const methodRoutes = routes[req.method];
+
+  if (
+    !isSessionId &&
+    !(
+      req.url === "/login" ||
+      req.url === "/signup" ||
+      req.url === "/auth/google" ||
+      req.url === "/oauth2callback"
+    )
+  ) {
+    handleResponse(res, null, null, 403, null, "Forbidden Request 403", null);
+    return;
+  }
+
   if (methodRoutes && methodRoutes[req.url]) {
     methodRoutes[req.url](req, res);
   } else if (req.url.startsWith("/uploads/")) {
-    // No route defined then its an image request
-
-    // find current url from this file ,
-    const __filename = fileURLToPath(import.meta.url);
-
-    // find current dir for this file
-    const __dirname = path.dirname(__filename);
-
-    // resolving current dir with another folder
-    const uploadDir = path.resolve(__dirname, "./uploads");
-
-    if (!req.url.split("/")[2]) {
-      getNotFoundCourseImage(uploadDir, res);
-      return;
-    }
-    // getting image name from url
-    const imagePath = path.join(uploadDir, req.url.split("/")[2]);
-    fs.readFile(imagePath, (err, data) => {
-      if (err) {
-        getNotFoundCourseImage(uploadDir, res);
-      } else {
-        // Determine content type
-        const ext = path.extname(imagePath).toLowerCase();
-        let contentType = "application/octet-stream";
-        if (ext === ".jpg" || ext === ".jpeg") contentType = "image/jpeg";
-        else if (ext === ".png") contentType = "image/png";
-
-        res.writeHead(200, { "Content-Type": contentType });
-        res.end(data);
-      }
-    });
+    handleImage(req, res);
+  } else if (url.parse(req.url).pathname === "/auth/google") {
+    const [authUrl] = googleAuth();
+    res.writeHead(302, { Location: authUrl });
+    res.end();
+  } else if (url.parse(req.url).pathname === "/oauth2callback") {
+    const [_, client] = googleAuth();
+    handleGoogleAuth(req, res, client);
   }
 });
-function getNotFoundCourseImage(uploadDir, res) {
-  fs.readFile(path.join(uploadDir, "course_preview.png"), (err, data) => {
-    if (err) {
-      res.writeHead(500, { "Content-Type": "text/plain" });
-      res.end("Error downloading image");
-      return;
-    }
-    res.writeHead(200, { "Content-Type": "image/png" });
-    res.end(data);
-  });
-  return;
-}
+
 const PORT = 3002;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
