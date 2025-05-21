@@ -16,6 +16,7 @@ const updateCourse = (req, res) => {
         course_id,
         student_id,
         role,
+        email,
         title,
         price,
         discount,
@@ -25,7 +26,10 @@ const updateCourse = (req, res) => {
         description,
         materials,
       } = JSON.parse(body);
+
+      let lessons = await updateCourseMaterials(course_id, materials);
       await updateCourseDetails(
+        email,
         course_id,
         student_id,
         title,
@@ -35,16 +39,17 @@ const updateCourse = (req, res) => {
         image_url,
         tabs,
         description,
+        lessons,
         res
       );
-      await updateCourseMaterials(course_id, materials);
+
       handleResponse(
         res,
         null,
         null,
         200,
         null,
-        "Course updated successfully!",
+        { msg: "Course updated successfully!" },
         null
       );
     } catch (error) {
@@ -55,7 +60,7 @@ const updateCourse = (req, res) => {
         null,
         500,
         null,
-        "Error updating course"
+        { msg: "Error updating course" }
       );
     }
   });
@@ -63,6 +68,7 @@ const updateCourse = (req, res) => {
 
 // Function to update course details
 async function updateCourseDetails(
+  email,
   course_id,
   student_id,
   title,
@@ -72,6 +78,7 @@ async function updateCourseDetails(
   image,
   tabs,
   description,
+  lessons,
   res
 ) {
   tabs = tabs.toString();
@@ -79,7 +86,7 @@ async function updateCourseDetails(
   if (image) {
     image = `${course_id}-${image}`;
     query = `UPDATE Courses 
-      SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ?
+      SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ? , lessons = ?
       WHERE course_id = ?`;
     await deleteOldImage(course_id);
     await connection
@@ -92,11 +99,12 @@ async function updateCourseDetails(
         category,
         tabs,
         image,
+        lessons,
         course_id,
       ]);
   } else {
     query = `UPDATE Courses 
-    SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?
+    SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ? , lessons = ?
     WHERE course_id = ?`;
     await connection
       .promise()
@@ -107,20 +115,17 @@ async function updateCourseDetails(
         discount,
         category,
         tabs,
+        lessons,
         course_id,
       ]);
   }
 
-  await log(
-    res,
-    student_id,
-    `Admin: Updated course : ${title}`,
-    "admin@gmail.com"
-  );
+  await log(res, student_id, `Admin: Updated course : ${title}`, email);
 }
 
 // Function to update course materials
 async function updateCourseMaterials(course_id, data) {
+  let lessons = 0;
   // Delete existing materials first
   const deleteQuery = `DELETE FROM coursematerials WHERE course_id = ?`;
   await connection.promise().query(deleteQuery, [course_id]);
@@ -135,7 +140,10 @@ async function updateCourseMaterials(course_id, data) {
     await connection
       .promise()
       .query(insertQuery, [material_id, course_id, title, subtitle, url]);
+    lessons += 1;
   }
+
+  return lessons;
 }
 
 async function deleteOldImage(course_id) {

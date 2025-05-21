@@ -13,7 +13,6 @@ const updateUser = (req, res) => {
   // Entire body has been received : no more data is coming
   req.on("end", async () => {
     try {
-      console.log("Data", JSON.parse(body));
       const {
         first_name,
         last_name,

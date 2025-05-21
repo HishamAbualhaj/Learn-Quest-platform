@@ -6,6 +6,8 @@ import { useContext, useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import Alert from "../../components/Alert";
 import { UserData } from "../../context/UserDataContext";
+import API_BASE_URL from "../../config/config";
+import { useMutation } from "@tanstack/react-query";
 function EditCourse() {
   const location = useLocation();
   const [courseId, setCourseId] = useState(null);
@@ -16,8 +18,8 @@ function EditCourse() {
   const data_user = useContext(UserData);
   useEffect(() => {
     if (data_user) {
-      const [{ student_id, role }] = data_user?.userData;
-      setUserData({ student_id, role });
+      const [{ student_id, role, email }] = data_user?.userData;
+      setUserData({ student_id, role, email });
     }
   }, [data_user]);
   useEffect(() => {
@@ -47,7 +49,7 @@ function EditCourse() {
       });
       async function getData() {
         const res = await useFetch(
-          "http://localhost:3002/getCourseData",
+          `${API_BASE_URL}/getCourseData`,
           { course_id: courseId, user_data: user_data },
           "POST"
         );
@@ -67,18 +69,7 @@ function EditCourse() {
     }
   }, [courseId, user_data]);
 
-  const [alert, setAlert] = useState({ status: "", msg: "", redirect: false });
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAlert({ status: null, msg: "" });
-    }, 5000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [alert]);
+  const [alert, setAlert] = useState(null);
 
   const category = [
     { id: 1, name: "Introduction to Computer Science" },
@@ -119,33 +110,33 @@ function EditCourse() {
     },
   ];
 
-  async function editData() {
-    setIsLoading(true);
-    if (file) {
-      await uploadImage();
-    }
-    const updatedCourseData = {
-      ...courseData,
-      image_url: file ? courseData.image_url : null,
-      student_id: user_data.student_id,
-      role: user_data.role,
-    };
-    const res = await useFetch(
-      "http://localhost:3002/updateCourse",
-      updatedCourseData,
-      "PUT"
-    );
-    setIsLoading(false);
-    setAlert(res);
-  }
+  const { data, isPending, mutate } = useMutation({
+    mutationFn: async () => {
+      if (file) {
+        await uploadImage();
+      }
+      const updatedCourseData = {
+        ...courseData,
+        image_url: file ? courseData.image_url : null,
+        student_id: user_data.student_id,
+        role: user_data.role,
+        email: user_data.email,
+      };
+      return await useFetch(
+        `${API_BASE_URL}/updateCourse`,
+        updatedCourseData,
+        "PUT"
+      );
+    },
+  });
 
   useEffect(() => {
-    console.log(courseData);
-  }, [courseData]);
+    setAlert(data);
+  }, [data]);
 
   async function uploadImage() {
     //Specific case for uploading image, (No need to manually set Content-Type)
-    const response = await fetch("http://localhost:3002/handleUploads", {
+    const response = await fetch(`${API_BASE_URL}/handleUploads`, {
       method: "POST",
       body: file,
     });
@@ -248,11 +239,12 @@ function EditCourse() {
         </div>
 
         <div className="p-3">
-          {alert.status ? (
-            <Alert msg={alert.msg} type="success" />
-          ) : (
-            <Alert msg={alert.msg} type="failed" />
-          )}
+          {alert &&
+            (alert.status ? (
+              <Alert msg={alert.msg.msg} type="success" />
+            ) : (
+              <Alert msg={alert.msg.msg} />
+            ))}
           {inputs.map((input) => (
             <div
               key={input.key}
@@ -389,12 +381,12 @@ function EditCourse() {
             />
           </div>
 
-          {isLoading ? (
+          {isPending ? (
             <div>
               <ButtonAdmin text="LOADING ... " />
             </div>
           ) : (
-            <div onClick={editData}>
+            <div onClick={mutate}>
               <ButtonAdmin text="EDIT" />
             </div>
           )}
