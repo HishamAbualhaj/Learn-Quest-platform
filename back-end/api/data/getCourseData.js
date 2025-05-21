@@ -8,10 +8,7 @@ const getCourseData = (req, res) => {
     body += chunks;
   });
   req.on("end", async () => {
-    const {
-      course_id,
-      user_data: { student_id, role },
-    } = JSON.parse(body);
+    const { course_id, student_id, role } = JSON.parse(body);
 
     if (role === "admin") {
       await getCourseQ(course_id, student_id, role);
@@ -25,23 +22,24 @@ const getCourseData = (req, res) => {
   });
 };
 
-async function getCourseQ(course_id, student_id, role) {
+async function getCourseQ(course_id, student_id) {
   try {
     const query_getCourseData = "SELECT * FROM courses WHERE course_id = ?";
-    const query_getCoursematerials =
-      "SELECT * FROM coursematerials WHERE course_id = ?";
-    const query_getCompleteionStatus =
-      "SELECT * FROM completeionmaterial WHERE student_id = ?";
+
+    const query_getCourseMaterialCompletion = `SELECT     
+                                  m.*,
+                                  coalesce(c.isCompleted,0) AS isCompleted
+                                  FROM      
+                                  coursematerials m LEFT JOIN      
+                                  completeionmaterial c ON m.material_id = c.material_id AND c.student_id = ? WHERE m.course_id = ? ORDER BY m.created_date ASC`;
+
     const courseData = await connection
       .promise()
       .query(query_getCourseData, [course_id]);
-    const courseMaterial = await connection
-      .promise()
-      .query(query_getCoursematerials, [course_id]);
 
-    const completeionStatus = await connection
+    const courseDataMaterialCompletion = await connection
       .promise()
-      .query(query_getCompleteionStatus, [student_id]);
+      .query(query_getCourseMaterialCompletion, [student_id, course_id]);
 
     const [
       {
@@ -53,6 +51,7 @@ async function getCourseQ(course_id, student_id, role) {
         category,
         tabs,
         image_url,
+        lessons,
         created_date,
       },
     ] = courseData[0];
@@ -66,28 +65,9 @@ async function getCourseQ(course_id, student_id, role) {
       category,
       tabs,
       image_url,
+      lessons,
       created_date,
     };
-
-    function applyIsCompleted() {
-      let arr = [...courseMaterial[0]];
-      let element = null;
-      courseMaterial[0].forEach((material, index) => {
-        element = completeionStatus[0].find((obj) => {
-          if (material.material_id === obj.material_id) return true;
-        });
-
-        if (element) {
-          arr[index] = {
-            ...arr[index],
-            isCompleted: element.isCompleted,
-          };
-        }
-        element = null;
-      });
-
-      return arr;
-    }
 
     handleResponse(
       response,
@@ -96,18 +76,23 @@ async function getCourseQ(course_id, student_id, role) {
       200,
       null,
       {
-        msg: [
-          objData,
-          role === "admin" ? courseMaterial[0] : applyIsCompleted(),
-        ],
+        msg: [objData, courseDataMaterialCompletion[0]],
         enrolled: true,
       },
       null
     );
   } catch (error) {
-    handleResponse(response, error, "Error SELECT course data: ", null, 500, null, {
-      msg: "Error to SELECT Course Data",
-    });
+    handleResponse(
+      response,
+      error,
+      "Error SELECT course data: ",
+      null,
+      500,
+      null,
+      {
+        msg: "Error to SELECT Course Data",
+      }
+    );
   }
 }
 async function getCourseQNotEnrolled(course_id) {
@@ -180,7 +165,7 @@ async function getCourseQNotEnrolled(course_id) {
     );
   }
 }
-async function checkCourseEnrollment(user_id, course_id) {
+export async function checkCourseEnrollment(user_id, course_id) {
   try {
     const query = `SELECT enrollment_id FROM enrollments WHERE student_id = ? AND course_id = ?`;
 
