@@ -2,10 +2,10 @@ import handleResponse from "./handleResponse.js";
 import connection from "../db/db.js";
 async function isEmailFound(email, response) {
   try {
-    const query = `SELECT * from user WHERE email = ?`;
+    const query = `SELECT student_id from user WHERE email = ?`;
     const result = await connection.promise().query(query, [email]);
     const [data] = result;
-    return data.length === 0 ? false : true;
+    return data.length === 0 ? false : { data };
   } catch (error) {
     handleResponse(
       response,
