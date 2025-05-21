@@ -1,7 +1,7 @@
 import connection from "../../db/db.js";
 import handleResponse from "../../utils/handleResponse.js";
 import log from "../../system/logs.js";
-import crypto from "crypto";
+import handleSession from "../../system/handleSession.js";
 let response = null;
 let request = null;
 const login = (req, res) => {
@@ -21,8 +21,23 @@ const login = (req, res) => {
 
       // fetching for password if vaild or not
       const isAuth = await getId(email, password);
+
       if (isAuth) {
-        const [{ student_id, first_name, role }] = isAuth;
+        const [{ student_id, first_name, role, login_method }] = isAuth;
+        if (login_method === "google") {
+          handleResponse(
+            response,
+            null,
+            null,
+            200,
+            null,
+            "Use google login ",
+            null,
+            null,
+            false
+          );
+          return;
+        }
         role === "admin"
           ? await log(response, student_id, `Admin just Logined In`, email)
           : await log(
@@ -32,24 +47,7 @@ const login = (req, res) => {
               email
             );
 
-        // Handling session storage at database
-        const generateSessionId = () => crypto.randomBytes(8).toString("hex");
-        // Generating random session id
-        const sessionId = generateSessionId();
-        const expires = new Date(Date.now() + 3600000 * 24); // 1 day
-        const isSession = await handleSession(sessionId, student_id, expires);
-        if (isSession) {
-          res.writeHead(200, {
-            "Content-Type": "application/json",
-            "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400`,
-          });
-          res.end(
-            JSON.stringify({
-              status: true,
-            })
-          );
-          return;
-        }
+        await handleSession(student_id, res);
       } else {
         handleResponse(
           response,
@@ -80,7 +78,7 @@ const login = (req, res) => {
 async function getId(email, password) {
   try {
     const query =
-      "SELECT student_id,first_name,role FROM user WHERE email = ? AND password = ?";
+      "SELECT student_id,first_name,role,login_method FROM user WHERE email = ? AND password = ?";
     const result = await connection.promise().query(query, [email, password]);
     const [data] = result;
     return data.length === 0 ? false : data;
@@ -98,31 +96,7 @@ async function getId(email, password) {
   }
 }
 
-async function handleSession(session_id, user_id, expires) {
-  try {
-    const query =
-      "INSERT INTO session (session_id, user_id, expires_at) VALUES (?, ?, ?)";
-    const result = await connection
-      .promise()
-      .query(query, [session_id, user_id, expires]);
-    const [data] = result;
-    await updateUserStatus(user_id);
-    return data.length === 0 ? false : data;
-  } catch (error) {
-    handleResponse(
-      response,
-      error,
-      "Error Inserting sesssion data : ",
-      null,
-      500,
-      null,
-      "Error to Insert session"
-    );
-    return error;
-  }
-}
-
-async function updateUserStatus(user_id) {
+export async function updateUserStatus(user_id) {
   try {
     const query = "UPDATE USER SET status_user = ? WHERE student_id = ?";
     await connection.promise().query(query, [1, user_id]);
