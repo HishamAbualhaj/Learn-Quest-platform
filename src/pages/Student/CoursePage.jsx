@@ -10,12 +10,13 @@ import Button from "../../components/Button";
 import { faCcVisa } from "@fortawesome/free-brands-svg-icons";
 
 import { useLocation } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import useFetch from "../../hooks/useFetch";
 import Loading from "../../components/Loading";
 import { UserData } from "../../context/UserDataContext";
 import CourseVideos from "./CourseVideos";
 import Review from "./Review";
+import API_BASE_URL from "../../config/config";
 function CoursePage() {
   const [isTranslate, setIsTranslate] = useState(false);
   const [course_id, setCourseId] = useState(null);
@@ -23,7 +24,8 @@ function CoursePage() {
 
   const [videoUrl, setVideoUrl] = useState(null);
 
-  const [enrolled, setEnrolled] = useState(null);
+  const [courseVideos, setCourseVideos] = useState(null);
+
   const course_url = useLocation();
 
   const data_user = useContext(UserData);
@@ -37,37 +39,36 @@ function CoursePage() {
   useEffect(() => {
     if (data_user) {
       const userDataArray = data_user?.userData;
-
       const { student_id, email, first_name, image_url, role } =
         userDataArray[0];
       setUserData({
         student_id,
+        course_id,
         email,
         first_name,
         image_url,
         role,
-        course_id,
       });
     }
   }, [data_user]);
 
   const { data, isLoading, refetch } = useQuery({
     queryFn: async () => {
-      if (!course_id || !user_data) return;
+      if (!user_data && !course_id) return;
       return await useFetch(
-        "http://localhost:3002/getCourseData",
+        `${API_BASE_URL}/getCourseData`,
         {
-          course_id: course_id,
-          user_data: user_data,
+          ...user_data,
         },
         "POST"
       );
     },
     queryKey: ["videos"],
-    enabled: !!course_id && !!user_data,
+    enabled: !!user_data && !!course_id,
+    refetchOnMount: true,
   });
-  const [courseVideos, setCourseVideos] = useState(null);
 
+  const [enrolled, setEnrolled] = useState(data?.msg?.enrolled || null);
   useEffect(() => {
     if (!isLoading && data) {
       const arr = [...(data?.msg?.msg[1] || []), ...(data?.msg?.msg[2] || [])];
@@ -75,15 +76,15 @@ function CoursePage() {
       arr.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
 
       setCourseVideos([data?.msg?.msg[0], arr]);
+
       setEnrolled(data?.msg?.enrolled);
-      console.log("Arr ", arr);
     }
   }, [isLoading, data]);
 
   const { mutateAsync, isPending, error } = useMutation({
     mutationFn: async () => {
       return await useFetch(
-        "http://localhost:3002/enrollCourse",
+        `${API_BASE_URL}/enrollCourse`,
         {
           student_id: user_data?.student_id,
           course_id: course_id,
@@ -96,105 +97,12 @@ function CoursePage() {
     },
     onSuccess: () => {
       setEnrolled(true);
+      refetch();
     },
     onError: () => {
-      console.log("Error ", error);
+      console.error("Error ", error);
     },
   });
-
-  const courseContent = [
-    {
-      key: "key-topics",
-      title: "Key Topics Covered",
-      data: [
-        {
-          title: "Introduction to AI",
-          description: "History, concepts, and applications.",
-        },
-        {
-          title: "Machine Learning",
-          description: "Algorithms, evaluation, and optimization.",
-        },
-        {
-          title: "Deep Learning",
-          description: "Neural networks, CNNs, RNNs.",
-        },
-        {
-          title: "Natural Language Processing (NLP)",
-          description: "Text processing and chatbots.",
-        },
-        {
-          title: "Computer Vision",
-          description: "Image recognition and object detection.",
-        },
-        {
-          title: "AI Tools and Frameworks",
-          description: "TensorFlow, PyTorch, and more.",
-        },
-        {
-          title: "Ethical AI",
-          description: "Bias, fairness, and responsible development.",
-        },
-        {
-          title: "AI in Practice",
-          description: "Real-world applications and projects.",
-        },
-      ],
-    },
-    {
-      key: "learning-objectives",
-      title: "Learning Objectives",
-      data: [
-        "Understand the fundamental principles and methods of AI.",
-        "Build and evaluate machine learning models.",
-        "Work with modern AI tools and technologies to create practical solutions.",
-        "Analyze ethical considerations and societal impacts of AI.",
-        "Apply AI concepts to real-world projects in various domains.",
-      ],
-    },
-    {
-      key: "who-should-enroll",
-      title: "Who Should Enroll?",
-      data: [
-        "Students and professionals seeking an introduction to AI.",
-        "Software developers and data scientists looking to upskill.",
-        "Anyone interested in understanding the potential and limitations of AI.",
-      ],
-    },
-    {
-      key: "prerequisites",
-      title: "Prerequisites",
-      data: [
-        "Basic knowledge of programming (preferably Python).",
-        "Familiarity with linear algebra, probability, and statistics is helpful but not mandatory.",
-      ],
-    },
-    {
-      key: "course-format",
-      title: "Course Format",
-      data: [
-        { title: "Duration", description: "8–12 weeks" },
-        { title: "Mode", description: "Online or in-person" },
-        {
-          title: "Activities",
-          description:
-            "Lectures, hands-on labs, quizzes, and capstone projects",
-        },
-        {
-          title: "Assessment",
-          description:
-            "Individual assignments, group projects, and final evaluation",
-        },
-      ],
-    },
-    {
-      key: "why-take-course",
-      title: "Why Take This Course?",
-      data: [
-        "Artificial Intelligence is transforming industries and shaping the future. This course equips learners with the knowledge and skills to harness the power of AI, opening up opportunities for careers in cutting-edge fields like data science, robotics, and AI research.",
-      ],
-    },
-  ];
 
   if (isLoading || !data) {
     return <Loading />;
@@ -229,9 +137,11 @@ function CoursePage() {
                 <CourseVideos
                   key={video.material_id}
                   {...user_data}
+                  lessons={courseVideos?.[0].lessons}
                   {...video}
                   setVideoUrl={setVideoUrl}
                   isEnrolled={enrolled}
+                  refetch={refetch}
                 />
               ))}
             </div>
@@ -255,34 +165,6 @@ function CoursePage() {
                   <div className="leading-8 text-xl max-w-[900px]">
                     {courseVideos?.[0].description}
                   </div>
-
-                  {/* TESTING DATA  */}
-                  {/* {courseContent.map((content) => (
-                    <div key={content.key}  className="mt-10">
-                      <div className="font-bold text-xl">
-                        {content.title}
-                      </div>
-                      <ul>
-                        {content.data.map((data) =>
-                          typeof data === "object" ? (
-                            <div className="lg:ml-8 mt-2">
-                              <li className="list-decimal font-semibold">
-                                {data.title}
-                              </li>
-                              <div className="list-disc mt-2 ">
-                                {data.description}
-                              </div>
-                            </div>
-                          ) : (
-                            <li key className="list-disc lg:ml-8 mt-2 max-w-[900px]">
-                              {data}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  ))} */}
-                  {/* TESTING DATA  */}
                 </div>
               </div>
               {!enrolled && (
@@ -300,7 +182,6 @@ function CoursePage() {
                   <div
                     onClick={async () => {
                       await mutateAsync();
-                      refetch();
                     }}
                     className="p-5"
                   >

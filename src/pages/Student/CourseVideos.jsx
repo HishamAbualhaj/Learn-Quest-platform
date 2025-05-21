@@ -3,8 +3,11 @@ import useFetch from "../../hooks/useFetch";
 import { useMutation } from "@tanstack/react-query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock } from "@fortawesome/free-solid-svg-icons";
+import API_BASE_URL from "../../config/config";
 function CourseVideos({
   student_id,
+  course_id,
+  lessons,
   email,
   first_name,
   material_id,
@@ -14,15 +17,18 @@ function CourseVideos({
   url,
   setVideoUrl,
   isEnrolled,
+  refetch,
 }) {
   const [checked, setChecked] = useState(isCompleted);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       return await useFetch(
-        "http://localhost:3002/completeCourse",
+        `${API_BASE_URL}/completeCourse`,
         {
           user_id: student_id,
+          course_id: course_id,
+          lessons: lessons,
           email: email,
           first_name: first_name,
           id: material_id,
@@ -34,6 +40,7 @@ function CourseVideos({
     },
     onSuccess: () => {
       setChecked((prev) => !prev);
+      refetch();
     },
   });
 
@@ -67,7 +74,7 @@ function CourseVideos({
                 cy="12"
                 r="10"
                 stroke="currentColor"
-                stroke-width="4"
+                strokeWidth="4"
               ></circle>
               <path
                 className="opacity-75"
@@ -96,8 +103,10 @@ function CourseVideos({
           {subtitle}
         </div>
         {!isEnrolled && !Boolean(url) && (
-          <div className="absolute top-0 left-0 dark:bg-purple-600/20 bg-purple-800/20  dark:text-purple-300 w-full h-full lg:text-md text-sm flex gap-3 justify-center items-center">
-            You are not Enrolled <FontAwesomeIcon icon={faLock} />
+          <div className="absolute top-0 left-0  bg-purple-800/20 z-10  dark:text-purple-300 text-white w-full h-full lg:text-md text-sm flex gap-3 justify-center items-center">
+            <div className="dark:bg-purple-600 bg-purple-500 p-2 rounded-md">
+              You are not Enrolled <FontAwesomeIcon icon={faLock} />
+            </div>
           </div>
         )}
       </div>
