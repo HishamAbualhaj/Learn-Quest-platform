@@ -11,9 +11,9 @@ function Signup() {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   alert?.redirect && navigate("/login");
-  // }, [alert]);
+  useEffect(() => {
+    alert?.redirect && navigate("/login");
+  }, [alert]);
 
   const [userData, setUserData] = useState({
     first_name: "",
@@ -57,13 +57,9 @@ function Signup() {
       <div className="mx-auto max-w-[500px] p-7 mt-5 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl relative">
         {alert &&
           (alert?.status ? (
-            <Alert
-              msg={alert.msg}
-              type="success"
-              setCloseButton={setCloseButton}
-            />
+            <Alert msg={alert?.msg} type="success" />
           ) : (
-            <Alert msg={alert?.msg} setCloseButton={setCloseButton} />
+            <Alert msg={alert?.msg} />
           ))}
 
         <div className="lg:text-4xl text-2xl font-bold">Sign up free</div>
@@ -72,7 +68,12 @@ function Signup() {
         </div>
         <div className="mt-6 py-3 cursor-pointer  flex gap-2 items-center justify-center border dark:border-textDark/40 border-borderLight rounded-md">
           <img className="w-7 h-7" src={google} alt="" />
-          <div className="dark:text-white text-lightDark">
+          <div
+            onClick={() => {
+              window.open(`${API_BASE_URL}/auth/google`, "_self");
+            }}
+            className="dark:text-white text-lightDark"
+          >
             Sign up with Google
           </div>
         </div>
