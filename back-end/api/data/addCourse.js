@@ -33,7 +33,7 @@ const addCourse = (req, res) => {
         null,
         500,
         null,
-        "Error adding course"
+        { msg: "Error adding course" }
       );
     }
   });
@@ -41,6 +41,7 @@ const addCourse = (req, res) => {
 async function insertCourse(
   course_id,
   {
+    email,
     student_id,
     title,
     price,
@@ -55,7 +56,8 @@ async function insertCourse(
   tabs = tabs.toString();
 
   let image = `${course_id}-${image_url}`;
-  const query = `INSERT INTO Courses (course_id,title, description, price, discount, category, tabs, image_url)
+
+  const query = `INSERT INTO courses (course_id,title, description, price, discount, category, tabs, image_url)
     VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 
   await connection
@@ -70,9 +72,21 @@ async function insertCourse(
       tabs,
       image,
     ]);
-  await insertCourseMaterial(materials, course_id, student_id, title);
+
+  let lessons = await insertCourseMaterial(
+    materials,
+    course_id,
+    student_id,
+    title,
+    email
+  );
+
+  const query_add_lessons = `UPDATE courses SET lessons = ? WHERE course_id = ?`;
+
+  await connection.promise().query(query_add_lessons, [lessons, course_id]);
 }
-async function insertCourseMaterial(data, course_id, student_id, title) {
+async function insertCourseMaterial(data, course_id, student_id, title, email) {
+  let lessons = 0;
   const query = `INSERT INTO coursematerials (material_id,course_id,title,subtitle,url)
   VALUES (?, ?, ?, ?, ?)`;
   for (const obj of data) {
@@ -81,13 +95,11 @@ async function insertCourseMaterial(data, course_id, student_id, title) {
     await connection
       .promise()
       .query(query, [material_id, course_id, title, subtitle, url]);
+
+    lessons += 1;
   }
 
-  await log(
-    response,
-    student_id,
-    `Admin: Added course : ${title}`,
-    "admin@gmail.com"
-  );
+  await log(response, student_id, `Admin: Added course : ${title}`, email);
+  return lessons;
 }
 export default addCourse;
