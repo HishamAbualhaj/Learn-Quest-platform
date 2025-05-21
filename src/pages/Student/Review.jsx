@@ -73,7 +73,7 @@ function Review(user_data) {
       );
     },
     onError: () => {
-      console.log("Error", reviewData.data);
+      console.error("Error", reviewData.data);
     },
   });
 
@@ -122,24 +122,20 @@ function Review(user_data) {
   return (
     <>
       <div className="m-5 rounded-md">
-        {alert ? (
-          alert?.status ? (
-            <Alert
-              msg={alert.msg}
-              type="success"
-              setCloseButton={setCloseButton}
-            />
+        {alert &&
+          (alert?.status ? (
+            <Alert msg={alert.msg} type="success" />
           ) : (
-            <Alert msg={alert.msg} setCloseButton={setCloseButton} />
-          )
-        ) : (
-          <></>
-        )}
+            <Alert msg={alert.msg} />
+          ))}
 
         <div className="font-semibold text-2xl">Reviews</div>
         <div className="mt-3 p-5">
           <div className="flex gap-5">
-            <Avatar className={"h-[50px] w-[50px]"} img={Person} />
+            <Avatar
+              className={"h-[50px] w-[50px]"}
+              img={`${API_BASE_URL}/uploads/${user_data.image_url}`}
+            />
             <div className="flex flex-1 gap-2">
               <input
                 required
