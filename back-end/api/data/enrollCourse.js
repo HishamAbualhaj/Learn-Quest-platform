@@ -1,6 +1,7 @@
 import connection from "../../db/db.js";
 import log from "../../system/logs.js";
 import handleResponse from "../../utils/handleResponse.js";
+import { checkCourseEnrollment } from "./getCourseData.js";
 const enrollCourse = (req, res) => {
   let body = "";
   req.on("data", (chunks) => {
@@ -16,9 +17,22 @@ async function enrollCourseQ(
   res
 ) {
   try {
+    if (await checkCourseEnrollment(student_id, course_id)) {
+      handleResponse(
+        res,
+        null,
+        null,
+        200,
+        null,
+        { msg: "YOU ARE ENROLLED ALREADY" },
+        null
+      );
+      return;
+    }
+
     const enrollment_id = Math.round(Math.random() * 100000000);
     let query =
-      "INSERT INTO enrollments (enrollment_id,student_id,course_id,completion_status) VALUES (?,?,?,?)";
+      "INSERT INTO enrollments (enrollment_id,student_id,course_id,progress) VALUES (?,?,?,?)";
 
     await connection
       .promise()
