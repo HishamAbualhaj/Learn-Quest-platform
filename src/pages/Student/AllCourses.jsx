@@ -19,7 +19,6 @@ function AllCourses() {
   const coursesContainer = useRef();
   const { dataFetched, isFetching, refetch } = useInfiniteScroll({
     fetchFn: (pagePara) => {
-      console.log("Page para", pagePara);
       return useFetch(
         `${API_BASE_URL}/getCourses`,
         {
@@ -40,7 +39,6 @@ function AllCourses() {
     setLastNode(node);
   };
   useEffect(() => {
-    console.log("Data fetched", dataFetched);
     if (dataFetched) {
       setCourses(dataFetched);
     }

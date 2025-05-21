@@ -73,7 +73,6 @@ function Reviews() {
           </div>
           <select
             onChange={(e) => {
-              console.log(e.target.value);
               setReviews([]);
               setCourseId(e.target.value);
             }}

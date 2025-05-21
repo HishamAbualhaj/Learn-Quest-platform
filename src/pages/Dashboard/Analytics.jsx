@@ -20,11 +20,6 @@ function Analytics() {
     queryKey: ["analytics"],
   });
 
-  useEffect(() => {
-    if (data) {
-      console.log("Data from analytics : ", data.msg);
-    }
-  }, [data]);
   return (
     <div className="h-[800px] overflow-auto">
       <div className="flex items-center justify-between sm:flex-row flex-col">

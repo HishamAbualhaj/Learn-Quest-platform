@@ -43,7 +43,6 @@ function MyCourses() {
   const { data, isFetching, refetch } = useQuery({
     queryFn: async () => {
       if (!studentId) return;
-      console.log("Data sent " , fetchData)
       return await useFetch(
         `${API_BASE_URL}/getEnrolledCourses`,
         {
