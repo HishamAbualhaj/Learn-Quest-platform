@@ -11,7 +11,7 @@ function Courses() {
   const coursesContainer = useRef();
   const { dataFetched, isFetching, hasNextPage } = useInfiniteScroll({
     fetchFn: (pagePara) => {
-      return useFetch(`${API_BASE_URL}/getCourses`, { page: pagePara }, "POST");
+      return useFetch(`${API_BASE_URL}/getCoursesAdmin`, { page: pagePara }, "POST");
     },
     queryKey: ["courses"],
     scrollContainer: coursesContainer,
@@ -90,7 +90,7 @@ function Courses() {
                 <td className="xl:pr-0 pr-8 whitespace-nowrap">
                   {course?.price}
                 </td>
-                <td className="whitespace-nowrap">{0}</td>
+                <td className="whitespace-nowrap">{course?.lessons || '0'}</td>
                 <td className="whitespace-nowrap">
                   {course?.created_date.split("T")[0]}
                 </td>
