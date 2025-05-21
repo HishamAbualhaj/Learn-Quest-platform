@@ -12,7 +12,10 @@ CREATE TABLE IF NOT EXISTS User (
   birthdate DATE,
   role VARCHAR(50) NOT NULL DEFAULT 'user',
   image_url VARCHAR(200),
-  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  login_method ENUM('google', 'local') DEFAULT 'local',
+  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  reset_token VARCHAR(255),
+  reset_token_expires BIGINT,
 );
 `;
 const createCoursesTable = `
@@ -22,11 +25,11 @@ CREATE TABLE IF NOT EXISTS Courses (
   description TEXT,
   price FLOAT NOT NULL,
   discount INT NOT NULL,
-  duration TIME NOT NULL,
   category VARCHAR(50),
   tabs TEXT,
   image_url VARCHAR(250),
   stars INT DEFAULT 0,
+  lessons INT DEFAULT 0,
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;
@@ -87,12 +90,14 @@ CREATE TABLE IF NOT EXISTS enrollments (
 const createCompleteionMaterialTable = `
 CREATE TABLE IF NOT EXISTS completeionMaterial (
     completeion_id VARCHAR(255) NOT NULL PRIMARY KEY,
-    student_id INT,
-    material_id INT,
+    student_id INT NOT NULL,
+    material_id INT NOT NULL,
+    course_id INT NOT NULL,
     isCompleted BOOLEAN DEFAULT 0,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (material_id) REFERENCES CourseMaterials(material_id) ON DELETE CASCADE
+    FOREIGN KEY (material_id) REFERENCES CourseMaterials(material_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
 )
 `;
 
