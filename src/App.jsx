@@ -33,6 +33,10 @@ import UserDataContext from "./context/UserDataContext";
 import { useContext, useEffect } from "react";
 import { Theme } from "./context/ThemeContext";
 
+
+import VerifyCode from "./components/VerifyCode";
+import ConfirmPass from "./components/ConfirmPass";
+
 import InfiniteScroll from "./components/InfiniteScroll";
 function App() {
   // using  react hook to get the theme value from the context theme
@@ -46,7 +50,7 @@ function App() {
 
   async function fetchData(url) {
     const response = await useFetch(url, null, "GET");
-    return response.msg;
+    return response?.msg;
   }
   const router = createBrowserRouter([
     {
@@ -96,6 +100,34 @@ function App() {
           <ForgotPass />
         </IsAuthRoute>
       ),
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/verifycode",
+      element: (
+        <IsAuthRoute isAllowed={false}>
+          <VerifyCode />
+        </IsAuthRoute>
+      ),
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/confirmpass",
+      element: (
+        <IsAuthRoute isAllowed={false}>
+          <ConfirmPass />
+        </IsAuthRoute>
+      ),
+      loader: () => {
+        return fetchData("http://localhost:3002/session");
+      },
+      errorElement: <ErrorPage />,
     },
     {
       path: "/student",
@@ -117,6 +149,10 @@ function App() {
         {
           path: "profile",
           element: <Profile />,
+          loader: () => {
+            return fetchData("http://localhost:3002/session");
+          },
+          errorElement: <ErrorPage />,
         },
         { path: "chat", element: <ChatStudent /> },
         { path: "allcourses", element: <AllCourses /> },
@@ -250,6 +286,7 @@ function App() {
       ),
     },
   ]);
+
   return <RouterProvider router={router} />;
 }
 
