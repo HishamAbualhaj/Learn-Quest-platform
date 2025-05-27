@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Alert from "./Alert";
+import Alert from "../../components/Alert";
 import { useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from "../config/config";
-import Button from "./Button";
-import useFetch from "../hooks/useFetch";
+import API_BASE_URL from "../../config/config";
+import Button from "../../components/Button";
+import useFetch from "../../hooks/useFetch";
 function ConfirmPass() {
   const [password, setPassword] = useState(null);
   const [confirmPass, setConfirmPass] = useState(null);

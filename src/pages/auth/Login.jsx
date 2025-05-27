@@ -1,11 +1,11 @@
 import google from "../assets/google.svg";
-import Button from "./Button";
+import Button from "../../components/Button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useFetch from "../hooks/useFetch";
-import Alert from "./Alert";
+import useFetch from "../../hooks/useFetch";
+import Alert from "../../components/Alert";
 import { useMutation } from "@tanstack/react-query";
-import API_BASE_URL from "../config/config";
+import API_BASE_URL from "../../config/config";
 function Login() {
   const [alert, setAlert] = useState(null);
 

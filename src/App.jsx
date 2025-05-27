@@ -1,5 +1,5 @@
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./pages/auth/Login";
+import Signup from "./pages/auth/Signup";
 
 import Dashboard from "./layouts/DashboardLayout";
 import Landing from "./layouts/LandingLayout";
@@ -23,7 +23,6 @@ import Reviews from "./pages/Dashboard/Reviews";
 import Chat from "./pages/Dashboard/Chat";
 import SystemLog from "./pages/Dashboard/SystemLog";
 import Maintenance from "./pages/Dashboard/Maintenance";
-import ForgotPass from "./components/ForgotPass";
 import useFetch from "./hooks/useFetch";
 import Logout from "./components/Logout";
 import IsAuthRoute from "./routes/IsAuthRoute";
@@ -34,8 +33,9 @@ import { useContext, useEffect } from "react";
 import { Theme } from "./context/ThemeContext";
 
 
-import VerifyCode from "./components/VerifyCode";
-import ConfirmPass from "./components/ConfirmPass";
+import VerifyCode from "./pages/auth/VerifyCode";
+import ConfirmPass from "./pages/auth/ConfirmPass";
+import ForgotPass from "./pages/auth/ForgotPass";
 
 import InfiniteScroll from "./components/InfiniteScroll";
 function App() {

@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import useFetch from "../hooks/useFetch";
-import API_BASE_URL from "../config/config";
+import useFetch from "../../hooks/useFetch";
+import API_BASE_URL from "../../config/config";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import Button from "./Button";
-import Alert from "./Alert";
+import Button from "../../components/Button";
+import Alert from "../../components/Alert";
 function VerifyCode() {
   const [code, setCode] = useState(null);
   const [alert, setAlert] = useState(null);
