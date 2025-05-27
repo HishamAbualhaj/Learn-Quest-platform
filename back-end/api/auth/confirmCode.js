@@ -1,4 +1,4 @@
-import connection from "../../db/db.js";
+import connection from "../../config/db.js";
 import handleResponse from "../../utils/handleResponse.js";
 const confirmCode = (req, res) => {
   let body = "";

@@ -1,7 +1,7 @@
-import connection from "../../db/db.js";
+import connection from "../../config/db.js";
 import handleResponse from "../../utils/handleResponse.js";
-import log from "../../system/logs.js";
-import handleSession from "../../system/handleSession.js";
+import log from "../system/logs.js";
+import handleSession from "../../utils/handleSession.js";
 let response = null;
 let request = null;
 const login = (req, res) => {

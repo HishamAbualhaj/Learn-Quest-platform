@@ -2,38 +2,40 @@ import http from "http";
 import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
 import logout from "./api/auth/logout.js";
-import session, { validateSessionId } from "./system/session.js";
+import session from "./api/system/session.js";
 import getUserData from "./utils/getUserData.js";
-import addCourse from "./api/data/addCourse.js";
-import getCourses from "./api/data/getCourses.js";
-import deleteCourse from "./api/data/deleteCourse.js";
-import getCourseData from "./api/data/getCourseData.js";
-import updateCourse from "./api/data/updateCourse.js";
-import updateUser from "./api/data/updateUser.js";
-import getUsers from "./api/data/getUsers.js";
-import deleteUser from "./api/data/deleteUser.js";
-import getSystemLog from "./api/data/getSystemLog.js";
+import addCourse from "./api/dashboard/addCourse.js";
+import getCourses from './api/course/getCourses.js'
+import deleteCourse from "./api/dashboard/deleteCourse.js";
+import getCourseData from "./api/course/getCourseData.js";
+import updateCourse from "./api/dashboard/updateCourse.js";
+import updateUser from "./api/user/updateUser.js";
+import getUsers from "./api/user/getUsers.js";
+import deleteUser from "./api/dashboard/deleteUser.js";
+import getSystemLog from "./api/dashboard/getSystemLog.js";
 import getImage from "./utils/getImage.js";
-import completeCourse from "./api/data/completeCourse.js";
-import enrollCourse from "./api/data/enrollCourse.js";
-import addReview from "./api/data/addReview.js";
+import completeCourse from "./api/course/completeCourse.js";
+import enrollCourse from "./api/course/enrollCourse.js";
+import addReview from "./api/course/addReview.js";
 // Test upload image
 import handleUploads from "./utils/handleUploads.js";
-import getReviews from "./api/data/getReviews.js";
-import getAnalystic from "./api/data/getAnalystic.js";
-import getEnrolledCourses from "./api/data/getEnrolledCourses.js";
+import getReviews from "./api/course/getReviews.js";
+import getAnalystic from "./api/dashboard/getAnalystic.js";
+import getEnrolledCourses from "./api/course/getEnrolledCourses.js";
 
 import handleImage from "./utils/handleImage.js";
 //Google auth
 import url from "url";
-import handleGoogleAuth from "./api/auth/handleGoogleAuth.js";
-import googleAuth from "./api/auth/googleAuth.js";
+import handleGoogleAuth from "./services/handleGoogleAuth.js";
+import googleAuth from "./services/googleAuth.js";
 import forgotPass from "./api/auth/forgotpass.js";
 import confirmCode from "./api/auth/confirmCode.js";
 import resetPass from "./api/auth/resetpass.js";
-import handleResponse from "./utils/handleResponse.js";
-import getCoursesAdmin from "./api/data/getCoursesAdmin.js";
 
+import getCoursesAdmin from "./api/course/getCoursesAdmin.js";
+
+
+import authLogin from './middleware/authLogin.js'
 const server = http.createServer(async (req, res) => {
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
@@ -82,42 +84,22 @@ const server = http.createServer(async (req, res) => {
     res.end();
     return;
   }
+  await authLogin(req, res, () => {
+    const methodRoutes = routes[req.method];
 
-  const cookies = req.headers.cookie || "";
-  let sessionId = "";
-
-  if (cookies) {
-    sessionId = cookies.match(/session_id=([\w\d]+)/)?.[1];
-  }
-  const isSessionId = await validateSessionId(sessionId, res, true);
-
-  const methodRoutes = routes[req.method];
-
-  if (
-    !isSessionId &&
-    !(
-      req.url === "/login" ||
-      req.url === "/signup" ||
-      req.url === "/auth/google" ||
-      req.url === "/oauth2callback"
-    )
-  ) {
-    handleResponse(res, null, null, 403, null, "Forbidden Request 403", null);
-    return;
-  }
-
-  if (methodRoutes && methodRoutes[req.url]) {
-    methodRoutes[req.url](req, res);
-  } else if (req.url.startsWith("/uploads/")) {
-    handleImage(req, res);
-  } else if (url.parse(req.url).pathname === "/auth/google") {
-    const [authUrl] = googleAuth();
-    res.writeHead(302, { Location: authUrl });
-    res.end();
-  } else if (url.parse(req.url).pathname === "/oauth2callback") {
-    const [_, client] = googleAuth();
-    handleGoogleAuth(req, res, client);
-  }
+    if (methodRoutes && methodRoutes[req.url]) {
+      methodRoutes[req.url](req, res);
+    } else if (req.url.startsWith("/uploads/")) {
+      handleImage(req, res);
+    } else if (url.parse(req.url).pathname === "/auth/google") {
+      const [authUrl] = googleAuth();
+      res.writeHead(302, { Location: authUrl });
+      res.end();
+    } else if (url.parse(req.url).pathname === "/oauth2callback") {
+      const [_, client] = googleAuth();
+      handleGoogleAuth(req, res, client);
+    }
+  });
 });
 
 const PORT = 3002;

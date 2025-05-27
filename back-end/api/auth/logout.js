@@ -1,6 +1,6 @@
-import connection from "../../db/db.js";
+import connection from "../../config/db.js";
 import handleResponse from "../../utils/handleResponse.js";
-import log from "../../system/logs.js";
+import log from "../system/logs.js";
 
 let response = "";
 const logout = (req, res) => {

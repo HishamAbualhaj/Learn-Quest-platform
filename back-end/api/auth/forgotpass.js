@@ -1,7 +1,7 @@
-import { sendRestEmail } from "../../utils/mailer.js";
+import { sendRestEmail } from "../../services/mailer.js";
 import handleResponse from "../../utils/handleResponse.js";
 import isEmailFound from "../../utils/isEmailFound.js";
-import connection from "../../db/db.js";
+import connection from "../../config/db.js";
 import crypto from "crypto";
 const forgotPass = (req, res) => {
   let body = "";

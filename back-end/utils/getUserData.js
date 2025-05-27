@@ -1,5 +1,5 @@
 import handleResponse from "./handleResponse.js";
-import connection from "../db/db.js";
+import connection from "../config/db.js";
 function getUserData(req, response) {
   let body = "";
   req.on("data", (chunks) => {

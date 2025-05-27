@@ -1,5 +1,5 @@
 import handleResponse from "./handleResponse.js";
-import connection from "../db/db.js";
+import connection from "../config/db.js";
 async function isEmailFound(email, response) {
   try {
     const query = `SELECT student_id from user WHERE email = ?`;
