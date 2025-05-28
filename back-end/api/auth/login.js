@@ -93,7 +93,7 @@ const login = (req, res) => {
 
 async function getId(email, password) {
   try {
-    const result = authUserModel(email, password);
+    const result = await authUserModel(email, password);
     const [data] = result;
     return data.length === 0 ? false : data;
   } catch (error) {
