@@ -159,7 +159,7 @@ const addMaterialCompleteionModel = async ({
       !value,
     ]);
 };
-const updatMaterialCompleteionModel = async (value, id) => {
+const updatMaterialCompleteionModel = async ({ value, id }) => {
   const updatMaterialCompleteionQuery =
     "UPDATE completeionMaterial SET isCompleted = ? WHERE material_id = ?";
   await connection.promise().query(updatMaterialCompleteionQuery, [!value, id]);
