@@ -14,43 +14,6 @@ import Alert from "../../components/Alert";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import ReviewCard from "../../components/ReviewCard";
 function Review(user_data) {
-  // const reviews = [
-  //   {
-  //     id: 1,
-  //     name: "Sarah T.",
-  //     text: "I had no prior experience in AI, but this course made it so easy to understand. The lessons are structured perfectly for beginners, and the examples are practical. The instructor’s explanations of machine learning algorithms were clear and engaging. Now, I’ve built my first AI-powered chatbot! Highly recommended for anyone just starting in AI.",
-  //     image: "Person1.png",
-  //     stars: 5,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "James R.",
-  //     text: "As someone already familiar with AI concepts, I was looking for something more advanced. This course didn’t disappoint! The deep dive into neural networks and reinforcement learning was particularly helpful for my ongoing projects. However, I would have appreciated a bit more focus on hyperparameter tuning.",
-  //     image: "Person2.png",
-  //     stars: 4,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Linda M.",
-  //     text: "This course changed my career trajectory. I was a graphic designer, and now I’ve transitioned into AI development. The mentorship and real-world projects included in the curriculum gave me the confidence to land a job as a Junior AI Engineer. The section on deploying AI models was a game-changer for me.",
-  //     image: "Person3.png",
-  //     stars: 5,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Ahmed K.",
-  //     text: "As a small business owner, I took this course to understand how AI can optimize my operations. It was amazing to learn how to implement AI for customer segmentation and demand forecasting. The lessons are practical, and the tools recommended are cost-effective. Now, I use AI to improve my business processes, and it’s been transformative!",
-  //     image: "Person4.png",
-  //     stars: 5,
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Emily J.",
-  //     text: "This course was a perfect supplement to my university studies. The practical projects helped me solidify the theoretical concepts I learned in class. I especially liked the hands-on sections on natural language processing and computer vision. Thanks to this course, my final-year AI project received top marks!",
-  //     image: "Person5.png",
-  //     stars: 5,
-  //   },
-  // ];
 
   const [reviews, setReviews] = useState([]);
   const queryClient = useQueryClient();
