@@ -22,7 +22,7 @@ async function getReviewsQ(res, page, course_id) {
     handleResponse(
       res,
       error,
-      "Error selecting from reviews: ",
+      "Error selecting from reviews at getReviewsController : ",
       null,
       500,
       null,

@@ -42,7 +42,7 @@ async function deleteUserQ(user_id, res) {
     );
     return;
   } catch (error) {
-    handleResponse(res, error, "Error Deleting user: ", null, 500, null, {
+    handleResponse(res, error, "Error Deleting user at deleteUserController : ", null, 500, null, {
       isDeleted: false,
       msg: "User deletion failed, ",
     });

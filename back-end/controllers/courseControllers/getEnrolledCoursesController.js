@@ -52,7 +52,7 @@ const getEnrolledCoursesController = (req, res) => {
       handleResponse(
         res,
         error,
-        "Error selecting from enrolled courses: ",
+        "Error selecting from enrolled courses at getEnrolledCoursesController : ",
         null,
         500,
         null,

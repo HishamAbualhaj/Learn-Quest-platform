@@ -33,11 +33,11 @@ const getAnalysticController = (req, res) => {
       handleResponse(
         res,
         error,
-        "Error selecting from analystic",
+        "Error selecting from analystic at getAnalysticController : ",
         null,
         500,
         null,
-        "Error to select analystic"
+        { msg: "Error to select analystic" }
       );
     }
   });

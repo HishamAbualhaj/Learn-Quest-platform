@@ -17,7 +17,7 @@ const getUsersController = async (req, res) => {
       handleResponse(
         res,
         error,
-        "Error selecting from users: ",
+        "Error selecting from users at getUsersController : ",
         null,
         500,
         null,

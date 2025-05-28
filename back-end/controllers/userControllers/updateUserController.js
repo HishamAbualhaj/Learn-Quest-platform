@@ -62,7 +62,7 @@ const updateUserController = (req, res) => {
       handleResponse(
         res,
         error,
-        "Error parsing request body: ",
+        "Error parsing request body at updateUserController : ",
         400,
         500,
         "",

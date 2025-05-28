@@ -17,7 +17,7 @@ const getCoursesAdminController = async (req, res) => {
       handleResponse(
         res,
         error,
-        "Error selecting from courses for Admin: ",
+        "Error selecting from courses at getCoursesAdminController : ",
         null,
         500,
         null,

@@ -42,7 +42,7 @@ async function enrollCourseQ(
     handleResponse(
       res,
       error,
-      "Error enrolling course",
+      "Error enrolling course at enrollCourseController : ",
       null,
       500,
       null,

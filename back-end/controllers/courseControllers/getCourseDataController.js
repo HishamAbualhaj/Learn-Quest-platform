@@ -76,7 +76,7 @@ async function getCourseQ(course_id, student_id) {
     handleResponse(
       response,
       error,
-      "Error SELECT course data: ",
+      "Error SELECT course data at getCourseDataController : ",
       null,
       500,
       null,

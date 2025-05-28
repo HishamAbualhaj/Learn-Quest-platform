@@ -33,7 +33,7 @@ const getCoursesController = (req, res) => {
       handleResponse(
         res,
         error,
-        "Error selecting from courses: ",
+        "Error selecting from courses at getCoursesController : ",
         null,
         500,
         null,

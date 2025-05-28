@@ -58,7 +58,7 @@ const updateCourseController = (req, res) => {
       handleResponse(
         res,
         error,
-        "Error parsing request body: ",
+        "Error parsing request body at updateCourseController : ",
         null,
         500,
         null,
