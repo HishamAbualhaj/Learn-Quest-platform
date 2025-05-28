@@ -13,13 +13,27 @@ const authLogin = async (req, res, next) => {
   if (
     !isSessionId &&
     !(
+      req.url === "/session" ||
       req.url === "/login" ||
       req.url === "/signup" ||
       req.url === "/auth/google" ||
-      req.url === "/oauth2callback"
+      req.url === "/oauth2callback" ||
+      req.url === "/forgotPass" ||
+      req.url === "/verifyCode" ||
+      req.url === "/resetPass"
     )
   ) {
-    handleResponse(res, null, null, 403, null, "Forbidden Request 403", null);
+    handleResponse(
+      res,
+      null,
+      null,
+      403,
+      null,
+      "Forbidden Request 403",
+      null,
+      null,
+      false
+    );
     return;
   } else {
     next();

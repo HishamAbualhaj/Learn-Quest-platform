@@ -1,5 +1,10 @@
-import { getCodeModel, resetPassModel } from "../../models/systemModel.js";
+import {
+  authUserModel,
+  getCodeModel,
+  resetPassModel,
+} from "../../models/systemModel.js";
 import handleResponse from "../../utils/handleResponse.js";
+import log from "../system/logs.js";
 const resetPass = (req, res) => {
   let body = "";
   req.on("data", (chunks) => {
@@ -12,9 +17,17 @@ const resetPass = (req, res) => {
       const result = await getCodeModel(email);
       const [{ reset_token = null } = {}] = result[0];
 
+      const userData = await authUserModel(email, password, true);
+
+      const [{ student_id, first_name } = {}] = userData[0];
       if (reset_token === code) {
         await resetPassModel(email, password);
-
+        await log(
+          res,
+          student_id,
+          `User: ${first_name} just reset password`,
+          email
+        );
         handleResponse(
           res,
           null,

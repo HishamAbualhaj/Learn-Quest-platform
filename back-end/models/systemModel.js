@@ -256,10 +256,16 @@ const deleteSessionModel = async (sessionId) => {
   return await connection.promise().query(deleteSessionQuery, [sessionId]);
 };
 
-const authUserModel = async (email, password) => {
-  const query =
-    "SELECT student_id,first_name,role,login_method FROM user WHERE email = ? AND password = ?";
-  return await connection.promise().query(query, [email, password]);
+const authUserModel = async (email, password, isEmail = false) => {
+  if (isEmail) {
+     const query =
+      "SELECT student_id,first_name,role,login_method FROM user WHERE email = ?";
+    return await connection.promise().query(query, [email]);
+  } else {
+    const query =
+      "SELECT student_id,first_name,role,login_method FROM user WHERE email = ? AND password = ?";
+    return await connection.promise().query(query, [email, password]);
+  }
 };
 export {
   addUserModel,

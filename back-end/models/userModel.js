@@ -67,4 +67,5 @@ const updateUserModel = async (
   }
 };
 
+
 export { getUsersModel, updateUserModel };

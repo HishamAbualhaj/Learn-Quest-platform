@@ -32,12 +32,10 @@ import UserDataContext from "./context/UserDataContext";
 import { useContext, useEffect } from "react";
 import { Theme } from "./context/ThemeContext";
 
-
 import VerifyCode from "./pages/auth/VerifyCode";
 import ConfirmPass from "./pages/auth/ConfirmPass";
 import ForgotPass from "./pages/auth/ForgotPass";
 
-import InfiniteScroll from "./components/InfiniteScroll";
 function App() {
   // using  react hook to get the theme value from the context theme
   const { theme } = useContext(Theme);
@@ -64,10 +62,6 @@ function App() {
         return fetchData("http://localhost:3002/session");
       },
       errorElement: <ErrorPage />,
-    },
-    {
-      path: "/InfiniteScroll",
-      element: <InfiniteScroll></InfiniteScroll>,
     },
     {
       path: "/login",
@@ -120,9 +114,9 @@ function App() {
     {
       path: "/confirmpass",
       element: (
-        <IsAuthRoute isAllowed={false}>
-          <ConfirmPass />
-        </IsAuthRoute>
+          <IsAuthRoute isAllowed={false}>
+            <ConfirmPass />
+          </IsAuthRoute>
       ),
       loader: () => {
         return fetchData("http://localhost:3002/session");
