@@ -1,4 +1,4 @@
-import google from "../assets/google.svg";
+import google from "../../assets/google.svg";
 import Button from "../../components/Button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";

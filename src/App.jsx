@@ -24,7 +24,7 @@ import Chat from "./pages/Dashboard/Chat";
 import SystemLog from "./pages/Dashboard/SystemLog";
 import Maintenance from "./pages/Dashboard/Maintenance";
 import useFetch from "./hooks/useFetch";
-import Logout from "./components/Logout";
+import Logout from "./pages/auth/Logout";
 import IsAuthRoute from "./routes/IsAuthRoute";
 import Logo from "./components/Logo";
 import ErrorPage from "./components/ErrorPage";

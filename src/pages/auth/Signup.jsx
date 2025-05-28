@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import google from "../assets/google.svg";
+import google from "../../assets/google.svg";
 import Alert from "../../components/Alert";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
@@ -32,12 +32,7 @@ function Signup() {
       [id]: value,
     });
   }
-  const [closeButton, setCloseButton] = useState(false);
-  useEffect(() => {
-    if (closeButton) {
-      setAlert(null);
-    }
-  }, [closeButton]);
+
 
   const { mutate, isPending, data } = useMutation({
     mutationFn: async () => {
@@ -61,7 +56,6 @@ function Signup() {
           ) : (
             <Alert msg={alert?.msg} />
           ))}
-
         <div className="lg:text-4xl text-2xl font-bold">Sign up free</div>
         <div className="dark:text-textDark text-lightText mt-2">
           No credit card required
