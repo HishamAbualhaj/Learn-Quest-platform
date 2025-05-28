@@ -8,17 +8,20 @@ LearnQuest is an innovative e-learning platform developed as a graduation projec
 - **Styling:** TailwindCSS
 - **Icons:** FontAwesome
 - **Routing:** React Router
+- **Data fetching:** TanStack Query
 
 ### Back-End
 - **Runtime:** Node.js
 - **Database:** MySQL
 - **Additional Tools:** MySQL2 for database integration
+- **Email service:** Mailer
 
 ## Features
 - User-friendly interface for learners
-- Role-based access control for admins, teachers, and users
+- Role-based access control for admin, and users
 - Fast and efficient back-end API using Node.js
 - Fully responsive design built with TailwindCSS
+- Login with google apis
 
 ## Getting Started
 
@@ -81,17 +84,28 @@ npm run dev
 ## Project Structure
 ```
 📂 LEARNQUEST
-├── 📂 back-end
-│ ├── 📂 api
-│ ├── 📂 db
-│ ├── 📂 system
-│ ├── 📂 uploads
-│ ├── 📂 utils
-│ ├── 📄 server.js
+back-end/
+├── 📡 api/
+│   ├── 🔐 auth/         # Authentication logic (login, signup, etc.)
+│   ├── 📚 course/       # Endpoints and logic related to course management
+│   ├── 📊 dashboard/    # Admin dashboard routes
+│   ├── 🛠️ system/       # System-level APIs and helpers
+│   └── 👤 user/         # User management and profile endpoints
+├── ⚙️ config/           # Configuration files (DB, environment)
+├── 🎮 controllers/      # Request/response controllers
+├── 🧱 middleware/       # Authentication and other middleware
+├── 🧬 models/           # Mongoose schema definitions
+├── 🔁 services/         # Business logic and helpers
+├── 📁 uploads/          # Uploaded files (images, course materials)
+├── 🧰 utils/            # Utility functions
+├── 🚀 server.js         # Entry point for the backend server
+│
 ├── 📂 public
 ├── 📂 src
 │ ├── 📂 assets
 │ ├── 📂 components
+| ├── 📂 config
+| ├── 📂 context
 │ ├── 📂 global
 │ ├── 📂 hooks
 │ ├── 📂 layouts
@@ -113,14 +127,13 @@ npm run dev
 
 ## Future Enhancements
 - Add real-time notifications
-- Enhance user progress tracking
-- Improve analytics for teachers and admins
+- Add chat system for both admin and user
+- Develop a blog to share experience between people
 
 ## Contributors
 - **Hesham Abualhaj**: UI/UX, Front-End Development and Back-end Development.
 
-## License
-This project is licensed under [MIT License](LICENSE).
+
 
 ## Contact
 For any questions, feel free to reach out at **hishamraid0@gmail.com**.
