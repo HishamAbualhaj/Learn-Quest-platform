@@ -25,17 +25,18 @@ async function completeCourseQ(data, res) {
     if (!isFound[0].length) {
       await addMaterialCompleteionModel(data);
 
-      await addToLog(data.lessons);
+      await addToLog(data);
       return;
     }
-    await updatMaterialCompleteionModel(data.value, data.id);
 
-    await addToLog(data.lessons);
+    await updatMaterialCompleteionModel(data);
+
+    await addToLog(data);
   } catch (error) {
     handleResponse(
       res,
       error,
-      "Error updating coursematerials",
+      "Error updating coursematerials at completeCourseController : ",
       null,
       500,
       null,
@@ -43,15 +44,23 @@ async function completeCourseQ(data, res) {
     );
   }
 
-  async function addToLog(lessons) {
+  async function addToLog({
+    lessons,
+    user_id,
+    course_id,
+    value,
+    title,
+    email,
+    first_name,
+  }) {
+    lessons = lessons || 1;
     const countResult = await countCourseMaterialCompletedModel(
-      data.user_id,
-      data.course_id
+      user_id,
+      course_id
     );
     let courseMaterialsCount = countResult[0][0]["COUNT(*)"] || 0;
-
     const progress = Math.round((courseMaterialsCount / lessons) * 100);
-    await updateCourseProgressModel(progress, data.user_id, data.course_id);
+    await updateCourseProgressModel(progress, user_id, course_id);
 
     !value &&
       (await log(
