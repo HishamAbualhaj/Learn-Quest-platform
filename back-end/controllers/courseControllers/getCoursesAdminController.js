@@ -21,7 +21,7 @@ const getCoursesAdminController = async (req, res) => {
         null,
         500,
         null,
-        { msg: "Error to fetch courses" }
+        "Error to fetch courses"
       );
     }
   });

@@ -37,7 +37,7 @@ const getAnalysticController = (req, res) => {
         null,
         500,
         null,
-        { msg: "Error to select analystic" }
+        "Error to select analystic"
       );
     }
   });

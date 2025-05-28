@@ -37,7 +37,7 @@ const addCourseController = (req, res) => {
         null,
         500,
         null,
-        { msg: "Error adding course" }
+        "Error adding course"
       );
     }
   });

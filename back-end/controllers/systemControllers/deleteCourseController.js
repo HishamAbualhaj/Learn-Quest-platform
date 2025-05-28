@@ -40,10 +40,15 @@ async function deleteCourseQ(course_id, res) {
       null
     );
   } catch (error) {
-    handleResponse(res, error, "Error Deleting course at deleteCourseController : ", null, 500, null, {
-      isDeleted: false,
-      msg: "Course deleted Failed, ",
-    });
+    handleResponse(
+      res,
+      error,
+      "Error Deleting course at deleteCourseController : ",
+      null,
+      500,
+      null,
+      "Course deleted Failed, "
+    );
   }
 }
 

@@ -80,9 +80,7 @@ async function getCourseQ(course_id, student_id) {
       null,
       500,
       null,
-      {
-        msg: "Error to SELECT Course Data",
-      }
+      "Error to SELECT Course Data"
     );
   }
 }
@@ -135,9 +133,7 @@ async function getCourseQNotEnrolled(course_id) {
       null,
       500,
       null,
-      {
-        msg: "Error to SELECT Course Data",
-      }
+      "Error to SELECT Course Data"
     );
   }
 }
@@ -153,9 +149,7 @@ export async function checkCourseEnrollment(user_id, course_id) {
       null,
       500,
       null,
-      {
-        msg: "Error to SELECT enrollments",
-      }
+      "Error to SELECT enrollments"
     );
   }
 }

@@ -21,7 +21,7 @@ const getSystemLogController = async (req, res) => {
         null,
         500,
         null,
-        { msg: "Error to select systemlogs" }
+        "Error to select systemlogs"
       );
     }
   });

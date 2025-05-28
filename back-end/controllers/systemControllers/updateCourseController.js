@@ -51,7 +51,7 @@ const updateCourseController = (req, res) => {
         null,
         200,
         null,
-        { msg: "Course updated successfully!" },
+        "Course updated successfully!" ,
         null
       );
     } catch (error) {
@@ -62,7 +62,7 @@ const updateCourseController = (req, res) => {
         null,
         500,
         null,
-        { msg: "Error updating course" }
+        "Error updating course"
       );
     }
   });

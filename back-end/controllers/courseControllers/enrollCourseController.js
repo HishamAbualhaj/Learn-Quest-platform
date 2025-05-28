@@ -24,7 +24,7 @@ async function enrollCourseQ(
         null,
         200,
         null,
-        { msg: "YOU ARE ENROLLED ALREADY" },
+        "YOU ARE ENROLLED ALREADY",
         null
       );
       return;
