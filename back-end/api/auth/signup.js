@@ -1,10 +1,9 @@
-import connection from "../../config/db.js";
+import { addUserModel } from "../../models/systemModel.js";
 import handleResponse from "../../utils/handleResponse.js";
 import isEmailFound from "../../utils/isEmailFound.js";
 import log from "../system/logs.js";
 let response = null;
 let request = null;
-
 const signup = (req, res) => {
   response = res;
   request = req;
@@ -44,18 +43,33 @@ const signup = (req, res) => {
 
       const isFound = await isEmailFound(email, response);
 
+      if (!(first_name && last_name && email && birthdate)) {
+        handleResponse(
+          response,
+          null,
+          null,
+          200,
+          null,
+          "Some fields are required",
+          null,
+          null,
+          false
+        );
+        return;
+      }
       if (isFound) {
         handleResponse(
           response,
           null,
-          "",
+          null,
           200,
-          500,
+          null,
           "Email Already Found",
           null,
           null,
           false
         );
+        return;
       } else {
         const student_id = Math.round(Math.random() * 100000000);
         const signup = signUpPromise(
@@ -111,20 +125,16 @@ async function signUpPromise(
   birthdate
 ) {
   try {
-    const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, password, gender, birthdate)
-  VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
-    return await connection
-      .promise()
-      .query(query, [
-        student_id,
-        first_name,
-        last_name,
-        status_user,
-        email,
-        password,
-        gender,
-        birthdate,
-      ]);
+    await addUserModel(
+      student_id,
+      first_name,
+      last_name,
+      status_user,
+      email,
+      password,
+      gender,
+      birthdate
+    );
   } catch (error) {
     handleResponse(
       response,

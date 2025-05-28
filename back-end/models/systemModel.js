@@ -1,5 +1,31 @@
 import deleteCourseImage from "../api/course/deleteCourseImage.js";
 import connection from "../config/db.js";
+const addUserModel = async (
+  student_id,
+  first_name,
+  last_name,
+  status_user,
+  email,
+  password,
+  gender,
+  birthdate
+) => {
+  const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, password, gender, birthdate)
+  VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
+  return await connection
+    .promise()
+    .query(query, [
+      student_id,
+      first_name,
+      last_name,
+      status_user,
+      email,
+      password,
+      gender,
+      birthdate,
+    ]);
+};
+
 const addCourseModel = async (
   course_id,
   title,
@@ -194,7 +220,49 @@ const validateSessionModel = async (sessionId) => {
     "SELECT user_id FROM session WHERE session_id = ? AND expires_at > NOW()";
   return await connection.promise().query(query, [sessionId]);
 };
+
+const addTokenUserModel = async (token, expires, email) => {
+  const query =
+    "UPDATE user SET reset_token = ? , reset_token_expires = ? WHERE email = ?";
+  return await connection.promise().query(query, [token, expires, email]);
+};
+
+const getCodeModel = async (email) => {
+  const getCodeQuery =
+    "SELECT reset_token FROM user WHERE email = ? AND reset_token_expires > unix_timestamp(NOW()) * 1000";
+
+  return await connection.promise().query(getCodeQuery, [email]);
+};
+
+const resetPassModel = async (email, password) => {
+  const updatePassQuery = `UPDATE user set password = ? WHERE email = ?`;
+  await connection.promise().query(updatePassQuery, [password, email]);
+
+  const deleteTokenQuery = `UPDATE user set reset_token_expires = ? WHERE email = ?`;
+  await connection
+    .promise()
+    .query(deleteTokenQuery, [Date.now() - 10000000, email]);
+
+  return;
+};
+
+const updateUserStatusModel = async (user_id, value = 0) => {
+  const query = "UPDATE USER SET status_user = ? WHERE student_id = ?";
+  return await connection.promise().query(query, [value, user_id]);
+};
+
+const deleteSessionModel = async (sessionId) => {
+  const deleteSessionQuery = "DELETE FROM session WHERE session_id = ?";
+  return await connection.promise().query(deleteSessionQuery, [sessionId]);
+};
+
+const authUserModel = async (email, password) => {
+  const query =
+    "SELECT student_id,first_name,role,login_method FROM user WHERE email = ? AND password = ?";
+  return await connection.promise().query(query, [email, password]);
+};
 export {
+  addUserModel,
   addCourseModel,
   addCourseMaterialModel,
   updateLessonModel,
@@ -207,4 +275,10 @@ export {
   addLogModel,
   addArchiveLogModel,
   validateSessionModel,
+  addTokenUserModel,
+  getCodeModel,
+  resetPassModel,
+  updateUserStatusModel,
+  deleteSessionModel,
+  authUserModel,
 };

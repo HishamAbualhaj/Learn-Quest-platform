@@ -1,4 +1,4 @@
-import connection from "../../config/db.js";
+import { getCodeModel } from "../../models/systemModel.js";
 import handleResponse from "../../utils/handleResponse.js";
 const confirmCode = (req, res) => {
   let body = "";
@@ -9,10 +9,7 @@ const confirmCode = (req, res) => {
     const { code = null, email = null } = JSON.parse(body);
 
     try {
-      const getCodeQuery =
-        "SELECT reset_token FROM user WHERE email = ? AND reset_token_expires > unix_timestamp(NOW()) * 1000";
-
-      const result = await connection.promise().query(getCodeQuery, [email]);
+      const result = await getCodeModel(email);
 
       const [{ reset_token = null } = {}] = result[0];
       if (reset_token === code) {

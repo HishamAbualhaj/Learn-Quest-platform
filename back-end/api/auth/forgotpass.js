@@ -1,8 +1,8 @@
 import { sendRestEmail } from "../../services/mailer.js";
 import handleResponse from "../../utils/handleResponse.js";
 import isEmailFound from "../../utils/isEmailFound.js";
-import connection from "../../config/db.js";
 import crypto from "crypto";
+import { addTokenUserModel } from "../../models/systemModel.js";
 const forgotPass = (req, res) => {
   let body = "";
   req.on("data", (chunks) => {
@@ -29,10 +29,8 @@ const forgotPass = (req, res) => {
         );
         return;
       }
-      let query =
-        "UPDATE user SET reset_token = ? , reset_token_expires = ? WHERE email = ?";
-      await connection.promise().query(query, [token, expires, email]);
 
+      await addTokenUserModel(token, expires, email);
       await sendRestEmail(email, token);
 
       handleResponse(res, null, null, 200, null, "Code sent to email", null);

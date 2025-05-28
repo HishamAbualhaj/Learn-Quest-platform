@@ -1,4 +1,4 @@
-import connection from "../../config/db.js";
+import { getCodeModel, resetPassModel } from "../../models/systemModel.js";
 import handleResponse from "../../utils/handleResponse.js";
 const resetPass = (req, res) => {
   let body = "";
@@ -9,20 +9,12 @@ const resetPass = (req, res) => {
     const { code = null, email = null, password = null } = JSON.parse(body);
 
     try {
-      const getCodeQuery =
-        "SELECT reset_token FROM user WHERE email = ? AND reset_token_expires > unix_timestamp(NOW()) * 1000";
-
-      const result = await connection.promise().query(getCodeQuery, [email]);
+      const result = await getCodeModel(email);
       const [{ reset_token = null } = {}] = result[0];
 
       if (reset_token === code) {
-        const updatePassQuery = `UPDATE user set password = ? WHERE email = ?`;
-        await connection.promise().query(updatePassQuery, [password, email]);
+        await resetPassModel(email, password);
 
-        const deleteTokenQuery = `UPDATE user set reset_token_expires = ? WHERE email = ?`;
-        await connection
-          .promise()
-          .query(deleteTokenQuery, [Date.now() - 10000000, email]);
         handleResponse(
           res,
           null,

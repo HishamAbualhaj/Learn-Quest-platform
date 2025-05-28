@@ -1,7 +1,10 @@
-import connection from "../../config/db.js";
 import handleResponse from "../../utils/handleResponse.js";
 import log from "../system/logs.js";
 import handleSession from "../../utils/handleSession.js";
+import {
+  authUserModel,
+  updateUserStatusModel,
+} from "../../models/systemModel.js";
 let response = null;
 let request = null;
 const login = (req, res) => {
@@ -19,6 +22,19 @@ const login = (req, res) => {
     try {
       const { email, password } = JSON.parse(body);
 
+      if (!(email && password)) {
+        handleResponse(
+          response,
+          null,
+          null,
+          200,
+          null,
+          "Some fields are required",
+          null,
+          null,
+          false
+        );
+      }
       // fetching for password if vaild or not
       const isAuth = await getId(email, password);
 
@@ -65,7 +81,7 @@ const login = (req, res) => {
       handleResponse(
         response,
         error,
-        "Error parsing request body: ",
+        "Error parsing request body at login : ",
         null,
         500,
         null,
@@ -77,16 +93,14 @@ const login = (req, res) => {
 
 async function getId(email, password) {
   try {
-    const query =
-      "SELECT student_id,first_name,role,login_method FROM user WHERE email = ? AND password = ?";
-    const result = await connection.promise().query(query, [email, password]);
+    const result = authUserModel(email, password);
     const [data] = result;
     return data.length === 0 ? false : data;
   } catch (error) {
     handleResponse(
       response,
       error,
-      "Error Inserting user data : ",
+      "Error Inserting user data at login: ",
       null,
       500,
       null,
@@ -98,8 +112,7 @@ async function getId(email, password) {
 
 export async function updateUserStatus(user_id) {
   try {
-    const query = "UPDATE USER SET status_user = ? WHERE student_id = ?";
-    await connection.promise().query(query, [1, user_id]);
+    await updateUserStatusModel(user_id, 1);
   } catch (error) {
     handleResponse(
       response,
