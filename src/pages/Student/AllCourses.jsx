@@ -119,7 +119,7 @@ function AllCourses() {
             </div>
           </div>
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-5 gap-8  mt-5">
-            {!courses.length ? (
+            {(!courses.length && !isFetching) ? (
               <div className="flex justify-center xl:text-4xl text-xl font-bold absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
                 No courses are available
               </div>
@@ -147,7 +147,7 @@ function AllCourses() {
                           className="text-yellow-400"
                           icon={faStar}
                         />
-                        <div className="text-yellow-400">{course.stars}</div>
+                        <div className="text-yellow-400">{course.stars || 0.0}</div>
                       </div>
                     </div>
                     <div className="text-black/50 leading-7 dark:text-white/50 mt-5 line-clamp-4  max-w-[400px]">

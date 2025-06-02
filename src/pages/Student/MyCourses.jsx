@@ -1,8 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import web from "../../assets/web.jpg";
-import ui from "../../assets/uiux.jpg";
-import cyber from "../../assets/cyber.jpg";
 import {
   faArrowLeft,
   faArrowRight,
@@ -48,8 +45,10 @@ function MyCourses() {
         {
           page: currentPagePara,
           student_id: studentId,
-          search_text: fetchData.search_text === "null" ? null : fetchData.search_text,
-          select_data: fetchData.select_data === "null" ? null : fetchData.select_data,
+          search_text:
+            fetchData.search_text === "null" ? null : fetchData.search_text,
+          select_data:
+            fetchData.select_data === "null" ? null : fetchData.select_data,
         },
         "POST"
       );
@@ -159,14 +158,7 @@ function MyCourses() {
           </div>
 
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-5 gap-8  mt-5">
-            {isFetching ? (
-              <>
-                <Loader />
-                <Loader />
-                <Loader />
-                <Loader />
-              </>
-            ) : courses.length === 0 ? (
+            {!courses.length && !isFetching ? (
               <div className="flex justify-center xl:text-4xl text-xl font-bold absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
                 No courses are available
               </div>
@@ -189,7 +181,9 @@ function MyCourses() {
                         {course.title}
                       </div>
                       <div className="flex gap-2 items-center">
-                        <div className="dark:text-white text-md">{`${course.stars}.0`}</div>
+                        <div className="dark:text-white text-md">{`${
+                          course.stars || 0
+                        }`}</div>
                         <FontAwesomeIcon
                           className="text-yellow-400"
                           icon={faStar}
@@ -210,7 +204,7 @@ function MyCourses() {
                       ))}
                     </div>
                     <div className="flex items-center mt-5 gap-2">
-                      <div className=" w-full h-2 border border-borderDark rounded-md ">
+                      <div className=" w-full h-2 border dark:border-borderDark rounded-md ">
                         <div
                           style={{ width: `${course.progress}%` }}
                           className={`bg-green-400 h-full rounded-md`}
@@ -238,6 +232,14 @@ function MyCourses() {
                   </div>
                 </div>
               ))
+            )}
+            {isFetching && (
+              <>
+                <Loader />
+                <Loader />
+                <Loader />
+                <Loader />
+              </>
             )}
           </div>
           {Boolean(courses.length) && (
