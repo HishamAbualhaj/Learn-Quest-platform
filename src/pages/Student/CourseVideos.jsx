@@ -103,9 +103,11 @@ function CourseVideos({
           {subtitle}
         </div>
         {!isEnrolled && !Boolean(url) && (
-          <div className="absolute top-0 left-0  bg-purple-800/20 z-10  dark:text-purple-300 text-white w-full h-full lg:text-md text-sm flex gap-3 justify-center items-center">
-            <div className="dark:bg-purple-600 bg-purple-500 p-2 rounded-md">
-              You are not Enrolled <FontAwesomeIcon icon={faLock} />
+          <div className="absolute top-0 right-0  bg-purple-800/20 z-10  dark:text-purple-300 text-white w-full h-full lg:text-md text-sm flex gap-3 justify-end">
+            <div className="dark:bg-purple-600 bg-purple-500 p-2 rounded-md h-fit">
+              <div>
+                You are not Enrolled <FontAwesomeIcon icon={faLock} />
+              </div>
             </div>
           </div>
         )}
