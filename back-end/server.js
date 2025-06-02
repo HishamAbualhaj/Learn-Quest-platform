@@ -5,7 +5,7 @@ import logout from "./api/auth/logout.js";
 import session from "./api/system/session.js";
 import getUserData from "./utils/getUserData.js";
 import addCourse from "./api/dashboard/addCourse.js";
-import getCourses from './api/course/getCourses.js'
+import getCourses from "./api/course/getCourses.js";
 import deleteCourse from "./api/dashboard/deleteCourse.js";
 import getCourseData from "./api/course/getCourseData.js";
 import updateCourse from "./api/dashboard/updateCourse.js";
@@ -34,11 +34,16 @@ import resetPass from "./api/auth/resetpass.js";
 
 import getCoursesAdmin from "./api/course/getCoursesAdmin.js";
 
+import authLogin from "./middleware/authLogin.js";
 
-import authLogin from './middleware/authLogin.js'
+import dotenv from "dotenv";
+dotenv.config();
+
 const server = http.createServer(async (req, res) => {
+  const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
   // Add CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Allow requests from React app
+  res.setHeader("Access-Control-Allow-Origin", frontendURL); // Allow requests from React app
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT,OPTIONS"); // Allow specific methods
   res.setHeader("Access-Control-Allow-Headers", "Content-Type"); // Allow specific headers
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -101,8 +106,8 @@ const server = http.createServer(async (req, res) => {
     }
   });
 });
-
-const PORT = 3002;
+const PORT = 3002
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  const backendURL = process.env.BACKEND_URL || 'http://localhost:3002';
+  console.log(`Server running on ${backendURL}`);
 });
