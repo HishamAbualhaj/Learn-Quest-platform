@@ -114,9 +114,9 @@ function App() {
     {
       path: "/confirmpass",
       element: (
-          <IsAuthRoute isAllowed={false}>
-            <ConfirmPass />
-          </IsAuthRoute>
+        <IsAuthRoute isAllowed={false}>
+          <ConfirmPass />
+        </IsAuthRoute>
       ),
       loader: () => {
         return fetchData("http://localhost:3002/session");
@@ -249,7 +249,18 @@ function App() {
         },
         { path: "analytics", element: <Analytics /> },
         { path: "reviews", element: <Reviews /> },
-        { path: "chat", element: <Chat /> },
+        {
+          path: "chat",
+          element: (
+            <UserDataContext>
+              <Chat />
+            </UserDataContext>
+          ),
+          errorElement: <ErrorPage />,
+          loader: () => {
+            return fetchData("http://localhost:3002/session");
+          },
+        },
         { path: "systemlog", element: <SystemLog /> },
         { path: "maintenance", element: <Maintenance /> },
         {
