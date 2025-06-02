@@ -9,9 +9,13 @@ function Courses() {
   const [courses, setCourses] = useState([]);
   const [lastNode, setLastNode] = useState(null);
   const coursesContainer = useRef();
-  const { dataFetched, isFetching, hasNextPage } = useInfiniteScroll({
+  const { dataFetched, isFetching, hasNextPage, refetch } = useInfiniteScroll({
     fetchFn: (pagePara) => {
-      return useFetch(`${API_BASE_URL}/getCoursesAdmin`, { page: pagePara }, "POST");
+      return useFetch(
+        `${API_BASE_URL}/getCoursesAdmin`,
+        { page: pagePara },
+        "POST"
+      );
     },
     queryKey: ["courses"],
     scrollContainer: coursesContainer,
@@ -49,9 +53,10 @@ function Courses() {
       {deleteCoursePopup && (
         <DeleteCourse
           {...{
-            setdeleteCoursePopup: setdeleteCoursePopup,
+            setdeleteCoursePopup,
             id: courseData.id,
             title: courseData.title,
+            refetch,
           }}
         />
       )}
@@ -90,9 +95,9 @@ function Courses() {
                 <td className="xl:pr-0 pr-8 whitespace-nowrap">
                   {course?.price}
                 </td>
-                <td className="whitespace-nowrap">{course?.lessons || '0'}</td>
+                <td className="whitespace-nowrap">{course?.lessons || "0"}</td>
                 <td className="whitespace-nowrap">
-                  {course?.created_date.split("T")[0]}
+                  {course?.created_date?.split("T")[0]}
                 </td>
                 <td className="whitespace-nowrap p-2 flex flex-col gap-2">
                   <Link to={`edit/${course?.course_id}`} state={2}>

@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useMutation } from "@tanstack/react-query";
 import API_BASE_URL from "../../config/config";
-function DeleteCourse({ setdeleteCoursePopup, id, title }) {
+function DeleteCourse({ setdeleteCoursePopup, id, title, refetch }) {
   const { isPending, mutate } = useMutation({
     mutationFn: async () => {
       return await useFetch(
@@ -18,10 +18,11 @@ function DeleteCourse({ setdeleteCoursePopup, id, title }) {
     },
     onSuccess: () => {
       setdeleteCoursePopup(false);
+      refetch();
     },
-    onError: (err)=> {
-      console.log(err)
-    }
+    onError: (err) => {
+      console.log(err);
+    },
   });
   return (
     <div>

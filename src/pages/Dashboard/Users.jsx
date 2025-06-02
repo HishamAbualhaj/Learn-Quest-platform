@@ -7,7 +7,7 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [lastNode, setLastNode] = useState(null);
   const usersContainer = useRef();
-  const { dataFetched, isFetching, hasNextPage } = useInfiniteScroll({
+  const { dataFetched, isFetching, hasNextPage, refetch } = useInfiniteScroll({
     fetchFn: (pagePara) => {
       return useFetch(`${API_BASE_URL}/getUsers`, { page: pagePara }, "POST");
     },
@@ -19,6 +19,7 @@ function Users() {
 
   useEffect(() => {
     setUsers(dataFetched);
+    console.log(dataFetched);
   }, [dataFetched]);
   const observeEle = (node) => {
     setLastNode(node);
@@ -38,14 +39,18 @@ function Users() {
       {deleteUserPopup && (
         <DeleteUser
           {...{
-            setdeleteUserPopup: setdeleteUserPopup,
+            setdeleteUserPopup,
             id: userData.id,
             email: userData.email,
+            refetch,
           }}
         />
       )}
-     
-      <div ref={usersContainer} className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 overflow-auto pr-5">
+
+      <div
+        ref={usersContainer}
+        className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 overflow-auto pr-5"
+      >
         <table className="dark:text-gray-300 text-lightText w-full">
           <thead>
             <tr className="border-t border-b dark:border-borderDark border-borderLight">
@@ -74,7 +79,7 @@ function Users() {
                   {user?.email}
                 </td>
                 <td className="xl:pr-0 pr-8 whitespace-nowrap">
-                  {user?.joined_at.split("T")[0]}
+                  {user?.joined_at?.split("T")[0]}
                 </td>
                 <td className="xl:pr-0 pr-8 whitespace-nowrap">
                   <div
@@ -87,7 +92,7 @@ function Users() {
                     {user?.status_user ? "Active" : "Inactive"}
                   </div>
                 </td>
-                <td className="whitespace-nowrap">10</td>
+                <td className="whitespace-nowrap">{user?.course_joined}</td>
                 <td className="whitespace-nowrap">
                   <div
                     onClick={() => {

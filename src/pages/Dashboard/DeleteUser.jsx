@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useMutation } from "@tanstack/react-query";
 import API_BASE_URL from "../../config/config";
-function DeleteUser({ setdeleteUserPopup, id, email }) {
+function DeleteUser({ setdeleteUserPopup, id, email, refetch }) {
   const { isPending, mutate } = useMutation({
     mutationFn: async () => {
       return await useFetch(
@@ -18,6 +18,10 @@ function DeleteUser({ setdeleteUserPopup, id, email }) {
     },
     onSuccess: () => {
       setdeleteUserPopup(false);
+      refetch();
+    },
+    onError: (err) => {
+      console.log(err);
     },
   });
 
