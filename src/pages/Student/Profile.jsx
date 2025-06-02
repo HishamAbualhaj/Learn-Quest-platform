@@ -93,8 +93,11 @@ function Profile() {
               joined_at,
               birthdate,
               image_url,
+              course_joined,
             },
           ] = res.msg.data;
+
+          console.log("data" , res.msg.data)
           image_url_temp = image_url;
 
           let date = new Date(birthdate).toLocaleDateString("en-GB").split("/");
@@ -110,7 +113,7 @@ function Profile() {
             date,
             gender,
             join,
-            "5",
+            course_joined,
             image_url,
           ];
           const arr = data.map((_, index) => {

@@ -1,5 +1,6 @@
 import handleResponse from "./handleResponse.js";
 import connection from "../config/db.js";
+import { getUsersModel } from "../models/userModel.js";
 function getUserData(req, response) {
   let body = "";
   req.on("data", (chunks) => {
@@ -9,8 +10,8 @@ function getUserData(req, response) {
     try {
       const { id } = JSON.parse(body);
 
-      const query = `SELECT student_id,first_name,last_name,status_user,email,gender,birthdate,role,image_url,joined_at,login_method from user WHERE student_id = ?`;
-      const result = await connection.promise().query(query, [id]);
+      const result = await getUsersModel(null, id);
+
       const [data] = result;
       if (data.length === 0) {
         handleResponse(
