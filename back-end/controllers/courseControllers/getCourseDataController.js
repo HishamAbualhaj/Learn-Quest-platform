@@ -60,7 +60,7 @@ async function getCourseQ(course_id, student_id) {
       created_date,
     };
 
-    handleResponse(
+    return handleResponse(
       response,
       null,
       null,
@@ -113,7 +113,7 @@ async function getCourseQNotEnrolled(course_id) {
       image_url,
       created_date,
     };
-    handleResponse(
+    return handleResponse(
       response,
       null,
       null,

@@ -23,7 +23,7 @@ const login = (req, res) => {
       const { email, password } = JSON.parse(body);
 
       if (!(email && password)) {
-        handleResponse(
+        return handleResponse(
           response,
           null,
           null,
@@ -41,7 +41,7 @@ const login = (req, res) => {
       if (isAuth) {
         const [{ student_id, first_name, role, login_method }] = isAuth;
         if (login_method === "google") {
-          handleResponse(
+          return handleResponse(
             response,
             null,
             null,
@@ -52,7 +52,6 @@ const login = (req, res) => {
             null,
             false
           );
-          return;
         }
         role === "admin"
           ? await log(response, student_id, `Admin just Logined In`, email)
@@ -85,7 +84,7 @@ const login = (req, res) => {
         null,
         500,
         null,
-        "Error to Sign up"
+        "Error to Login in"
       );
     }
   });

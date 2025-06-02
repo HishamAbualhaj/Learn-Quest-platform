@@ -10,7 +10,7 @@ const getEnrolledCoursesController = (req, res) => {
     try {
       const { page, student_id, search_text, select_data } = JSON.parse(body);
       if (page < 1) {
-        handleResponse(
+        return handleResponse(
           res,
           null,
           null,
@@ -27,7 +27,7 @@ const getEnrolledCoursesController = (req, res) => {
         page,
         student_id
       );
-      result[0].length === 0
+      return result[0].length === 0
         ? handleResponse(
             res,
             null,
