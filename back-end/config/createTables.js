@@ -1,7 +1,7 @@
 import connection from "./db.js";
 // SQL queries to create tables
 const createUserTable = `
-CREATE TABLE IF NOT EXISTS User (
+CREATE TABLE IF NOT EXISTS user (
   student_id INT AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(50) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS User (
 );
 `;
 const createCoursesTable = `
-CREATE TABLE IF NOT EXISTS Courses (
+CREATE TABLE IF NOT EXISTS courses (
   course_id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(100) NOT NULL,
   description TEXT,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Courses (
   category VARCHAR(50),
   tabs TEXT,
   image_url VARCHAR(250),
-  stars INT DEFAULT 0,
+  stars DOUBLE DEFAULT 0,
   lessons INT DEFAULT 0,
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS archiveSystemLogs (
 `;
 const createSessionTable = `
 CREATE TABLE IF NOT EXISTS session (
-    session_id VARCHAR(255) NOT NULL PRIMARY KEY,  
+    session_id INT NOT NULL PRIMARY KEY,  
     user_id INT NOT NULL,                       
     data TEXT,                                    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS session (
 
 const createEnrollmentsTable = `
 CREATE TABLE IF NOT EXISTS enrollments (
-    enrollment_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    enrollment_id INT NOT NULL PRIMARY KEY,
     student_id INT,
     course_id INT,
     enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS enrollments (
 `;
 const createCompleteionMaterialTable = `
 CREATE TABLE IF NOT EXISTS completeionMaterial (
-    completeion_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    completeion_id INT NOT NULL PRIMARY KEY,
     student_id INT NOT NULL,
     material_id INT NOT NULL,
     course_id INT NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS completeionMaterial (
 
 const createReviewsTable = `
 CREATE TABLE IF NOT EXISTS reviews (
-    review_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    review_id INT NOT NULL PRIMARY KEY,
     student_id INT,
     course_id INT,
     first_name VARCHAR(255) NOT NULL,
