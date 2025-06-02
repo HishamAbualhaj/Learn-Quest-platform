@@ -2,6 +2,7 @@ import { enrollCourseModel } from "../../models/courseModel.js";
 import log from "../../api/system/logs.js";
 import handleResponse from "../../utils/handleResponse.js";
 import { checkCourseEnrollment } from "../courseControllers/getCourseDataController.js";
+import { increaseCourseJoinedModel } from "../../models/userModel.js";
 const enrollCourseController = (req, res) => {
   let body = "";
   req.on("data", (chunks) => {
@@ -30,6 +31,8 @@ async function enrollCourseQ(
       return;
     }
     await enrollCourseModel(student_id, course_id);
+
+    await increaseCourseJoinedModel(student_id);
 
     await log(
       res,

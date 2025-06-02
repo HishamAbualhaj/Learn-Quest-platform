@@ -4,10 +4,10 @@ const getUsersModel = async (page, student_id = null) => {
   let query = "";
   let result = "";
   if (!page) {
-    query = `SELECT student_id,first_name,last_name,status_user,email,gender,birthdate,role,image_url,joined_at FROM user WHERE student_id = ?`;
+    query = `SELECT student_id,first_name,last_name,status_user,email,gender,birthdate,role,image_url,joined_at,course_joined FROM user WHERE student_id = ?`;
     result = await connection.promise().query(query, student_id);
   } else {
-    query = `SELECT student_id,first_name,last_name,status_user,email,gender,birthdate,role,image_url,joined_at FROM user WHERE role != 'admin' ORDER BY joined_at DESC LIMIT ? OFFSET ?`;
+    query = `SELECT student_id,first_name,last_name,status_user,email,gender,birthdate,role,image_url,joined_at,course_joined FROM user WHERE role != 'admin' ORDER BY joined_at DESC LIMIT ? OFFSET ?`;
     result = await connection
       .promise()
       .query(query, [10, page === 1 ? 0 : (page - 1) * 5]);
@@ -66,6 +66,10 @@ const updateUserModel = async (
       ]);
   }
 };
+const increaseCourseJoinedModel = async (student_id) => {
+  const query =
+    "UPDATE user set course_joined = course_joined + 1  WHERE student_id = ?";
+  await connection.promise().query(query, [student_id]);
+};
 
-
-export { getUsersModel, updateUserModel };
+export { getUsersModel, updateUserModel, increaseCourseJoinedModel };
