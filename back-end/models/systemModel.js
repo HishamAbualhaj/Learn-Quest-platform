@@ -159,7 +159,7 @@ const updateCourseModel = async (
   let query = "";
   if (image) {
     image = `${course_id}-${image}`;
-    query = `UPDATE Courses 
+    query = `UPDATE courses 
       SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ? , lessons = ?
       WHERE course_id = ?`;
     await deleteCourseImage(course_id);
@@ -177,7 +177,7 @@ const updateCourseModel = async (
         course_id,
       ]);
   } else {
-    query = `UPDATE Courses 
+    query = `UPDATE courses 
     SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ? , lessons = ?
     WHERE course_id = ?`;
     await connection
@@ -208,7 +208,7 @@ const addArchiveLogModel = async (
   log_message,
   email
 ) => {
-  const query = `INSERT INTO archiveSystemLogs (archive_id,data_id,type,message,email) VALUES (?,?,?,?,?)`;
+  const query = `INSERT INTO archivesystemlogs (archive_id,data_id,type,message,email) VALUES (?,?,?,?,?)`;
   const log_id = Math.round(Math.random() * 100000000);
   return await connection
     .promise()
@@ -247,7 +247,7 @@ const resetPassModel = async (email, password) => {
 };
 
 const updateUserStatusModel = async (user_id, value = 0) => {
-  const query = "UPDATE USER SET status_user = ? WHERE student_id = ?";
+  const query = "UPDATE user SET status_user = ? WHERE student_id = ?";
   return await connection.promise().query(query, [value, user_id]);
 };
 

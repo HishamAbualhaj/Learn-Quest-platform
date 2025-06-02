@@ -133,7 +133,7 @@ const getEnrolledCoursesModel = async (
 };
 const findMaterialModel = async (material_id, student_id) => {
   const findMaterialQuery =
-    "SELECT completeion_id from completeionMaterial WHERE material_id = ? AND student_id = ?";
+    "SELECT completeion_id from completeionmaterial WHERE material_id = ? AND student_id = ?";
 
   return await connection
     .promise()
@@ -147,7 +147,7 @@ const addMaterialCompleteionModel = async ({
 }) => {
   const completeion_id = Math.round(Math.random() * 100000000);
   const addMaterialCompleteionQuery =
-    "INSERT INTO completeionMaterial (completeion_id,student_id,material_id,course_id,isCompleted) VALUES (?,?,?,?,?)";
+    "INSERT INTO completeionmaterial (completeion_id,student_id,material_id,course_id,isCompleted) VALUES (?,?,?,?,?)";
 
   return await connection
     .promise()
@@ -161,7 +161,7 @@ const addMaterialCompleteionModel = async ({
 };
 const updatMaterialCompleteionModel = async ({ value, id }) => {
   const updatMaterialCompleteionQuery =
-    "UPDATE completeionMaterial SET isCompleted = ? WHERE material_id = ?";
+    "UPDATE completeionmaterial SET isCompleted = ? WHERE material_id = ?";
   await connection.promise().query(updatMaterialCompleteionQuery, [!value, id]);
 };
 const countCourseMaterialCompletedModel = async (user_id, course_id) => {
