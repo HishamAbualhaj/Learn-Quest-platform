@@ -83,7 +83,7 @@ export default function Header({ isStudent = false }) {
           {/*Check user status if logged in or not */}
           <div className="flex items-center">
             {!isLoggedIn ? (
-              <div className="md:flex hidden gap-2 lg:flex-row flex-col">
+              <div className="md:flex hidden gap-2">
                 <Button
                   outlined={true}
                   text="Sign up"

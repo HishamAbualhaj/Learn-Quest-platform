@@ -49,7 +49,7 @@ function VerifyCode() {
           ))}
         <div className="lg:text-4xl text-2xl">Verify code</div>
         <div className="dark:text-textDark text-lightText mt-2">
-          Code sent to your email
+          Code sent to your email - check your spam 
         </div>
         <form
           onSubmit={(e) => {
