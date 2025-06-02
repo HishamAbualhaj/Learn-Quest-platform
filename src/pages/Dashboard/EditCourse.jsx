@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link, useLocation } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
 import { useContext, useEffect, useState } from "react";
@@ -41,27 +41,24 @@ function EditCourse() {
   const [courseData, setCourseData] = useState(defaultData);
   useEffect(() => {
     if (courseId && user_data) {
-      setCourseData((pre) => {
-        return {
-          ...pre,
-          course_id: courseId,
-        };
-      });
+      setCourseData((pre) => ({
+        ...pre,
+        course_id: courseId,
+      }));
       async function getData() {
         const res = await useFetch(
           `${API_BASE_URL}/getCourseData`,
-          { course_id: courseId, user_data: user_data },
+          { course_id: courseId, ...user_data },
           "POST"
         );
         const { msg } = res.msg;
+
         const [courseDataFetched, courseMaterial] = msg;
         Object.entries(courseDataFetched).forEach(([id, value]) => {
-          setCourseData((pre) => {
-            return {
-              ...pre,
-              [id]: value,
-            };
-          });
+          setCourseData((pre) => ({
+            ...pre,
+            [id]: value,
+          }));
         });
         addLessonForEdit(courseMaterial);
       }
@@ -192,22 +189,23 @@ function EditCourse() {
   }
   function addLessonForEdit(courseMaterials) {
     let courseMaterialsArr = [];
-    courseMaterials.forEach((obj) => {
+    let count = 1;
+    courseMaterialsArr = courseMaterials.map((obj) => {
       const { title, subtitle, url } = obj;
       const updateMaterial = {
-        id: obj.material_id,
+        lesson_count: count,
+        id: obj.material_id || obj.id,
         title: title,
         subtitle: subtitle,
         url: url,
       };
-      courseMaterialsArr = [...courseMaterialsArr, updateMaterial];
+      count += 1;
+      return updateMaterial;
     });
-    setCourseData((prev) => {
-      return {
-        ...prev,
-        materials: courseMaterialsArr,
-      };
-    });
+    setCourseData((prev) => ({
+      ...prev,
+      materials: courseMaterialsArr,
+    }));
   }
   function addLesson() {
     // add new object value for new lesson
@@ -216,6 +214,7 @@ function EditCourse() {
       materials: [
         ...courseData.materials,
         {
+          lesson_count: (courseData.materials.at(-1)?.lesson_count || 0) + 1,
           id: Math.round(Math.random() * 10000),
           title: "",
           subtitle: "",
@@ -223,6 +222,14 @@ function EditCourse() {
         },
       ],
     });
+  }
+
+  function deleteLesson(id) {
+    let courseMaterialsArr = courseData.materials.filter(
+      (obj) => id !== obj.id
+    );
+
+    addLessonForEdit(courseMaterialsArr);
   }
 
   return (
@@ -241,9 +248,9 @@ function EditCourse() {
         <div className="p-3">
           {alert &&
             (alert.status ? (
-              <Alert msg={alert.msg.msg} type="success" />
+              <Alert msg={alert.msg} type="success" />
             ) : (
-              <Alert msg={alert.msg.msg} />
+              <Alert msg={alert.msg} />
             ))}
           {inputs.map((input) => (
             <div
@@ -269,6 +276,7 @@ function EditCourse() {
               className="bg-transparent border dark:border-[#888] border-borderLight rounded-sm dark:text-white text-lightText focus:outline-none p-2 text-lg appearance-none w-full mt-2"
               name="courses"
               id="category"
+              value={courseData?.category || ""}
             >
               {category.map((category) => (
                 <option
@@ -316,8 +324,18 @@ function EditCourse() {
                   key={obj.id}
                   className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
                 >
+                  <div className="flex justify-end">
+                    <div
+                      onClick={() => {
+                        deleteLesson(obj.id);
+                      }}
+                      className=" dark:bg-borderDark bg-borderLight w-fit p-2 rounded-md cursor-pointer text-red-300 hover:text-red-500"
+                    >
+                      <FontAwesomeIcon className="transition" icon={faTrash} />
+                    </div>
+                  </div>
                   <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
-                    Lesson
+                    Lesson {obj.lesson_count}
                   </div>
                   <div className="flex flex-col gap-3 mt-3">
                     <div>
@@ -376,7 +394,7 @@ function EditCourse() {
             <textarea
               id="description"
               onChange={handleChange}
-              className="mt-2"
+              className="mt-2 min-h-[250px]"
               value={courseData.description || ""}
             />
           </div>

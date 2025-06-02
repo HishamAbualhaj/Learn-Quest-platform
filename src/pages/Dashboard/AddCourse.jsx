@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import ButtonAdmin from "./ButtonAdmin";
 import useFetch from "../../hooks/useFetch";
@@ -74,6 +74,7 @@ export default function AddCourse() {
     tabs: [""],
     materials: [
       {
+        id: 1,
         title: "",
         subtitle: "",
         url: "",
@@ -156,15 +157,14 @@ export default function AddCourse() {
     });
   }
 
-  const [lessons, setLessons] = useState([1]);
   function addLesson() {
-    setLessons([...lessons, lessons.at(-1) + 1]);
     // add new object value for new lesson
     setCourseData({
       ...courseData,
       materials: [
         ...courseData.materials,
         {
+          id: (courseData.materials.at(-1)?.id || 0) + 1,
           title: "",
           subtitle: "",
           url: "",
@@ -172,7 +172,16 @@ export default function AddCourse() {
       ],
     });
   }
+  function deleteLesson(id) {
+    let courseMaterialsArr = courseData.materials.filter(
+      (obj) => id !== obj.id
+    );
 
+    setCourseData({
+      ...courseData,
+      materials: courseMaterialsArr,
+    });
+  }
   return (
     <div>
       <div className="rounded-sm  w-full overflow-auto h-[800px]">
@@ -189,9 +198,9 @@ export default function AddCourse() {
         <div className="p-3">
           {alert &&
             (alert.status ? (
-              <Alert msg={alert.msg.msg} type="success" />
+              <Alert msg={alert.msg} type="success" />
             ) : (
-              <Alert msg={alert.msg.msg} />
+              <Alert msg={alert.msg} />
             ))}
 
           {inputs.map((input) => (
@@ -261,13 +270,23 @@ export default function AddCourse() {
               </div>
             </div>
             <div className="h-[450px] overflow-auto border-2 dark:border-borderDark rounded-md p-4 mt-2">
-              {lessons.map((id) => (
+              {courseData.materials.map((obj) => (
                 <div
-                  key={id}
+                  key={obj.id}
                   className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
                 >
+                  <div className="flex justify-end">
+                    <div
+                      onClick={() => {
+                        deleteLesson(obj.id);
+                      }}
+                      className=" dark:bg-borderDark bg-borderLight w-fit p-2 rounded-md cursor-pointer text-red-300 hover:text-red-500"
+                    >
+                      <FontAwesomeIcon className="transition" icon={faTrash} />
+                    </div>
+                  </div>
                   <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
-                    Lesson {id}
+                    Lesson {obj.id}
                   </div>
                   <div className="flex flex-col gap-3 mt-3">
                     <div>
@@ -275,7 +294,7 @@ export default function AddCourse() {
                         <div>Title: </div>
                         <input
                           onChange={(e) => {
-                            handleLessonChange(e, id);
+                            handleLessonChange(e, obj.id);
                           }}
                           id="title"
                           className="w-full"
@@ -289,7 +308,7 @@ export default function AddCourse() {
                         <div>Sub Title: </div>
                         <input
                           onChange={(e) => {
-                            handleLessonChange(e, id);
+                            handleLessonChange(e, obj.id);
                           }}
                           id="subtitle"
                           className="w-full"
@@ -303,7 +322,7 @@ export default function AddCourse() {
                         <div>Lesson Url: </div>
                         <input
                           onChange={(e) => {
-                            handleLessonChange(e, id);
+                            handleLessonChange(e, obj.id);
                           }}
                           id="url"
                           className="w-full"
