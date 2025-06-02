@@ -4,6 +4,8 @@ import { checkCourseEnrollment } from "../../controllers/courseControllers/getCo
 import {
   addReviewModel,
   checkHasReviewModel,
+  getCourseStarsModel,
+  updateCourseStarModel,
 } from "../../models/reviewModel.js";
 let response = "";
 const addReviewController = (req, res) => {
@@ -25,6 +27,7 @@ const addReviewController = (req, res) => {
         review_text,
         course_id,
       } = JSON.parse(body);
+
       if (review_text.length == 0) {
         handleResponse(
           res,
@@ -71,6 +74,11 @@ const addReviewController = (req, res) => {
       const review_id = Math.round(Math.random() * 100000000);
 
       await insertReview(review_id, JSON.parse(body));
+      const result = await getCourseStarsModel(course_id);
+      const [{ avg }] = result[0];
+
+      const stars = Number(avg).toFixed(2);
+      await updateCourseStarModel(course_id, stars);
       await log(
         res,
         student_id,

@@ -37,4 +37,21 @@ const getReviewsModel = async (page, course_id) => {
     .query(query, [course_id, 5, page === 1 ? 0 : (page - 1) * 5]);
 };
 
-export { addReviewModel, checkHasReviewModel, getReviewsModel };
+const getCourseStarsModel = async (course_id) => {
+  const query = "SELECT AVG(stars) as avg from reviews WHERE course_id = ?";
+
+  return await connection.promise().query(query, [course_id]);
+};
+const updateCourseStarModel = async (course_id, stars) => {
+  const query = "UPDATE courses set stars = ? WHERE course_id = ?";
+
+  return await connection.promise().query(query, [stars, course_id]);
+};
+
+export {
+  addReviewModel,
+  checkHasReviewModel,
+  getReviewsModel,
+  getCourseStarsModel,
+  updateCourseStarModel,
+};
