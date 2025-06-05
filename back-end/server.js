@@ -31,16 +31,21 @@ import googleAuth from "./services/googleAuth.js";
 import forgotPass from "./api/auth/forgotpass.js";
 import confirmCode from "./api/auth/confirmCode.js";
 import resetPass from "./api/auth/resetpass.js";
-
+import sendMsg from "./api/chat/sendMsg.js";
 import getCoursesAdmin from "./api/course/getCoursesAdmin.js";
 
 import authLogin from "./middleware/authLogin.js";
 
 import dotenv from "dotenv";
+import getMsg from "./api/chat/getMsg.js";
 dotenv.config();
 
+import { WebSocketServer } from "ws";
+import getAdminId from "./utils/getAdminId.js";
+let response = null;
 const server = http.createServer(async (req, res) => {
-  const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
+  response = res;
+  const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
 
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", frontendURL); // Allow requests from React app
@@ -69,11 +74,14 @@ const server = http.createServer(async (req, res) => {
       "/forgotPass": forgotPass,
       "/verifyCode": confirmCode,
       "/resetPass": resetPass,
+      "/sendMsg": sendMsg,
+      "/getMsg": getMsg,
     },
     GET: {
       "/session": session,
       "/logout": logout,
       "/getAnalystic": getAnalystic,
+      "/getAdminId": getAdminId,
     },
     PUT: {
       "/updateCourse": updateCourse,
@@ -106,8 +114,52 @@ const server = http.createServer(async (req, res) => {
     }
   });
 });
-const PORT = 3002
+const PORT = 3002;
+
+const wss = new WebSocketServer({ server });
+const client = new Map(); // userId => socket
+wss.on("connection", (socket) => {
+  try {
+    socket.once("message", (data) => {
+      const { type, sender_id } = JSON.parse(data);
+      if (type === "init") {
+        client.set(sender_id, socket);
+      }
+    });
+    socket.on("message", async (data) => {
+      const paredData = JSON.parse(data);
+      const { type, receiver_id, msg, sender_id } = paredData;
+      let dataToClient = {};
+      if (type === "chat") {
+        let [msg_id, date] = await sendMsg(paredData, response);
+        dataToClient = {
+          msg_id: msg_id,
+          msg: msg,
+          date: date,
+          to: receiver_id,
+          from: sender_id,
+        };
+
+        if (msg_id) {
+          socket.send(JSON.stringify(dataToClient));
+        } else {
+          socket.send(JSON.stringify({ msg: "Something went wrong" }));
+        }
+
+        const receiverSocket = client.get(receiver_id);
+        if (receiverSocket && receiverSocket.readyState === 1) {
+          receiverSocket.send(JSON.stringify(dataToClient));
+        }
+      }
+    });
+    socket.on("close", () => {
+      console.log("Client disconnected");
+    });
+  } catch (error) {
+    console.log("Error", error);
+  }
+});
 server.listen(PORT, () => {
-  const backendURL = process.env.BACKEND_URL || 'http://localhost:3002';
+  const backendURL = process.env.BACKEND_URL || "http://localhost:3002";
   console.log(`Server running on ${backendURL}`);
 });
