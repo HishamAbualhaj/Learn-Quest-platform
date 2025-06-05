@@ -258,7 +258,7 @@ const deleteSessionModel = async (sessionId) => {
 
 const authUserModel = async (email, password, isEmail = false) => {
   if (isEmail) {
-     const query =
+    const query =
       "SELECT student_id,first_name,role,login_method FROM user WHERE email = ?";
     return await connection.promise().query(query, [email]);
   } else {
@@ -266,6 +266,12 @@ const authUserModel = async (email, password, isEmail = false) => {
       "SELECT student_id,first_name,role,login_method FROM user WHERE email = ? AND password = ?";
     return await connection.promise().query(query, [email, password]);
   }
+};
+
+const getAdminIdModel = async () => {
+  const query =
+    "SELECT student_id,first_name,last_name,image_url from user WHERE role = ?";
+  return await connection.promise().query(query, ["admin"]);
 };
 export {
   addUserModel,
@@ -287,4 +293,5 @@ export {
   updateUserStatusModel,
   deleteSessionModel,
   authUserModel,
+  getAdminIdModel,
 };
