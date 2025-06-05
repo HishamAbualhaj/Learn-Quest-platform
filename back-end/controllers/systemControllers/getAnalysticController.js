@@ -1,4 +1,5 @@
 import { getAnalysticModel } from "../../models/systemModel.js";
+import getUptime from "../../utils/getUptime.js";
 import handleResponse from "../../utils/handleResponse.js";
 
 const getAnalysticController = (req, res) => {
@@ -13,6 +14,7 @@ const getAnalysticController = (req, res) => {
       let inactive =
         result_user[0][0].total_users -
         result_user_active[0][0].total_users_active;
+
       handleResponse(
         res,
         null,
@@ -25,6 +27,7 @@ const getAnalysticController = (req, res) => {
           inactive_users: inactive,
           reviews: result_review[0][0].total_reviews,
           courses: result_course[0][0].total_courses,
+          time: getUptime(),
         },
         null,
         null

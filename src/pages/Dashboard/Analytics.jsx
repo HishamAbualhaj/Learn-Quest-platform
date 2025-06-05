@@ -11,8 +11,6 @@ import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
 import { useQuery } from "@tanstack/react-query";
 function Analytics() {
-
-
   const { data } = useQuery({
     queryFn: async () => {
       return await useFetch(`${API_BASE_URL}/getAnalystic`, null, "GET");
@@ -43,18 +41,18 @@ function Analytics() {
               />
             }
             text={"Total users"}
-            number={data?.msg?.users}
+            number={data?.msg?.users ?? "..."}
           />
           <div className="flex gap-3 lg:flex-row flex-col mt-3 ">
             <Panel
               icon={<Ping color={"green"} />}
               text={"Active users"}
-              number={data?.msg?.active_users}
+              number={data?.msg?.active_users ?? "..."}
             />
             <Panel
               icon={<Ping color={"red"} />}
               text={"inactive users"}
-              number={data?.msg?.inactive_users}
+              number={data?.msg?.inactive_users ?? "..."}
             />
           </div>
         </div>
@@ -68,7 +66,7 @@ function Analytics() {
               />
             }
             text={"total courses"}
-            number={data?.msg?.courses}
+            number={data?.msg?.courses ?? "..."}
           />
         </div>
 
@@ -81,7 +79,7 @@ function Analytics() {
               />
             }
             text={"total reviews"}
-            number={data?.msg?.reviews}
+            number={data?.msg?.reviews ?? "..."}
           />
         </div>
         <div className="rounded-md border dark:border-borderDark p-3 mt-3">
@@ -105,7 +103,7 @@ function Analytics() {
               />
             }
             text={"System up time"}
-            number={"52:10"}
+            number={`${data?.msg?.time || "..."}`}
           />
         </div>
       </div>
