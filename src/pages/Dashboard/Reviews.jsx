@@ -1,12 +1,8 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
-import hisham from "../../assets/hisham.jpg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
 import { useQuery } from "@tanstack/react-query";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import Avatar from "../../components/Avatar";
 import ReviewCard from "../../components/ReviewCard";
 function Reviews() {
   const [courses, setCourses] = useState([]);

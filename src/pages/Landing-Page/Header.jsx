@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import Logo from "../../components/Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faDashboard, faMoon } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
-import Person from "../../assets/person.png";
 import { tabs, navs } from "../../global/global";
 import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../../context/UserDataContext";
 import { Theme } from "../../context/ThemeContext";
-import API_BASE_URL from "../../config/config";
 export default function Header({ isStudent = false }) {
   const [nav, setNav] = useState(false);
   const [activeNav, setActiveNav] = useState("Home");
@@ -109,11 +107,7 @@ export default function Header({ isStudent = false }) {
                   >
                     <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
                       <Avatar
-                        img={`${
-                          userDataClient.image_url
-                            ? `${API_BASE_URL}/uploads/${userDataClient.image_url}`
-                            : Person
-                        }`}
+                        img={userDataClient.image_url}
                         className={"h-[50px] w-[50px]"}
                       />
                     </div>

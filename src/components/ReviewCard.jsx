@@ -23,12 +23,7 @@ function ReviewCard({ children, review }) {
 
 ReviewCard.Avatar = () => {
   const { image } = useReviewCardContext();
-  return (
-    <Avatar
-      img={`${API_BASE_URL}/uploads/${image}`}
-      className={"h-[50px] w-[50px]"}
-    />
-  );
+  return <Avatar img={image} className={"h-[50px] w-[50px]"} />;
 };
 ReviewCard.username = () => {
   const { name } = useReviewCardContext();

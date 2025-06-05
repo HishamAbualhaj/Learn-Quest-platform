@@ -97,7 +97,7 @@ function Review(user_data) {
           <div className="flex gap-5">
             <Avatar
               className={"h-[50px] w-[50px]"}
-              img={`${API_BASE_URL}/uploads/${user_data.image_url}`}
+              img={user_data.image_url}
             />
             <div className="flex flex-1 gap-2">
               <input
