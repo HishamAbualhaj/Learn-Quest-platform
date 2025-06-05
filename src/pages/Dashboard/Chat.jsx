@@ -1,22 +1,33 @@
 import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-// import hisham from "../../assets/hisham.jpg";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
 import Messages from "./Messages";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import Avatar from "../../components/Avatar";
 import { UserData } from "../../context/UserDataContext";
 function Chat() {
   const [isTranslate, setIsTranslate] = useState(false);
+  // Here data will come from server (From other users, WebSocket) , messages
   const [chatData, setChatData] = useState({
     sender_id: null,
     receiver_id: null,
     msg: null,
   });
+
+  // only for sending purpose where data sender & receiver can't be change
+  const [serverData, setServerData] = useState({
+    type: "chat",
+    sender_id: null,
+    receiver_id: null,
+    msg: null,
+  });
+  const [activeTab, setActiveTab] = useState(false);
   const [users, setUsers] = useState([]);
   const [lastNode, setLastNode] = useState(null);
+  const inputRef = useRef();
+  const socketRef = useRef(null);
   const usersContainer = useRef();
   const { dataFetched, isFetching, hasNextPage } = useInfiniteScroll({
     fetchFn: (pagePara) => {
@@ -28,26 +39,51 @@ function Chat() {
     data_id: "student_id",
   });
 
+  const initSocketConnection = (sender_id) => {
+    socketRef.current = new WebSocket("ws://localhost:3002");
+
+    socketRef.current.onopen = () => {
+      socketRef.current.send(
+        JSON.stringify({ type: "init", sender_id: sender_id })
+      );
+    };
+
+    socketRef.current.onmessage = (event) => {
+      const { msg_id, msg, date, to, from } = JSON.parse(event.data);
+      setChatData((prev) => ({
+        ...prev,
+        msg_id,
+        msg,
+        date,
+        sender_id: from,
+        receiver_id: to,
+      }));
+    };
+    socketRef.current.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    return () => {
+      socketRef.current.close();
+    };
+  };
   const data_user = useContext(UserData);
   useEffect(() => {
     if (data_user) {
-
       const userDataArray = data_user?.userData;
       const { student_id } = userDataArray[0];
-      setChatData((prev) => ({ ...prev, sender_id: student_id }));
+      setServerData((prev) => ({
+        ...prev,
+        sender_id: student_id,
+      }));
+
+      setChatData((prev) => ({
+        ...prev,
+        sender_id: student_id,
+      }));
     }
   }, [data_user]);
 
-  const { data, mutate, isPending } = useMutation({
-    mutationKey: ["send_msg"],
-    mutationFn: async () => {
-      if (!chatData.receiver_id && !chatData.sender_id) return;
-      return await useFetch(`${API_BASE_URL}/sendMsg`, {
-        chatData,
-      });
-    },
-    enabled: !!chatData.receiver_id && !!chatData.sender_id,
-  });
   useEffect(() => {
     setUsers(dataFetched);
   }, [dataFetched]);
@@ -56,141 +92,14 @@ function Chat() {
     setLastNode(node);
   };
 
-  const handleChange = (e) => {
-    setChatData((prev) => ({ ...prev, msg: e.target.value }));
+  const sendDataToServer = () => {
+    socketRef.current.send(JSON.stringify(serverData));
   };
 
-  useEffect(() => {
-    console.log("Chat data", chatData);
-  }, [chatData]);
-  const messages = [
-    {
-      id: 1,
-      name: "Hisham",
-      message: "Hello, I need help with my account login issues.",
-      isAdmin: false,
-    },
-    {
-      id: 2,
-      name: "Admin",
-      message:
-        "Hi! I’m here to assist you. Can you please describe the issue you're facing?",
-      isAdmin: true,
-    },
-    {
-      id: 3,
-      name: "Hisham",
-      message: "I keep getting an error message saying 'Invalid credentials'.",
-      isAdmin: false,
-    },
-    {
-      id: 4,
-      name: "Admin",
-      message:
-        "Have you tried resetting your password? Sometimes that can help.",
-      isAdmin: true,
-    },
-    {
-      id: 5,
-      name: "Hisham",
-      message: "Yes, I tried resetting it, but I still can't log in.",
-      isAdmin: false,
-    },
-    {
-      id: 6,
-      name: "Admin",
-      message:
-        "Let me check your account details. Could you provide the email address associated with your account?",
-      isAdmin: true,
-    },
-    {
-      id: 7,
-      name: "Hisham",
-      message: "Sure, it's exampleuser@example.com.",
-      isAdmin: false,
-    },
-    {
-      id: 8,
-      name: "Admin",
-      message: "Thank you! One moment while I look that up.",
-      isAdmin: true,
-    },
-    {
-      id: 9,
-      name: "Admin",
-      message:
-        "I've checked, and it seems there was a temporary lock due to multiple failed login attempts. I can help unlock it.",
-      isAdmin: true,
-    },
-    {
-      id: 10,
-      name: "Hisham",
-      message: "Yes, please! That would be great. Thank you!",
-      isAdmin: false,
-    },
-  ];
-  // const users = [
-  //   {
-  //     id: 1,
-  //     name: "Hisham",
-  //     lastMessage: "Can you help me with my account issue?",
-  //     isActive: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Sarah",
-  //     lastMessage: "Thanks for your help!",
-  //     isActive: false,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Ali",
-  //     lastMessage: "I’ll try resetting my password.",
-  //     isActive: true,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Mona",
-  //     lastMessage: "I’ll get back to you later.",
-  //     isActive: false,
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Ahmed",
-  //     lastMessage: "Where can I find the settings?",
-  //     isActive: true,
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Layla",
-  //     lastMessage: "Thank you! That worked.",
-  //     isActive: false,
-  //   },
-  //   {
-  //     id: 7,
-  //     name: "Omar",
-  //     lastMessage: "Please send me the instructions.",
-  //     isActive: true,
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "Noura",
-  //     lastMessage: "Can I call you later?",
-  //     isActive: false,
-  //   },
-  //   {
-  //     id: 9,
-  //     name: "Yousef",
-  //     lastMessage: "Got it, thank you!",
-  //     isActive: true,
-  //   },
-  //   {
-  //     id: 10,
-  //     name: "Fatima",
-  //     lastMessage: "Do I need to update anything?",
-  //     isActive: false,
-  //   },
-  // ];
+  const handleChange = (e) => {
+    setServerData((prev) => ({ ...prev, msg: e.target.value }));
+  };
+
   return (
     <div className="flex flex-col relative overflow-hidden">
       <div className="dark:text-white text-lightText text-4xl">Chat</div>
@@ -202,21 +111,43 @@ function Chat() {
         icon={faBars}
       />
       <div className="flex mt-5 gap-3">
-        <div className="max-h-[700px] rounded-sm flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
-          <Messages student_id={chatData.receiver_id} />
+        <div className="h-[700px] rounded-sm flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
+          <Messages {...{ ...chatData, currentUserId: serverData.sender_id }} />
           <div className="flex items-center gap-3 p-2">
             <input
+              ref={inputRef}
+              onKeyDown={async (e) => {
+                if (
+                  !serverData.sender_id ||
+                  !serverData.msg?.trim() ||
+                  !serverData.receiver_id
+                )
+                  return;
+
+                if (e.code === "Enter") {
+                  sendDataToServer();
+                  e.target.value = "";
+                }
+              }}
               onChange={handleChange}
               className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
               type="text"
             />
-            {!isPending && (
-              <FontAwesomeIcon
-                onClick={mutate}
-                className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
-                icon={faPaperPlane}
-              />
-            )}
+
+            <FontAwesomeIcon
+              onClick={async () => {
+                if (
+                  !serverData.sender_id ||
+                  !serverData.msg?.trim() ||
+                  !serverData.receiver_id
+                )
+                  return;
+                sendDataToServer();
+                inputRef.current.value = "";
+              }}
+              className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
+              icon={faPaperPlane}
+            />
           </div>
         </div>
 
@@ -232,11 +163,16 @@ function Chat() {
               ref={users.at(-1) === user ? observeEle : null}
               key={user.student_id}
               id={user.student_id}
+              adminId={serverData.sender_id}
               name={`${user.first_name} ${user.last_name}`}
-              lastMessage={"TEST DATA"}
               isActive={user.status_user}
               img={user.image_url}
-              setId={setChatData}
+              setIdServer={setServerData}
+              setChatData={setChatData}
+              setActiveTab={setActiveTab}
+              activeTab={activeTab}
+              initSocketConnection={initSocketConnection}
+              socket={socketRef.current}
             />
           ))}
           {isFetching ? (
@@ -257,29 +193,51 @@ function Chat() {
 }
 
 const User = forwardRef(function User(
-  { id, name, lastMessage, isActive, image_url, setId },
+  {
+    id,
+    name,
+    adminId,
+    lastMessage,
+    isActive,
+    image_url,
+    setIdServer,
+    setChatData,
+    setActiveTab,
+    activeTab,
+    initSocketConnection,
+    socket,
+  },
   ref
 ) {
   return (
     <div
       onClick={() => {
-        setId((prev) => ({ ...prev, receiver_id: id }));
+        setIdServer((prev) => ({ ...prev, receiver_id: id }));
+        setChatData((prev) => ({
+          ...prev,
+          receiver_id: id,
+          receiver_name: name,
+          receiver_image: image_url,
+        }));
+        setActiveTab(id);
+        if (!socket) {
+          initSocketConnection(adminId);
+        }
       }}
       ref={ref}
-      className="relative flex  items-center gap-3 p-4 border-b dark:border-borderDark border-borderLight dark:hover:bg-borderDark hover:bg-hoverLight transition cursor-pointer"
+      className={`${
+        activeTab === id ? "dark:bg-borderDark bg-hoverLight" : ""
+      } relative flex items-center gap-3 p-4 border-b dark:border-borderDark border-borderLight dark:hover:bg-borderDark hover:bg-hoverLight transition cursor-pointer`}
     >
       <div
         className={`absolute bottom-4 left-6 rounded-full h-3 w-3 ${
           isActive ? "bg-green-500" : "bg-red-500"
         }  `}
       ></div>
-      <img
-        className="rounded-[50%]  h-[70px] w-[70px] object-cover"
-        src={`${API_BASE_URL}/uploads/${image_url}`}
-        alt=""
-      />
+      <Avatar img={image_url} className={`h-[70px] w-[70px]`} />
+
       <div className="flex flex-col flex-1">
-        <div className="dark:text-white text-black">{name}</div>
+        <div className="dark:text-white text-black">{name ?? "UserName"}</div>
         <div className="text-sm dark:text-gray-400 text-lightText line-clamp-1">
           {lastMessage}
         </div>
