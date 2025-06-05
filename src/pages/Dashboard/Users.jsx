@@ -19,7 +19,6 @@ function Users() {
 
   useEffect(() => {
     setUsers(dataFetched);
-    console.log(dataFetched);
   }, [dataFetched]);
   const observeEle = (node) => {
     setLastNode(node);
@@ -49,7 +48,7 @@ function Users() {
 
       <div
         ref={usersContainer}
-        className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px] mt-10 overflow-auto pr-5"
+        className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px]  h-[650px] mt-10 overflow-auto pr-5"
       >
         <table className="dark:text-gray-300 text-lightText w-full">
           <thead>
@@ -92,7 +91,7 @@ function Users() {
                     {user?.status_user ? "Active" : "Inactive"}
                   </div>
                 </td>
-                <td className="whitespace-nowrap">{user?.course_joined}</td>
+                <td className="whitespace-nowrap">{user?.course_joined || 0}</td>
                 <td className="whitespace-nowrap">
                   <div
                     onClick={() => {
