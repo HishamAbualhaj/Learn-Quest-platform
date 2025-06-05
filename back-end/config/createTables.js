@@ -114,6 +114,18 @@ CREATE TABLE IF NOT EXISTS reviews (
     FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
 )
 `;
+
+const createChatTable = `
+CREATE TABLE IF NOT EXISTS chat (
+    msg_id INT NOT NULL PRIMARY KEY,
+    msg_text text NOT NULL,
+    sender_id INT,
+    receiver_id INT,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES User(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES User(student_id) ON DELETE CASCADE
+)
+`
 // Execute the queries
 const tables = [
   createUserTable,
@@ -125,6 +137,7 @@ const tables = [
   createArchiveSystemLogsTable,
   createCompleteionMaterialTable,
   createReviewsTable,
+  createChatTable,
 ];
 tables.forEach((query) => {
   connection.query(query, (err, result) => {
