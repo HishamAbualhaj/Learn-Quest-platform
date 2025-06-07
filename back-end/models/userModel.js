@@ -1,5 +1,6 @@
-import deleteUserImage from "../api/user/deleteUserImage.js";
 import connection from "../config/db.js";
+import deleteImage from "../utils/deleteImage.js";
+import getImageUrl from "../utils/getImageUrl.js";
 const getUsersModel = async (page, student_id = null) => {
   let query = "";
   let result = "";
@@ -39,7 +40,9 @@ const updateUserModel = async (
   if (isImageChange) {
     image_url = `${student_id}-${image_url}`;
 
-    await deleteUserImage(student_id);
+    const oldImageUrl = getImageUrl("user", student_id);
+    oldImageUrl && (await deleteImage(oldImageUrl));
+
     await connection
       .promise()
       .query(updateUserQuery, [

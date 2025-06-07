@@ -1,6 +1,7 @@
 import connection from "../config/db.js";
+import generateId from "../utils/generateId.js";
 const sendMessgeModel = async ({ sender_id, receiver_id, msg }) => {
-  const msg_id = Math.round(Math.random() * 100000000);
+  const msg_id = generateId();
   const date = new Date().toISOString();
   const query =
     "INSERT INTO chat (msg_id,msg_text,sender_id,receiver_id) VALUES (?,?,?,?)";

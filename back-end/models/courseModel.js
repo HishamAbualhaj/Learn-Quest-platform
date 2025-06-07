@@ -1,4 +1,5 @@
 import connection from "../config/db.js";
+import generateId from "../utils/generateId.js";
 const getCoursesSearchModel = async (
   search_text,
   select_data,
@@ -145,7 +146,7 @@ const addMaterialCompleteionModel = async ({
   course_id,
   value,
 }) => {
-  const completeion_id = Math.round(Math.random() * 100000000);
+  const completeion_id = generateId();
   const addMaterialCompleteionQuery =
     "INSERT INTO completeionmaterial (completeion_id,student_id,material_id,course_id,isCompleted) VALUES (?,?,?,?,?)";
 
@@ -177,7 +178,7 @@ const updateCourseProgressModel = async (progress, user_id, course_id) => {
     .query(updateCourseProgressQuery, [progress, course_id, user_id]);
 };
 const enrollCourseModel = async (student_id, course_id) => {
-  const enrollment_id = Math.round(Math.random() * 100000000);
+  const enrollment_id = generateId();
   const query =
     "INSERT INTO enrollments (enrollment_id,student_id,course_id,progress) VALUES (?,?,?,?)";
 

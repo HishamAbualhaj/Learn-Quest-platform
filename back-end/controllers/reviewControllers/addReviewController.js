@@ -7,6 +7,7 @@ import {
   getCourseStarsModel,
   updateCourseStarModel,
 } from "../../models/reviewModel.js";
+import generateId from "../../utils/generateId.js";
 let response = "";
 const addReviewController = (req, res) => {
   response = res;
@@ -71,7 +72,7 @@ const addReviewController = (req, res) => {
         );
         return;
       }
-      const review_id = Math.round(Math.random() * 100000000);
+      const review_id = generateId();
 
       await insertReview(review_id, JSON.parse(body));
       const result = await getCourseStarsModel(course_id);

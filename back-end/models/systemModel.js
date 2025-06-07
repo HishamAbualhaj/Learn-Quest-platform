@@ -1,5 +1,7 @@
-import deleteCourseImage from "../api/course/deleteCourseImage.js";
 import connection from "../config/db.js";
+import deleteImage from "../utils/deleteImage.js";
+import generateId from "../utils/generateId.js";
+import getImageUrl from "../utils/getImageUrl.js";
 const addUserModel = async (
   student_id,
   first_name,
@@ -62,7 +64,7 @@ const addCourseMaterialModel = async (data, course_id) => {
   const query = `INSERT INTO coursematerials (material_id,course_id,title,subtitle,url)
   VALUES (?, ?, ?, ?, ?)`;
   for (const obj of data) {
-    const material_id = Math.round(Math.random() * 100000000);
+    const material_id = generateId();
     const { title, subtitle, url } = obj;
     await connection
       .promise()
@@ -133,7 +135,7 @@ const updateCourseMaterialsModel = async (course_id, data) => {
   VALUES (?, ?, ?, ?, ?)`;
 
   for (const obj of data) {
-    const material_id = Math.round(Math.random() * 100000000);
+    const material_id = generateId();
     const { title, subtitle, url } = obj;
     await connection
       .promise()
@@ -162,7 +164,10 @@ const updateCourseModel = async (
     query = `UPDATE courses 
       SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ? , lessons = ?
       WHERE course_id = ?`;
-    await deleteCourseImage(course_id);
+
+    const oldImageUrl = getImageUrl("courses", course_id);
+    oldImageUrl && (await deleteImage(oldImageUrl));
+
     await connection
       .promise()
       .query(query, [
@@ -197,7 +202,7 @@ const updateCourseModel = async (
 
 const addLogModel = async (student_id, log_message, email) => {
   const query = `INSERT INTO systemlogs (log_id,student_id,message,email) VALUES (?,?,?,?)`;
-  const log_id = Math.round(Math.random() * 100000000);
+  const log_id = generateId();
   return await connection
     .promise()
     .query(query, [log_id, student_id, log_message, email]);
@@ -209,7 +214,7 @@ const addArchiveLogModel = async (
   email
 ) => {
   const query = `INSERT INTO archivesystemlogs (archive_id,data_id,type,message,email) VALUES (?,?,?,?,?)`;
-  const log_id = Math.round(Math.random() * 100000000);
+  const log_id = generateId();
   return await connection
     .promise()
     .query(query, [log_id, data_id, type, log_message, email]);

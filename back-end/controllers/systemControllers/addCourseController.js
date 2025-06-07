@@ -5,6 +5,7 @@ import {
   addCourseModel,
   updateLessonModel,
 } from "../../models/systemModel.js";
+import generateId from "../../utils/generateId.js";
 let response = "";
 const addCourseController = (req, res) => {
   response = res;
@@ -17,7 +18,7 @@ const addCourseController = (req, res) => {
   // Entire body has been received : no more data is coming
   req.on("end", async () => {
     try {
-      const course_id = Math.round(Math.random() * 100000000);
+      const course_id = generateId();
 
       await insertCourse(course_id, JSON.parse(body));
       handleResponse(
