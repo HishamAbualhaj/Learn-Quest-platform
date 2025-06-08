@@ -11,6 +11,7 @@ import {
   faChevronDown,
   faBars,
   faRightFromBracket,
+  faBlog,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useState, useEffect } from "react";
@@ -30,26 +31,31 @@ function Dashboard() {
     },
     {
       key: 3,
+      name: "blogs",
+      icon: faBlog,
+    },
+    {
+      key: 4,
       name: "analytics",
       icon: faChartLine,
     },
     {
-      key: 4,
+      key: 5,
       name: "reviews",
       icon: faMessage,
     },
     {
-      key: 5,
+      key: 6,
       name: "chat",
       icon: faHeadset,
     },
     {
-      key: 6,
+      key: 7,
       name: "system log",
       icon: faTerminal,
     },
     {
-      key: 7,
+      key: 8,
       name: "maintenance",
       icon: faCircleExclamation,
     },
@@ -142,7 +148,7 @@ function Dashboard() {
               onClick={() => {
                 setIsTranslate(!isTranslate);
               }}
-              className="text-2xl cursor-pointer xl:hidden"
+              className="text-2xl cursor-pointer xl:hidden text-black dark:text-white"
               icon={faBars}
             />
             <div className="flex justify-between xl:flex-1 items-center gap-3">
