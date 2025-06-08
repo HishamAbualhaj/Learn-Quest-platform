@@ -107,14 +107,21 @@ const getAnalysticModel = async () => {
     "SELECT COUNT(*) AS total_users_active FROM user WHERE status_user = 1";
   let query_review = "SELECT COUNT(*) AS total_reviews FROM reviews";
   let query_course = "SELECT COUNT(*) AS total_courses FROM courses";
+  let query_blog = "SELECT COUNT(*) AS total_blogs from blog";
   const result_user = await connection.promise().query(query_user);
   const result_review = await connection.promise().query(query_review);
   const result_course = await connection.promise().query(query_course);
   const result_user_active = await connection
     .promise()
     .query(query_user_active);
-
-  return [result_user, result_review, result_course, result_user_active];
+  const result_blog = await connection.promise().query(query_blog);
+  return [
+    result_user,
+    result_review,
+    result_course,
+    result_user_active,
+    result_blog,
+  ];
 };
 
 const getSystemLogModel = async (page) => {
@@ -165,7 +172,7 @@ const updateCourseModel = async (
       SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ? , lessons = ?
       WHERE course_id = ?`;
 
-    const oldImageUrl = getImageUrl("courses", course_id);
+    const oldImageUrl = await getImageUrl("courses", "course_id", course_id);
     oldImageUrl && (await deleteImage(oldImageUrl));
 
     await connection

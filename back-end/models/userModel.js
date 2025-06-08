@@ -40,7 +40,7 @@ const updateUserModel = async (
   if (isImageChange) {
     image_url = `${student_id}-${image_url}`;
 
-    const oldImageUrl = getImageUrl("user", student_id);
+    const oldImageUrl = getImageUrl("user", "student_id", student_id);
     oldImageUrl && (await deleteImage(oldImageUrl));
 
     await connection
