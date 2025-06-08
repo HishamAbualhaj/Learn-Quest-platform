@@ -35,6 +35,10 @@ import { Theme } from "./context/ThemeContext";
 import VerifyCode from "./pages/auth/VerifyCode";
 import ConfirmPass from "./pages/auth/ConfirmPass";
 import ForgotPass from "./pages/auth/ForgotPass";
+import Blogs from "./pages/Dashboard/Blogs";
+import API_BASE_URL from "./config/config";
+import AddBlog from "./pages/Dashboard/AddBlog";
+import EditBlog from "./pages/Dashboard/EditBlog";
 
 function App() {
   // using  react hook to get the theme value from the context theme
@@ -59,7 +63,7 @@ function App() {
         </UserDataContext>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       errorElement: <ErrorPage />,
     },
@@ -71,7 +75,7 @@ function App() {
         </IsAuthRoute>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       errorElement: <ErrorPage />,
     },
@@ -83,7 +87,7 @@ function App() {
         </IsAuthRoute>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       errorElement: <ErrorPage />,
     },
@@ -95,7 +99,7 @@ function App() {
         </IsAuthRoute>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       errorElement: <ErrorPage />,
     },
@@ -107,7 +111,7 @@ function App() {
         </IsAuthRoute>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       errorElement: <ErrorPage />,
     },
@@ -119,7 +123,7 @@ function App() {
         </IsAuthRoute>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       errorElement: <ErrorPage />,
     },
@@ -133,7 +137,7 @@ function App() {
         </UserDataContext>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       children: [
         {
@@ -144,7 +148,7 @@ function App() {
           path: "profile",
           element: <Profile />,
           loader: () => {
-            return fetchData("http://localhost:3002/session");
+            return fetchData(`${API_BASE_URL}/session`);
           },
           errorElement: <ErrorPage />,
         },
@@ -158,7 +162,7 @@ function App() {
             </UserDataContext>
           ),
           loader: () => {
-            return fetchData("http://localhost:3002/session");
+            return fetchData(`${API_BASE_URL}/session`);
           },
           errorElement: <ErrorPage />,
         },
@@ -174,7 +178,7 @@ function App() {
                 </UserDataContext>
               ),
               loader: () => {
-                return fetchData("http://localhost:3002/session");
+                return fetchData(`${API_BASE_URL}/session`);
               },
             },
           ],
@@ -190,7 +194,7 @@ function App() {
           path: "logout",
           element: <Logout />,
           loader: () => {
-            return fetchData("http://localhost:3002/logout");
+            return fetchData(`${API_BASE_URL}/logout`);
           },
           errorElement: <ErrorPage />,
         },
@@ -213,7 +217,7 @@ function App() {
         </IsAuthRoute>
       ),
       loader: () => {
-        return fetchData("http://localhost:3002/session");
+        return fetchData(`${API_BASE_URL}/session`);
       },
       children: [
         { index: true, element: <Users /> },
@@ -231,7 +235,7 @@ function App() {
               ),
               errorElement: <ErrorPage />,
               loader: () => {
-                return fetchData("http://localhost:3002/session");
+                return fetchData(`${API_BASE_URL}/session`);
               },
             },
             {
@@ -242,7 +246,7 @@ function App() {
                 </UserDataContext>
               ),
               loader: () => {
-                return fetchData("http://localhost:3002/session");
+                return fetchData(`${API_BASE_URL}/session`);
               },
             },
           ],
@@ -258,7 +262,7 @@ function App() {
           ),
           errorElement: <ErrorPage />,
           loader: () => {
-            return fetchData("http://localhost:3002/session");
+            return fetchData(`${API_BASE_URL}/session`);
           },
         },
         { path: "systemlog", element: <SystemLog /> },
@@ -271,13 +275,42 @@ function App() {
             </h1>
           ),
         },
+        {
+          path: "blogs",
+          children: [
+            { index: true, element: <Blogs /> },
+            {
+              path: "add",
+              element: (
+                <UserDataContext>
+                  <AddBlog />
+                </UserDataContext>
+              ),
+               errorElement: <ErrorPage />,
+              loader: () => {
+                return fetchData(`${API_BASE_URL}/session`);
+              },
+            },
+            {
+              path: "edit/:id",
+              element: (
+                <UserDataContext>
+                  <EditBlog />
+                </UserDataContext>
+              ),
+              loader: () => {
+                return fetchData(`${API_BASE_URL}/session`);
+              },
+            },
+          ],
+        },
       ],
     },
     {
       path: "logout",
       element: <Logout />,
       loader: () => {
-        return fetchData("http://localhost:3002/logout");
+        return fetchData(`${API_BASE_URL}/logout`);
       },
       errorElement: <ErrorPage />,
     },
