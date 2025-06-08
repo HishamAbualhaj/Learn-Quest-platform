@@ -1,7 +1,6 @@
-import log from "../../api/system/logs.js";
 import { deleteBlogModel } from "../../models/blogModel.js";
 import handleResponse from "../../utils/handleResponse.js";
-const deleteBlogController = () => {
+const deleteBlogController = (req, res) => {
   let body = "";
 
   req.on("data", (chunks) => {
@@ -10,9 +9,17 @@ const deleteBlogController = () => {
 
   req.on("end", async () => {
     try {
-      const { admin_id, title, email } = JSON.parse(body);
       await deleteBlogModel(JSON.parse(body));
-      await log(res, admin_id, `Admin: deleted blog ${title}`, email);
+
+      handleResponse(
+        res,
+        null,
+        null,
+        200,
+        null,
+        "Blog deleted successfully !",
+        null
+      );
     } catch (error) {
       handleResponse(
         res,
