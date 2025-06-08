@@ -3,6 +3,7 @@ import { validateSessionId } from "../api/system/session.js";
 const authLogin = async (req, res, next) => {
   // check if user is logined in before any request
   const cookies = req.headers.cookie || "";
+
   let sessionId = "";
 
   if (cookies) {
@@ -10,19 +11,19 @@ const authLogin = async (req, res, next) => {
   }
   const isSessionId = await validateSessionId(sessionId, res, true);
 
-  if (
-    !isSessionId &&
-    !(
-      req.url === "/session" ||
-      req.url === "/login" ||
-      req.url === "/signup" ||
-      req.url === "/auth/google" ||
-      req.url === "/oauth2callback" ||
-      req.url === "/forgotPass" ||
-      req.url === "/verifyCode" ||
-      req.url === "/resetPass"
-    )
-  ) {
+  const publicRoutes = new Set([
+    "/session",
+    "/login",
+    "/signup",
+    "/auth/google",
+    "/oauth2callback",
+    "/forgotPass",
+    "/verifyCode",
+    "/resetPass",
+  ]);
+
+  const isPublic = publicRoutes.has(req.url);
+  if (!isSessionId && !isPublic) {
     handleResponse(
       res,
       null,
