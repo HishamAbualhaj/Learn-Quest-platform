@@ -11,7 +11,7 @@ export default {
         },
       },
       animation: {
-        syncPuls: 'syncPuls 1.5s infinite ease-in-out'
+        syncPuls: "syncPuls 1.5s infinite ease-in-out",
       },
       colors: {
         // dark mode
@@ -49,5 +49,6 @@ export default {
     "bg-blue-400/40",
     "bg-blue-500/90",
     "bg-gray-700",
+    "ql-editor ",
   ],
 };
