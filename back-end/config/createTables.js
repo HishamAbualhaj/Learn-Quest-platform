@@ -126,6 +126,17 @@ CREATE TABLE IF NOT EXISTS chat (
     FOREIGN KEY (receiver_id) REFERENCES User(student_id) ON DELETE CASCADE
 )
 `
+
+const createBlogTable = `
+CREATE TABLE IF NOT EXISTS blog (
+    blog_id INT NOT NULL PRIMARY KEY,
+    title text NOT NULL,
+    subtitle text,
+    content text,
+    image_url varchar(200),
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+`
 // Execute the queries
 const tables = [
   createUserTable,
@@ -138,6 +149,7 @@ const tables = [
   createCompleteionMaterialTable,
   createReviewsTable,
   createChatTable,
+  createBlogTable,
 ];
 tables.forEach((query) => {
   connection.query(query, (err, result) => {
