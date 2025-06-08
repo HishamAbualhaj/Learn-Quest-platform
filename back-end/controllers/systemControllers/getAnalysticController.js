@@ -9,7 +9,7 @@ const getAnalysticController = (req, res) => {
   });
   req.on("end", async () => {
     try {
-      const [result_user, result_review, result_course, result_user_active] =
+      const [result_user, result_review, result_course, result_user_active ,result_blogs] =
         await getAnalysticModel();
       let inactive =
         result_user[0][0].total_users -
@@ -27,6 +27,7 @@ const getAnalysticController = (req, res) => {
           inactive_users: inactive,
           reviews: result_review[0][0].total_reviews,
           courses: result_course[0][0].total_courses,
+          blogs: result_blogs[0][0].total_blogs,
           time: getUptime(),
         },
         null,

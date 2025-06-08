@@ -16,6 +16,8 @@ function Analytics() {
       return await useFetch(`${API_BASE_URL}/getAnalystic`, null, "GET");
     },
     queryKey: ["analytics"],
+    refetchOnWindowFocus: false,
+    refetchInterval: 1000,
   });
 
   return (
@@ -91,7 +93,7 @@ function Analytics() {
               />
             }
             text={"total blog posts"}
-            number={15}
+            number={data?.msg?.blogs ?? "..."}
           />
         </div>
         <div className="rounded-md border dark:border-borderDark p-3 mt-3">
@@ -103,7 +105,7 @@ function Analytics() {
               />
             }
             text={"System up time"}
-            number={`${data?.msg?.time || "..."}`}
+            number={`${data?.msg?.time ?? "..."}`}
           />
         </div>
       </div>
