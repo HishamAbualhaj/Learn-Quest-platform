@@ -34,6 +34,11 @@ import resetPass from "./api/auth/resetpass.js";
 import sendMsg from "./api/chat/sendMsg.js";
 import getCoursesAdmin from "./api/course/getCoursesAdmin.js";
 
+import getBlogData from "./api/blog/getBlogData.js";
+import addBlog from "./api/blog/addBlog.js";
+import editBlog from "./api/blog/editBlog.js";
+import deleteBlog from "./api/blog/deleteBlog.js";
+
 import authLogin from "./middleware/authLogin.js";
 
 import dotenv from "dotenv";
@@ -76,6 +81,9 @@ const server = http.createServer(async (req, res) => {
       "/resetPass": resetPass,
       "/sendMsg": sendMsg,
       "/getMsg": getMsg,
+      "/getBlogData": getBlogData,
+      "/addBlog": addBlog,
+      "/deleteBlog": deleteBlog,
     },
     GET: {
       "/session": session,
@@ -88,6 +96,7 @@ const server = http.createServer(async (req, res) => {
       "/updateUser": updateUser,
       "/completeCourse": completeCourse,
       "/enrollCourse": enrollCourse,
+      "/updateBlog": editBlog,
     },
   };
 
