@@ -27,7 +27,7 @@ const addCourseController = (req, res) => {
         null,
         200,
         null,
-        "Course added successfully !",
+        { id: course_id, msg: "Course added successfully !" },
         null
       );
     } catch (error) {
