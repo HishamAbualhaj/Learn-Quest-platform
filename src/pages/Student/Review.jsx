@@ -1,24 +1,20 @@
-import { faPaperPlane, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  useInfiniteQuery,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
-import Person from "../../assets/Screenshot_1.jpg";
 import Avatar from "../../components/Avatar";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import Alert from "../../components/Alert";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import ReviewCard from "../../components/ReviewCard";
 function Review(user_data) {
-
   const [reviews, setReviews] = useState([]);
   const queryClient = useQueryClient();
   const [alert, setAlert] = useState(null);
-  const [closeButton, setCloseButton] = useState(false);
   const [review_data, setReviewData] = useState({
     review_text: "",
     stars: 1,
@@ -41,17 +37,8 @@ function Review(user_data) {
   });
 
   useEffect(() => {
-    if (reviewData.data) {
-      setCloseButton(false);
-      setAlert(reviewData.data);
-    }
+    setAlert(reviewData.data);
   }, [reviewData.data]);
-
-  useEffect(() => {
-    if (closeButton) {
-      setAlert(null);
-    }
-  }, [closeButton]);
 
   function handleChange(e) {
     const { id, value } = e.target;
@@ -95,12 +82,16 @@ function Review(user_data) {
         <div className="font-semibold text-2xl">Reviews</div>
         <div className="mt-3 p-5">
           <div className="flex gap-5">
-            <Avatar
-              className={"h-[50px] w-[50px]"}
-              img={user_data.image_url}
-            />
+            <Avatar className={"h-[50px] w-[50px]"} img={user_data.image_url} />
             <div className="flex flex-1 gap-2">
               <input
+                onKeyDown={async (e) => {
+                  if (e.key === "Enter") {
+                    await reviewData?.mutateAsync();
+                    queryClient.invalidateQueries(["reviews"]);
+                    setReviewData({ review_text: "", stars: 1 });
+                  }
+                }}
                 required
                 id="review_text"
                 onChange={handleChange}
@@ -139,6 +130,7 @@ function Review(user_data) {
                     onClick={async () => {
                       await reviewData?.mutateAsync();
                       queryClient.invalidateQueries(["reviews"]);
+                      setReviewData({ review_text: "", stars: 1 });
                     }}
                     className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
                     icon={faPaperPlane}
