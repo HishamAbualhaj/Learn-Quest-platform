@@ -47,6 +47,8 @@ dotenv.config();
 
 import { WebSocketServer } from "ws";
 import getAdminId from "./utils/getAdminId.js";
+import addComment from "./api/blog/addComment.js";
+import getComments from "./api/blog/getComments.js";
 let response = null;
 const server = http.createServer(async (req, res) => {
   response = res;
@@ -84,6 +86,8 @@ const server = http.createServer(async (req, res) => {
       "/getBlogData": getBlogData,
       "/addBlog": addBlog,
       "/deleteBlog": deleteBlog,
+      "/addComment": addComment,
+      "/getComments": getComments,
     },
     GET: {
       "/session": session,
