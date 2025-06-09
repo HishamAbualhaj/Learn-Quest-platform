@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS user (
   login_method ENUM('google', 'local') DEFAULT 'local',
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   reset_token VARCHAR(255),
-  reset_token_expires BIGINT,
+  reset_token_expires BIGINT
 );
 `;
 const createCoursesTable = `
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS CourseMaterials (
   url VARCHAR(2083),
   allowed BOOLEAN DEFAULT 0,
   created_date TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
-  FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+  FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 );
 `;
 const createSystemLogsTable = `
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS SystemLogs (
   message TEXT NOT NULL,
   email VARCHAR(100),
   created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE
+  FOREIGN KEY (student_id) REFERENCES user(student_id) ON DELETE CASCADE
 );
 `;
 const createArchiveSystemLogsTable = `
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS session (
     data TEXT,                                    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     expires_at DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User(student_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(student_id) ON DELETE CASCADE
 );`;
 
 const createEnrollmentsTable = `
@@ -83,8 +83,8 @@ CREATE TABLE IF NOT EXISTS enrollments (
     enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     progress int DEFAULT 0,
     certificate_url VARCHAR(255),
-    FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Courses(material_id) ON DELETE CASCADE
+    FOREIGN KEY (student_id) REFERENCES user(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(material_id) ON DELETE CASCADE
 )
 `;
 const createCompleteionMaterialTable = `
@@ -95,9 +95,9 @@ CREATE TABLE IF NOT EXISTS completeionMaterial (
     course_id INT NOT NULL,
     isCompleted BOOLEAN DEFAULT 0,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (material_id) REFERENCES CourseMaterials(material_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+    FOREIGN KEY (student_id) REFERENCES cser(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (material_id) REFERENCES coursematerials(material_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 )
 `;
 
@@ -110,8 +110,8 @@ CREATE TABLE IF NOT EXISTS reviews (
     stars INT,
     image_url VARCHAR(200),
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES User(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+    FOREIGN KEY (student_id) REFERENCES user(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 )
 `;
 
@@ -122,10 +122,10 @@ CREATE TABLE IF NOT EXISTS chat (
     sender_id INT,
     receiver_id INT,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sender_id) REFERENCES User(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (receiver_id) REFERENCES User(student_id) ON DELETE CASCADE
+    FOREIGN KEY (sender_id) REFERENCES user(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES user(student_id) ON DELETE CASCADE
 )
-`
+`;
 
 const createBlogTable = `
 CREATE TABLE IF NOT EXISTS blog (
@@ -136,7 +136,19 @@ CREATE TABLE IF NOT EXISTS blog (
     image_url varchar(200),
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
-`
+`;
+
+const createCommentTable = `
+CREATE TABLE IF NOT EXISTS comments (
+    comment_id INT NOT NULL PRIMARY KEY,
+    student_id INT,
+    blog_id INT,
+    comment_text text,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES user(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (blog_id) REFERENCES blog(blog_id) ON DELETE CASCADE
+)
+`;
 // Execute the queries
 const tables = [
   createUserTable,
@@ -150,6 +162,7 @@ const tables = [
   createReviewsTable,
   createChatTable,
   createBlogTable,
+  createCommentTable
 ];
 tables.forEach((query) => {
   connection.query(query, (err, result) => {
