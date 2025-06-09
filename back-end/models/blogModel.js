@@ -57,4 +57,30 @@ const deleteBlogModel = async ({ blog_id }) => {
   return await connection.promise().query(deleteBlogQuery, [blog_id]);
 };
 
-export { getBlogModel, addBlogModel, editBlogModel, deleteBlogModel };
+const addCommentModel = async ({ student_id, comment_text, blog_id }) => {
+  const comment_id = generateId();
+  const addCommentQuery =
+    "INSERT INTO comments (comment_id,student_id,blog_id,comment_text) VALUES (?,?,?,?)";
+
+  return await connection
+    .promise()
+    .query(addCommentQuery, [comment_id, student_id, blog_id, comment_text]);
+};
+
+const getCommentsModel = async (page, blog_id) => {
+  const getCommentQuery = `SELECT c.*,u.first_name,u.image_url FROM comments c 
+    LEFT JOIN user u ON c.student_id = u.student_id 
+    WHERE blog_id = ? ORDER BY created_date DESC LIMIT ? OFFSET ?`;
+  return await connection
+    .promise()
+    .query(getCommentQuery, [blog_id, 5, page === 1 ? 0 : (page - 1) * 5]);
+};
+
+export {
+  getBlogModel,
+  addBlogModel,
+  editBlogModel,
+  deleteBlogModel,
+  addCommentModel,
+  getCommentsModel,
+};
