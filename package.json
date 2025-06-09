@@ -23,8 +23,10 @@
     "googleapis": "^148.0.0",
     "mysql2": "^3.14.1",
     "nodemailer": "^7.0.3",
+    "quill": "^2.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.28.0",
     "ws": "^8.18.2"
   },
