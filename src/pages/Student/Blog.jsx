@@ -1,73 +1,85 @@
-import React from "react";
-import Ai from "../../assets/blog/artical.jpg";
-import cloud from "../../assets/blog/cloud_computing.jpg";
-import web from "../../assets/blog/web.jpg";
-import cyber from "../../assets/blog/cyber.jpg";
+import { useEffect, useRef, useState } from "react";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
+import useInfiniteScroll from "../../hooks/useInfiniteScroll";
+import useFetch from "../../hooks/useFetch";
+import API_BASE_URL from "../../config/config";
 function Blog() {
-  const posts = [
-    {
-      id: 1,
-      title: "The Evolution of Artificial Intelligence: Where Are We Now?",
-      summary:
-        "Artificial Intelligence (AI) has come a long way since its conceptual origins in the mid-20th century. From simple rule-based systems to advanced machine learning algorithms, AI has transformed industries and reshaped how we interact with technology. But where exactly are we now, and where are we heading?",
-      image: Ai,
-      author: "Hisham (ADMIN)",
+  const [blogs, setBlogs] = useState([]);
+  const [lastNode, setLastNode] = useState(null);
+  const blogsContainer = useRef();
+
+  const { dataFetched, isFetching } = useInfiniteScroll({
+    fetchFn: (pagePara) => {
+      return useFetch(
+        `${API_BASE_URL}/getBlogData`,
+        {
+          page: pagePara,
+        },
+        "POST"
+      );
     },
-    {
-      id: 2,
-      title: "The Role of Cloud Computing in Modern IT Solutions",
-      summary:
-        "Discuss the growing adoption of cloud computing in IT infrastructure. Cover key benefits like scalability, cost savings, and flexibility. Compare popular cloud providers (AWS, Azure, Google Cloud) and their unique offerings. Explain trends such as hybrid cloud and serverless computing.",
-      image: cloud,
-      author: "Hisham (ADMIN)",
-    },
-    {
-      id: 3,
-      title: "The Future of Web Development: What's Next in 2024?",
-      summary:
-        "Examine trends shaping web development, such as the rise of progressive web apps (PWAs), advancements in frameworks like Next.js and React, and the integration of AI in web design. Include insights into the importance of Web3, blockchain technology, and enhanced user experiences through AR/VR.",
-      image: web,
-      author: "Hisham (ADMIN)",
-    },
-    {
-      id: 4,
-      title: "Cybersecurity Essentials for Businesses in 2024",
-      summary:
-        "Highlight the importance of robust cybersecurity for businesses, given the rise in ransomware and phishing attacks. Provide an overview of key practices like multi-factor authentication, regular updates, and employee training. Include insights into emerging threats like AI-driven attacks and the significance of zero-trust architecture.",
-      image: cyber,
-      author: "Hisham (ADMIN)",
-    },
-  ];
+    queryKey: ["blogs"],
+    scrollContainer: blogsContainer,
+    observedEle: lastNode,
+    data_id: "blog_id",
+  });
+  const observedEle = (node) => {
+    setLastNode(node);
+  };
+  useEffect(() => {
+    if (dataFetched) {
+      setBlogs(dataFetched);
+    }
+  }, [dataFetched]);
+
+ 
   return (
-    <div className="sm:px-5 px-3 py-5">
+    <div className="sm:px-5 px-3 py-5  height-vh-adjust">
       <div className="text-4xl">Blog</div>
-      <div className="grid 2xl:grid-cols-2 grid-cols-1 gap-3 mt-5">
-        {posts.map((post) => (
-          <div key={post.id} className=" border dark:border-borderDark">
-            <div className="flex p-3 rounded-md gap-5 lg:flex-row flex-col">
-              <img
-                className="max-lg:mx-auto md:max-w-[400px] h-[400px] object-cover"
-                src={post.image}
-                alt="Ai image"
-              />
-              <div className="flex flex-col mt-5">
-                <div className="font-bold text-2xl">{post.title}</div>
-                <div className="leading-8 text-lg text-black/50 mt-5 dark:text-white/50 max-w-[700px] line-clamp-4">
-                  {post.summary}
+      <div
+        ref={blogsContainer}
+        className="grid 2xl:grid-cols-3 grid-cols-1 gap-3 mt-5 h-[680px] overflow-auto"
+      >
+        {!blogs.length && !isFetching ? (
+          <div className="flex justify-center xl:text-4xl text-xl font-bold absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+            No Blogs are available
+          </div>
+        ) : (
+          blogs.map((blog) => (
+            <div
+              ref={blogs.at(-1) === blog ? observedEle : null}
+              key={blog.blog_id}
+              className=" border dark:border-borderDark"
+            >
+              <div className="flex p-3 rounded-md gap-5 flex-col">
+                <img
+                  className=" max-lg:mx-auto  h-[400px] object-cover"
+                  src={`${API_BASE_URL}/uploads/${blog.image_url}`}
+                />
+                <div className="flex flex-col mt-5">
+                  <div className="font-bold text-2xl">{blog.title}</div>
+                  <div className="leading-8 text-lg text-black/50 mt-5 dark:text-white/50 max-w-[680px] line-clamp-4">
+                    {blog.subtitle}
+                  </div>
+                  <div className="underline mt-5 text-purple-300">
+                    Author : "Admin"
+                  </div>
+                  <Link to={`${blog.blog_id}-${blog.title.replace(/\//g, "")}`}>
+                    <Button margin="mt-4" text="Read Now" />
+                  </Link>
                 </div>
-                <div className="underline mt-5 text-purple-300">
-                  Author : {post.author}
-                </div>
-                <Link to={post.title.replace(/\//g,"")}>
-                  <Button margin="mt-4" text="Read Now" />
-                </Link>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
+
+      {isFetching && (
+        <div className="dark:text-red-300 xl:text-3xl lg:text-xl text-red-600 flex justify-center py-5 animate-syncPuls">
+          Loading ...
+        </div>
+      )}
     </div>
   );
 }
