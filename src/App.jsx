@@ -187,7 +187,17 @@ function App() {
           path: "blog",
           children: [
             { index: true, element: <Blog /> },
-            { path: ":blogId", element: <BlogPost /> },
+            {
+              path: ":blogId",
+              element: (
+                <UserDataContext>
+                  <BlogPost />
+                </UserDataContext>
+              ),
+              loader: () => {
+                return fetchData(`${API_BASE_URL}/session`);
+              },
+            },
           ],
         },
         {
@@ -286,7 +296,7 @@ function App() {
                   <AddBlog />
                 </UserDataContext>
               ),
-               errorElement: <ErrorPage />,
+              errorElement: <ErrorPage />,
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
