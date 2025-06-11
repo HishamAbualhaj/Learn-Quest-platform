@@ -49,6 +49,10 @@ import { WebSocketServer } from "ws";
 import getAdminId from "./utils/getAdminId.js";
 import addComment from "./api/blog/addComment.js";
 import getComments from "./api/blog/getComments.js";
+
+import setMaintenance from "./api/system/setMaintenance.js";
+import getMaintenace from "./api/system/getMaintenance.js";
+
 let response = null;
 const server = http.createServer(async (req, res) => {
   response = res;
@@ -88,12 +92,14 @@ const server = http.createServer(async (req, res) => {
       "/deleteBlog": deleteBlog,
       "/addComment": addComment,
       "/getComments": getComments,
+      "/setMaintenance": setMaintenance,
     },
     GET: {
       "/session": session,
       "/logout": logout,
       "/getAnalystic": getAnalystic,
       "/getAdminId": getAdminId,
+      "/getMaintenace": getMaintenace,
     },
     PUT: {
       "/updateCourse": updateCourse,
@@ -141,6 +147,7 @@ wss.on("connection", (socket) => {
     });
     socket.on("message", async (data) => {
       const paredData = JSON.parse(data);
+
       const { type, receiver_id, msg, sender_id } = paredData;
       let dataToClient = {};
       if (type === "chat") {
@@ -151,6 +158,7 @@ wss.on("connection", (socket) => {
           date: date,
           to: receiver_id,
           from: sender_id,
+          isMaintenance: false,
         };
 
         if (msg_id) {

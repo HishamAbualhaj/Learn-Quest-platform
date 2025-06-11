@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS user (
   birthdate DATE,
   role VARCHAR(50) NOT NULL DEFAULT 'user',
   image_url VARCHAR(200),
+  course_joined INT DEFALUT 0,
   login_method ENUM('google', 'local') DEFAULT 'local',
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   reset_token VARCHAR(255),
@@ -95,7 +96,7 @@ CREATE TABLE IF NOT EXISTS completeionMaterial (
     course_id INT NOT NULL,
     isCompleted BOOLEAN DEFAULT 0,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES cser(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES user(student_id) ON DELETE CASCADE,
     FOREIGN KEY (material_id) REFERENCES coursematerials(material_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
 )
@@ -149,6 +150,14 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (blog_id) REFERENCES blog(blog_id) ON DELETE CASCADE
 )
 `;
+
+const createMaintenanceTable = `
+CREATE TABLE IF NOT EXISTS maintenance (
+    maintenance_id INT NOT NULL PRIMARY KEY,
+    status BOOLEAN DEFAULT 1,
+    Created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+`;
 // Execute the queries
 const tables = [
   createUserTable,
@@ -162,7 +171,8 @@ const tables = [
   createReviewsTable,
   createChatTable,
   createBlogTable,
-  createCommentTable
+  createCommentTable,
+  createMaintenanceTable,
 ];
 tables.forEach((query) => {
   connection.query(query, (err, result) => {
