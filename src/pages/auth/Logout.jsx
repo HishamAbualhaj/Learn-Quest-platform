@@ -3,10 +3,12 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 
 function Logout() {
   const navigate = useNavigate();
-  useLoaderData();
+  const result = useLoaderData();
   useEffect(() => {
-    navigate("/");
-  }, []);
+    if (result) {
+      navigate("/");
+    }
+  }, [result]);
   return <></>;
 }
 
