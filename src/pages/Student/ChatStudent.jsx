@@ -1,6 +1,6 @@
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Messages from "../Dashboard/Messages";
 import { UserData } from "../../context/UserDataContext";
 import { useQuery } from "@tanstack/react-query";

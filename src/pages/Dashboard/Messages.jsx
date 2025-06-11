@@ -3,6 +3,7 @@ import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
 import Avatar from "../../components/Avatar";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Messages({
   msg_id,
@@ -18,7 +19,7 @@ function Messages({
 }) {
   const [messages, setMessages] = useState([]);
   const [lastNode, setLastNode] = useState(null);
-
+  const queryClient = useQueryClient();
   const msgContainer = useRef(null);
 
   const { dataFetched, isFetching, refetch } = useInfiniteScroll({
@@ -30,7 +31,7 @@ function Messages({
         "POST"
       );
     },
-    queryKey: ["messages", receiver_id],
+    queryKey: ["messages", sender_id, receiver_id],
     scrollContainer: msgContainer,
     observedEle: lastNode,
     data_id: "msg_id",
@@ -44,9 +45,26 @@ function Messages({
   }, [receiver_id]);
 
   useEffect(() => {
-    if (msg) {
-      setMessages((prev) => [
-        ...prev,
+    if (!msg) return;
+    // append the UI for this msg
+    setMessages((prev) => [
+      ...prev,
+      {
+        msg_id: msg_id,
+        sender_id: sender_id,
+        receiver_id: receiver_id,
+        msg_text: msg,
+        created_date: date,
+      },
+    ]);
+
+    // add new msg to query array, so when we fetch new data it will never disappear
+    queryClient.setQueryData(["messages", sender_id, receiver_id], (oldMsg) => {
+      if (!oldMsg) return;
+
+      const { msg: msgApiData = null } = oldMsg?.pages?.at(0);
+
+      const dataWithNewMsg = [
         {
           msg_id: msg_id,
           sender_id: sender_id,
@@ -54,15 +72,26 @@ function Messages({
           msg_text: msg,
           created_date: date,
         },
-      ]);
-    }
+        ...msgApiData,
+      ];
+
+      return {
+        ...oldMsg,
+        pages: [
+          { ...oldMsg?.pages?.at(0), msg: dataWithNewMsg },
+          ...oldMsg?.pages?.slice(1),
+        ],
+      };
+    });
   }, [msg_id]);
+
   const prevScrollHeight = useRef(0);
   useEffect(() => {
     const arr = [...dataFetched];
     setMessages(arr.reverse());
+
     prevScrollHeight.current = msgContainer.current.scrollHeight;
-  }, [dataFetched]);
+  }, [dataFetched, dataFetched?.pages?.[0]?.msg]);
 
   useEffect(() => {
     if (msgContainer.current && messages.length <= 10) {
@@ -123,45 +152,48 @@ function Messages({
           Select Chat
         </div>
       )}
-      {messages.map((message) => (
-        <div
-          key={message?.msg_id}
-          ref={messages[0] === message ? observeEle : null}
-          className={`flex flex-col ${
-            message?.sender_id === currentUserId ? "items-start" : "items-end"
-          } `}
-        >
-          <div className="dark:text-white text-lightText text-sm">
-            {message?.sender_id === currentUserId ? sender_name : receiver_name}
-          </div>
+      {receiver_id &&
+        messages.map((message) => (
           <div
-            className={`flex mt-2 items-center gap-2 ${
-              message?.sender_id === currentUserId ? "" : "flex-row-reverse"
-            }`}
+            key={message?.msg_id}
+            ref={messages[0] === message ? observeEle : null}
+            className={`flex flex-col ${
+              message?.sender_id === currentUserId ? "items-start" : "items-end"
+            } `}
           >
-            <Avatar
-              img={
-                message?.sender_id === currentUserId
-                  ? sender_image
-                  : receiver_image
-              }
-              className={`h-[40px] w-[40px]`}
-            />
+            <div className="dark:text-white text-lightText text-sm">
+              {message?.sender_id === currentUserId
+                ? sender_name
+                : receiver_name}
+            </div>
             <div
-              className={`flex flex-1 lg:w-1/2 w-fit ${
-                message?.sender_id === currentUserId
-                  ? "dark:bg-blue-400/40 bg-blue-500/90"
-                  : "bg-gray-700"
-              }  p-2 rounded-md mt-1`}
+              className={`flex mt-2 items-center gap-2 ${
+                message?.sender_id === currentUserId ? "" : "flex-row-reverse"
+              }`}
             >
-              <div className="text-white text-start">{message?.msg_text}</div>
+              <Avatar
+                img={
+                  message?.sender_id === currentUserId
+                    ? sender_image
+                    : receiver_image
+                }
+                className={`h-[40px] w-[40px]`}
+              />
+              <div
+                className={`flex flex-1 lg:w-1/2 w-fit ${
+                  message?.sender_id === currentUserId
+                    ? "dark:bg-blue-400/40 bg-blue-500/90"
+                    : "bg-gray-700"
+                }  p-2 rounded-md mt-1`}
+              >
+                <div className="text-white text-start">{message?.msg_text}</div>
+              </div>
+            </div>
+            <div className="mt-2 text-sm text-gray-400">
+              {formatDateForUX(message?.created_date)}
             </div>
           </div>
-          <div className="mt-2 text-sm text-gray-400">
-            {formatDateForUX(message?.created_date)}
-          </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 }

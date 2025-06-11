@@ -113,42 +113,45 @@ function Chat() {
       <div className="flex mt-5 gap-3">
         <div className="h-[700px] rounded-sm flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
           <Messages {...{ ...chatData, currentUserId: serverData.sender_id }} />
-          <div className="flex items-center gap-3 p-2">
-            <input
-              ref={inputRef}
-              onKeyDown={async (e) => {
-                if (
-                  !serverData.sender_id ||
-                  !serverData.msg?.trim() ||
-                  !serverData.receiver_id
-                )
-                  return;
 
-                if (e.code === "Enter") {
+          {chatData.receiver_id && (
+            <div className="flex items-center gap-3 p-2">
+              <input
+                ref={inputRef}
+                onKeyDown={async (e) => {
+                  if (
+                    !serverData.sender_id ||
+                    !serverData.msg?.trim() ||
+                    !serverData.receiver_id
+                  )
+                    return;
+
+                  if (e.code === "Enter") {
+                    sendDataToServer();
+                    e.target.value = "";
+                  }
+                }}
+                onChange={handleChange}
+                className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
+                type="text"
+              />
+
+              <FontAwesomeIcon
+                onClick={async () => {
+                  if (
+                    !serverData.sender_id ||
+                    !serverData.msg?.trim() ||
+                    !serverData.receiver_id
+                  )
+                    return;
                   sendDataToServer();
-                  e.target.value = "";
-                }
-              }}
-              onChange={handleChange}
-              className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
-              type="text"
-            />
-
-            <FontAwesomeIcon
-              onClick={async () => {
-                if (
-                  !serverData.sender_id ||
-                  !serverData.msg?.trim() ||
-                  !serverData.receiver_id
-                )
-                  return;
-                sendDataToServer();
-                inputRef.current.value = "";
-              }}
-              className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
-              icon={faPaperPlane}
-            />
-          </div>
+                  inputRef.current.value = "";
+                }}
+                className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
+                icon={faPaperPlane}
+              />
+            </div>
+          )}
         </div>
 
         {/*For users to chat with */}
