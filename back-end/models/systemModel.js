@@ -285,6 +285,17 @@ const getAdminIdModel = async () => {
     "SELECT student_id,first_name,last_name,image_url from user WHERE role = ?";
   return await connection.promise().query(query, ["admin"]);
 };
+
+const setMaintenanceModel = async (status) => {
+  const maintenance_id = generateId();
+  let query = "INSERT INTO maintenance (maintenance_id, status) VALUES (?,?)";
+  return await connection.promise().query(query, [maintenance_id, !status]);
+};
+
+const getMaintenanceModel = async () => {
+  let query = "SELECT * from maintenance ORDER BY created_date DESC LIMIT 1";
+  return await connection.promise().query(query);
+};
 export {
   addUserModel,
   addCourseModel,
@@ -306,4 +317,6 @@ export {
   deleteSessionModel,
   authUserModel,
   getAdminIdModel,
+  setMaintenanceModel,
+  getMaintenanceModel,
 };
