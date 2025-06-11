@@ -29,7 +29,7 @@ import IsAuthRoute from "./routes/IsAuthRoute";
 import Logo from "./components/Logo";
 import ErrorPage from "./components/ErrorPage";
 import UserDataContext from "./context/UserDataContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Theme } from "./context/ThemeContext";
 
 import VerifyCode from "./pages/auth/VerifyCode";
@@ -39,6 +39,8 @@ import Blogs from "./pages/Dashboard/Blogs";
 import API_BASE_URL from "./config/config";
 import AddBlog from "./pages/Dashboard/AddBlog";
 import EditBlog from "./pages/Dashboard/EditBlog";
+import MaintenancePage from "./components/MaintenancePage";
+import { useQuery } from "@tanstack/react-query";
 
 function App() {
   // using  react hook to get the theme value from the context theme
@@ -54,12 +56,32 @@ function App() {
     const response = await useFetch(url, null, "GET");
     return response?.msg;
   }
+
+  const [isMaintenance, setIsMaintenance] = useState(false);
+
+  const { data } = useQuery({
+    queryKey: ["maintenance"],
+    queryFn: async () => {
+      return await useFetch(`${API_BASE_URL}/getMaintenace`, null, "GET");
+    },
+    refetchInterval: 2000,
+  });
+
+  useEffect(() => {
+    if (data) {
+      const [{ status }] = data?.msg;
+      setIsMaintenance(!status);
+    }
+  }, [data]);
+
   const router = createBrowserRouter([
     {
       path: "/",
       element: (
         <UserDataContext>
-          <Landing />
+          <IsAuthRoute isMaintenance={isMaintenance}>
+            <Landing />
+          </IsAuthRoute>
         </UserDataContext>
       ),
       loader: () => {
@@ -70,7 +92,7 @@ function App() {
     {
       path: "/login",
       element: (
-        <IsAuthRoute isAllowed={false}>
+        <IsAuthRoute>
           <Login />
         </IsAuthRoute>
       ),
@@ -82,7 +104,7 @@ function App() {
     {
       path: "/signup",
       element: (
-        <IsAuthRoute isAllowed={false}>
+        <IsAuthRoute isMaintenance={isMaintenance}>
           <Signup />
         </IsAuthRoute>
       ),
@@ -94,7 +116,7 @@ function App() {
     {
       path: "/forgotpassword",
       element: (
-        <IsAuthRoute isAllowed={false}>
+        <IsAuthRoute isMaintenance={isMaintenance}>
           <ForgotPass />
         </IsAuthRoute>
       ),
@@ -106,7 +128,7 @@ function App() {
     {
       path: "/verifycode",
       element: (
-        <IsAuthRoute isAllowed={false}>
+        <IsAuthRoute isMaintenance={isMaintenance}>
           <VerifyCode />
         </IsAuthRoute>
       ),
@@ -118,7 +140,7 @@ function App() {
     {
       path: "/confirmpass",
       element: (
-        <IsAuthRoute isAllowed={false}>
+        <IsAuthRoute isMaintenance={isMaintenance}>
           <ConfirmPass />
         </IsAuthRoute>
       ),
@@ -131,7 +153,7 @@ function App() {
       path: "/student",
       element: (
         <UserDataContext>
-          <IsAuthRoute>
+          <IsAuthRoute isMaintenance={isMaintenance}>
             <Student />
           </IsAuthRoute>
         </UserDataContext>
@@ -156,11 +178,7 @@ function App() {
         { path: "allcourses", element: <AllCourses /> },
         {
           path: "CoursePage/:courseName",
-          element: (
-            <UserDataContext>
-              <CoursePage />
-            </UserDataContext>
-          ),
+          element: <CoursePage />,
           loader: () => {
             return fetchData(`${API_BASE_URL}/session`);
           },
@@ -172,11 +190,7 @@ function App() {
             { index: true, element: <MyCourses /> },
             {
               path: ":courseName",
-              element: (
-                <UserDataContext>
-                  <CoursePage />
-                </UserDataContext>
-              ),
+              element: <CoursePage />,
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
@@ -189,11 +203,7 @@ function App() {
             { index: true, element: <Blog /> },
             {
               path: ":blogId",
-              element: (
-                <UserDataContext>
-                  <BlogPost />
-                </UserDataContext>
-              ),
+              element: <BlogPost />,
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
@@ -216,15 +226,16 @@ function App() {
             </h1>
           ),
         },
-        {},
       ],
     },
     {
       path: "/dashboard",
       element: (
-        <IsAuthRoute isAdmin={true}>
-          <Dashboard />
-        </IsAuthRoute>
+        <UserDataContext>
+          <IsAuthRoute isMaintenance={isMaintenance}>
+            <Dashboard />
+          </IsAuthRoute>
+        </UserDataContext>
       ),
       loader: () => {
         return fetchData(`${API_BASE_URL}/session`);
@@ -238,11 +249,7 @@ function App() {
             { index: true, element: <Courses /> },
             {
               path: "add",
-              element: (
-                <UserDataContext>
-                  <AddCourse />
-                </UserDataContext>
-              ),
+              element: <AddCourse />,
               errorElement: <ErrorPage />,
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
@@ -250,11 +257,7 @@ function App() {
             },
             {
               path: "edit/:id",
-              element: (
-                <UserDataContext>
-                  <EditCourse />
-                </UserDataContext>
-              ),
+              element: <EditCourse />,
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
@@ -265,18 +268,21 @@ function App() {
         { path: "reviews", element: <Reviews /> },
         {
           path: "chat",
-          element: (
-            <UserDataContext>
-              <Chat />
-            </UserDataContext>
-          ),
+          element: <Chat />,
           errorElement: <ErrorPage />,
           loader: () => {
             return fetchData(`${API_BASE_URL}/session`);
           },
         },
         { path: "systemlog", element: <SystemLog /> },
-        { path: "maintenance", element: <Maintenance /> },
+        {
+          path: "maintenance",
+          element: <Maintenance />,
+          errorElement: <ErrorPage />,
+          loader: () => {
+            return fetchData(`${API_BASE_URL}/session`);
+          },
+        },
         {
           path: "*",
           element: (
@@ -291,11 +297,7 @@ function App() {
             { index: true, element: <Blogs /> },
             {
               path: "add",
-              element: (
-                <UserDataContext>
-                  <AddBlog />
-                </UserDataContext>
-              ),
+              element: <AddBlog />,
               errorElement: <ErrorPage />,
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
@@ -303,11 +305,7 @@ function App() {
             },
             {
               path: "edit/:id",
-              element: (
-                <UserDataContext>
-                  <EditBlog />
-                </UserDataContext>
-              ),
+              element: <EditBlog />,
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
@@ -321,6 +319,18 @@ function App() {
       element: <Logout />,
       loader: () => {
         return fetchData(`${API_BASE_URL}/logout`);
+      },
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/maintenance",
+      element: (
+        <IsAuthRoute isMaintenance={isMaintenance}>
+          <MaintenancePage />
+        </IsAuthRoute>
+      ),
+      loader: () => {
+        return fetchData(`${API_BASE_URL}/session`);
       },
       errorElement: <ErrorPage />,
     },
