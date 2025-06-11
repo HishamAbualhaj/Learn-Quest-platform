@@ -33,11 +33,12 @@ function CoursePage() {
   useEffect(() => {
     const course_data = course_url.pathname.split("/").at(-1);
     const id = course_data.split("-")[0];
+    console.log("id ", id);
     setCourseId(id);
-  }, [course_url]);
+  }, [course_url.pathname]);
 
   useEffect(() => {
-    if (data_user) {
+    if (data_user && course_id) {
       const userDataArray = data_user?.userData;
       const { student_id, email, first_name, image_url, role } =
         userDataArray[0];
@@ -50,11 +51,12 @@ function CoursePage() {
         role,
       });
     }
-  }, [data_user]);
+  }, [data_user, course_id]);
 
   const { data, isLoading, refetch } = useQuery({
     queryFn: async () => {
-      if (!user_data && !course_id) return;
+      if (!user_data || !user_data.course_id) return [];
+      console.log("user data", user_data);
       return await useFetch(
         `${API_BASE_URL}/getCourseData`,
         {
@@ -71,11 +73,18 @@ function CoursePage() {
   const [enrolled, setEnrolled] = useState(data?.msg?.enrolled || null);
   useEffect(() => {
     if (!isLoading && data) {
-      const arr = [...(data?.msg?.msg[1] || []), ...(data?.msg?.msg[2] || [])];
+      const [
+        courseVideos = [],
+        courseMaterial = [],
+        courseMaterialAllowedUrl = [],
+      ] = data.msg.msg;
 
-      arr.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+      const mergedMaterials = [
+        ...courseMaterial,
+        ...courseMaterialAllowedUrl,
+      ].sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
 
-      setCourseVideos([data?.msg?.msg[0], arr]);
+      setCourseVideos([courseVideos, mergedMaterials]);
 
       setEnrolled(data?.msg?.enrolled);
     }
