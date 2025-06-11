@@ -97,7 +97,6 @@ function Profile() {
             },
           ] = res.msg.data;
 
-          console.log("data" , res.msg.data)
           image_url_temp = image_url;
 
           let date = new Date(birthdate).toLocaleDateString("en-GB").split("/");
@@ -127,7 +126,7 @@ function Profile() {
           setData(arr);
         }
         image_url_temp
-          ? setImageUrl(`${API_BASE_URL}/uploads/${image_url_temp}`)
+          ? setImageUrl(`${image_url_temp}`)
           : setImageUrl(Person);
       }
     }
@@ -220,20 +219,23 @@ function EditProfile({ data_profile, userId, isEdit }) {
     setDataProfile(newProfile);
   });
 
-  const handleImageChange = useCallback((e) => {
-    const formdata = new FormData();
-    formdata.append("image", e.target?.files[0]);
-    formdata.append("id", userId);
-    setFile(formdata);
+  const handleImageChange = useCallback(
+    (e) => {
+      const formdata = new FormData();
+      formdata.append("image", e.target?.files[0]);
+      formdata.append("id", userId);
+      setFile(formdata);
 
-    setImageChange(true);
-    dataProfile[7] = {
-      ...dataProfile[7],
-      data: e.target?.files[0].name,
-    };
-    setDataProfile(dataProfile);
-    setTempUrl(URL.createObjectURL(e.target?.files[0]));
-  });
+      setImageChange(true);
+      dataProfile[7] = {
+        ...dataProfile[7],
+        data: e.target?.files[0].name,
+      };
+      setDataProfile(dataProfile);
+      setTempUrl(URL.createObjectURL(e.target?.files[0]));
+    },
+    [file]
+  );
 
   // setting data ready for server formate !
   const obj = {
@@ -250,6 +252,9 @@ function EditProfile({ data_profile, userId, isEdit }) {
   const { data, isPending, mutate } = useMutation({
     mutationFn: async () => {
       return await useFetch(`${API_BASE_URL}/updateUser`, obj, "PUT");
+    },
+    onSuccess: () => {
+      handleImageUpload();
     },
   });
   async function handleImageUpload() {
@@ -341,7 +346,6 @@ function EditProfile({ data_profile, userId, isEdit }) {
           <div
             onClick={() => {
               mutate();
-              handleImageUpload();
             }}
           >
             <ButtonAdmin text="Edit Profile" />
