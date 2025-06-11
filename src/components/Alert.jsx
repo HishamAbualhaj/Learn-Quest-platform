@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 function Alert({ msg = "", type }) {
   const [active, setActive] = useState(true);
-
+  useEffect(() => {
+    if (msg) setActive(true);
+  }, [msg]);
   return (
     <>
       {active &&
