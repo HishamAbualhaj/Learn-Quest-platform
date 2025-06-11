@@ -17,7 +17,9 @@ async function handleUploads(req, res) {
     const id = fields.id;
 
     if (uploadedFile) {
-      const newPath = `${uploadDir}/${id}-${uploadedFile[0].originalFilename.trim().replace(/\s+/g, '-')}`;
+      const newPath = `${uploadDir}/${id}-${uploadedFile[0].originalFilename
+        .trim()
+        .replace(/\s+/g, "-")}`;
       fs.rename(uploadedFile[0].filepath, newPath, (err) => {
         if (err) {
           handleResponse(res, err, "Error uploading image : ", null, 500, null);
