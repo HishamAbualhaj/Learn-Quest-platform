@@ -1,12 +1,13 @@
 // Where we store every data for our project !
 import {
+  faDashboard,
   faMessage,
   faPersonChalkboard,
   faRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { faBlogger } from "@fortawesome/free-brands-svg-icons";
-export const tabs = [
+const tabs = [
   {
     key: 1,
     name: "Profile",
@@ -39,7 +40,19 @@ export const tabs = [
   },
 ];
 
-export const navs = [
+const adminTabs = [
+  {
+    key: 1,
+    name: "dashboard",
+    icon: faDashboard,
+  },
+  {
+    key: 2,
+    name: "Log out",
+    icon: faRightFromBracket,
+  },
+];
+const navs = [
   {
     id: 1,
     name: "Home",
@@ -61,3 +74,5 @@ export const navs = [
     url: "/Home",
   },
 ];
+
+export { tabs, adminTabs, navs };

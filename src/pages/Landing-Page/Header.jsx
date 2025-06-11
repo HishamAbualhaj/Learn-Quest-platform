@@ -5,7 +5,7 @@ import { faBars, faDashboard, faMoon } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
-import { tabs, navs } from "../../global/global";
+import { tabs, navs, adminTabs } from "../../global/global";
 import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../../context/UserDataContext";
 import { Theme } from "../../context/ThemeContext";
@@ -23,18 +23,17 @@ export default function Header({ isStudent = false }) {
   const data = useContext(UserData);
   const { theme, setTheme } = useContext(Theme);
   useEffect(() => {
-    if (data) {
-      if (data.loggedIn) {
-        let reDirected = data.loggedIn;
-        let [{ first_name, role, image_url }] = data.userData;
-        setUserDataClient({ first_name, role, image_url });
-        setIsLogged(reDirected);
-      } else {
-        setIsLogged(false);
-      }
-    } else {
+    if (!data) {
       setIsLogged(true);
+      return;
     }
+    const { loggedIn, userData } = data;
+    if (data && loggedIn) {
+      let [{ first_name, role, image_url }] = userData;
+      setUserDataClient({ first_name, role, image_url });
+    }
+
+    setIsLogged(loggedIn);
   }, [data]);
 
   return (
@@ -51,9 +50,7 @@ export default function Header({ isStudent = false }) {
             />
           )}
           <Logo />
-          {isStudent ? (
-            <></>
-          ) : (
+          {!isStudent && (
             <>
               {nav && (
                 <NavMobile isStudent={isStudent} isLoggedIn={isLoggedIn} />
@@ -124,23 +121,9 @@ export default function Header({ isStudent = false }) {
                   </div>
                   {active && ///
                     (userDataClient.role === "admin" ? (
-                      <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:left-0 -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
-                        <Link to={`dashboard`}>
-                          <div className="flex flex-col">
-                            <div
-                              className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
-                            >
-                              <FontAwesomeIcon
-                                className="text-gray-400/80 dark:text-white"
-                                icon={faDashboard}
-                              />
-                              <div>Dashboard</div>
-                            </div>
-                          </div>
-                        </Link>
-                      </div>
+                      <DropDown tabs={adminTabs} />
                     ) : (
-                      <DropDown />
+                      <DropDown tabs={tabs} dir="student" isStudent={isStudent} />
                     ))}
                 </div>
               </div>
@@ -169,50 +152,12 @@ export default function Header({ isStudent = false }) {
       )}
     </div>
   );
-
-  function DropDown() {
-    return (
-      <div className="shadow-custom z-10 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
-        {tabs.map((tab) => (
-          <Link
-            onClick={() => {
-              setActive(false);
-            }}
-            key={tab.key}
-            to={`${
-              isStudent
-                ? tab.name.replace(/\s+/g, "")
-                : `${
-                    tab.name === "Log out"
-                      ? tab.name.replace(/\s+/g, "")
-                      : `student/${tab.name.replace(/\s+/g, "")}`
-                  }`
-            }`}
-          >
-            <div key={tab.key} className="flex flex-col">
-              <div
-                className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
-              >
-                <FontAwesomeIcon
-                  className="text-gray-400/80 dark:text-white"
-                  icon={tab.icon}
-                />
-                <div>{tab.name}</div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    );
-  }
 }
 function NavMobile({ isStudent, isLoggedIn }) {
   const [activeNav, setActiveNav] = useState("Home");
   return (
     <>
-      {isStudent ? (
-        <></>
-      ) : (
+      {!isStudent && (
         <div className="box-shadow-light w-full border_platform all flex max-w-[80%] justify-between flex-col absolute text-black dark:text-white top-[70px] border pb-5 bg-white dark:bg-lightDark rounded-md">
           <div className="flex flex-col">
             {navs.map((nav) => (
@@ -252,5 +197,48 @@ function NavMobile({ isStudent, isLoggedIn }) {
         </div>
       )}
     </>
+  );
+}
+function DropDown({ tabs, dir = null, isStudent = false }) {
+  const handleTabsName = (isStudent, tab, dir) => {
+    let result = "";
+    if (isStudent) {
+      return tab.name.replace(/\s+/g, "").toLowerCase();
+    }
+
+    if (tab.name === "Log out") {
+      result = tab.name.replace(/\s+/g, "").toLowerCase();
+    } else {
+      result = dir
+        ? `${dir}/${tab.name.replace(/\s+/g, "").toLowerCase()}`
+        : `${tab.name.replace(/\s+/g, "").toLowerCase()}`;
+    }
+
+    return result;
+  };
+  return (
+    <div className="shadow-custom z-20 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
+      {tabs.map((tab) => (
+        <Link
+          onClick={() => {
+            setActive(false);
+          }}
+          key={tab.key}
+          to={handleTabsName(isStudent, tab, dir)}
+        >
+          <div key={tab.key} className="flex flex-col">
+            <div
+              className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
+            >
+              <FontAwesomeIcon
+                className="text-gray-400/80 dark:text-white"
+                icon={tab.icon}
+              />
+              <div>{tab.name}</div>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
   );
 }
