@@ -1,4 +1,3 @@
-import connection from "../../config/db.js";
 import {
   deleteSessionModel,
   updateUserStatusModel,
