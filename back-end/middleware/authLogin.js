@@ -13,6 +13,7 @@ const authLogin = async (req, res, next) => {
 
   const publicRoutes = new Set([
     "/session",
+    "/logout",
     "/login",
     "/signup",
     "/auth/google",
@@ -20,6 +21,8 @@ const authLogin = async (req, res, next) => {
     "/forgotPass",
     "/verifyCode",
     "/resetPass",
+    "/getMaintenace",
+    "/handleUploads",
   ]);
 
   const isPublic = publicRoutes.has(req.url);
