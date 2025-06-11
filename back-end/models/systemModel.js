@@ -40,8 +40,8 @@ const addCourseModel = async (
 ) => {
   tabs = tabs.toString();
 
-  const image = `${course_id}-${image_url}`;
-
+  image_url = `${course_id}-${image_url}`;
+  image_url = image_url.trim().replace(/\s+/g, "-");
   const addCourseQuery = `INSERT INTO courses (course_id,title, description, price, discount, category, tabs, image_url)
         VALUES (?, ?, ?, ?, ?, ?,?,?)`;
 
@@ -55,7 +55,7 @@ const addCourseModel = async (
       discount,
       category,
       tabs,
-      image,
+      image_url,
     ]);
 };
 
@@ -168,6 +168,7 @@ const updateCourseModel = async (
   let query = "";
   if (image) {
     image = `${course_id}-${image}`;
+    image = image.trim().replace(/\s+/g, "-");
     query = `UPDATE courses 
       SET title = ?, description = ?, price = ?, discount = ?, category = ?, tabs = ?, image_url = ? , lessons = ?
       WHERE course_id = ?`;
