@@ -56,22 +56,22 @@ const navs = [
   {
     id: 1,
     name: "Home",
-    url: "/Home",
+    url: "/",
   },
   {
     id: 2,
     name: "Features",
-    url: "/Home",
+    url: "#features",
   },
   {
     id: 3,
     name: "Courses",
-    url: "/Home",
+    url: "/student/allcourses",
   },
   {
     id: 4,
     name: "Blog",
-    url: "/Home",
+    url: "/student/blog",
   },
 ];
 
