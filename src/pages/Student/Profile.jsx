@@ -18,6 +18,7 @@ function Profile() {
   const data_user = useContext(UserData);
   useEffect(() => {
     if (data_user) {
+      if (!data_user?.userData) return;
       const [{ student_id }] = data_user?.userData;
       setUserId(student_id);
     }
@@ -125,9 +126,7 @@ function Profile() {
           });
           setData(arr);
         }
-        image_url_temp
-          ? setImageUrl(`${image_url_temp}`)
-          : setImageUrl(Person);
+        image_url_temp ? setImageUrl(`${image_url_temp}`) : setImageUrl(Person);
       }
     }
   }, [isEdit, userId]);
@@ -271,11 +270,8 @@ function EditProfile({ data_profile, userId, isEdit }) {
     <div>
       <div className="w-fit mx-auto">
         <Avatar
-          img={
-            imageChange
-              ? tempUrl
-              : `${API_BASE_URL}/uploads/${dataProfile[7].data}`
-          }
+          isBlob={tempUrl}
+          img={imageChange ? tempUrl : `${dataProfile[7].data}`}
           className="h-[250px] w-[250px]"
         />
         <div className="relative  cursor-pointer ">
