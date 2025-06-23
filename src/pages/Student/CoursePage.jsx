@@ -33,23 +33,24 @@ function CoursePage() {
   useEffect(() => {
     const course_data = course_url.pathname.split("/").at(-1);
     const id = course_data.split("-")[0];
-    console.log("id ", id);
     setCourseId(id);
   }, [course_url.pathname]);
 
   useEffect(() => {
     if (data_user && course_id) {
       const userDataArray = data_user?.userData;
-      const { student_id, email, first_name, image_url, role } =
-        userDataArray[0];
-      setUserData({
-        student_id,
-        course_id,
-        email,
-        first_name,
-        image_url,
-        role,
-      });
+      if (userDataArray) {
+        const { student_id, email, first_name, image_url, role } =
+          userDataArray[0];
+        setUserData({
+          student_id,
+          course_id,
+          email,
+          first_name,
+          image_url,
+          role,
+        });
+      }
     }
   }, [data_user, course_id]);
 

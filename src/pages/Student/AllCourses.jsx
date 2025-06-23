@@ -119,12 +119,12 @@ function AllCourses() {
             </div>
           </div>
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-5 gap-8  mt-5">
-            {(!courses.length && !isFetching) ? (
+            {!courses.length && !isFetching ? (
               <div className="flex justify-center xl:text-4xl text-xl font-bold absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
                 No courses are available
               </div>
             ) : (
-              courses.map((course) => (
+              courses?.map((course) => (
                 <div
                   ref={courses.at(-1) === course ? observedEle : null}
                   key={course.course_id}
@@ -133,7 +133,7 @@ function AllCourses() {
                   <div>
                     <img
                       className="rounded-tr-xl rounded-tl-xl xl:w-[500px] w-full h-[300px] object-cover"
-                      src={`${API_BASE_URL}/uploads/${course.image_url}`}
+                      src={`${API_BASE_URL}/uploads/${course.image_url ?? ""}`}
                       alt=""
                     />
                   </div>
@@ -147,15 +147,20 @@ function AllCourses() {
                           className="text-yellow-400"
                           icon={faStar}
                         />
-                        <div className="text-yellow-400">{course.stars || 0.0}</div>
+                        <div className="text-yellow-400">
+                          {course.stars || 0.0}
+                        </div>
                       </div>
                     </div>
                     <div className="text-black/50 leading-7 dark:text-white/50 mt-5 line-clamp-4  max-w-[400px]">
                       {course.description}
                     </div>
                     <div className="mt-5 flex gap-2 flex-wrap">
-                      {course.tabs.split(",").map((category) => (
-                        <div className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark ">
+                      {course.tabs?.split(",").map((category, i) => (
+                        <div
+                          key={i}
+                          className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark "
+                        >
                           {category}
                         </div>
                       ))}
@@ -176,7 +181,7 @@ function AllCourses() {
                     <Link
                       to={`/student/CoursePage/${
                         course.course_id
-                      }-${course.title.replace(/[\s/]/g, "")}`}
+                      }-${course.title?.replace(/[\s/]/g, "")}`}
                     >
                       <Button text="Join Now" />
                     </Link>

@@ -22,15 +22,17 @@ function BlogPost() {
   useEffect(() => {
     if (data_user) {
       const userDataArray = data_user?.userData;
-      const { student_id, email, first_name, image_url, role } =
-        userDataArray[0];
-      setUserData({
-        student_id,
-        blog_id,
-        email,
-        first_name,
-        role,
-      });
+      if (userDataArray) {
+        const { student_id, email, first_name, image_url, role } =
+          userDataArray[0];
+        setUserData({
+          student_id,
+          blog_id,
+          email,
+          first_name,
+          role,
+        });
+      }
     }
   }, [data_user]);
 
@@ -62,7 +64,7 @@ function BlogPost() {
           </h1>
           <img
             className="lg:max-w-[650px] mt-5 mx-auto"
-            src={`${API_BASE_URL}/uploads/${blogData?.image_url}`}
+            src={`${API_BASE_URL}/uploads/${blogData?.image_url ?? ""}`}
             alt=""
           />
           <p className="text-lg mt-5">{blogData?.subtitle}</p>
