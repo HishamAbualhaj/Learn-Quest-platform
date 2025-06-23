@@ -10,12 +10,15 @@
   body {
     font-family: "Montserrat", sans-serif;
     scrollbar-color: none #f4f4f4;
+    height: 100vh;
   }
 
   body.dark {
     scrollbar-color: #555 #1e1e2f;
   }
-
+  body.dark {
+    @apply bg-dark;
+  }
   * {
     scrollbar-width: thin;
   }
@@ -119,8 +122,8 @@
   .box-shadow-light {
     box-shadow: rgba(0, 0, 0, 0.08) 0px 20px 24px -4px;
   }
-
+  /* 
   .height-vh-adjust {
     height: calc(100vh - 83px);
-  }
+  } */
 }
