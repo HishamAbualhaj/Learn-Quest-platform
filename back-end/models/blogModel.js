@@ -3,7 +3,8 @@ import deleteImage from "../utils/deleteImage.js";
 import generateId from "../utils/generateId.js";
 import getImageUrl from "../utils/getImageUrl.js";
 const getBlogModel = async ({ page, blog_id }) => {
-  const query = "SELECT * from blog";
+  const query =
+    "SELECT * from blog ORDER BY created_date DESC LIMIT ? OFFSET ?";
   if (page) {
     return await connection
       .promise()

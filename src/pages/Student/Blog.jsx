@@ -33,20 +33,20 @@ function Blog() {
     }
   }, [dataFetched]);
 
- 
+
   return (
-    <div className="sm:px-5 px-3 py-5  height-vh-adjust">
+    <div className="sm:px-5 px-3 py-10">
       <div className="text-4xl">Blog</div>
       <div
         ref={blogsContainer}
-        className="grid 2xl:grid-cols-3 grid-cols-1 gap-3 mt-5 h-[680px] overflow-auto"
+        className="grid p-5 dark:bg-lightDark 2xl:grid-cols-3 grid-cols-1 gap-3 mt-5 h-[680px] overflow-auto"
       >
         {!blogs.length && !isFetching ? (
           <div className="flex justify-center xl:text-4xl text-xl font-bold absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
             No Blogs are available
           </div>
         ) : (
-          blogs.map((blog) => (
+          blogs?.map((blog) => (
             <div
               ref={blogs.at(-1) === blog ? observedEle : null}
               key={blog.blog_id}
@@ -55,7 +55,7 @@ function Blog() {
               <div className="flex p-3 rounded-md gap-5 flex-col">
                 <img
                   className=" max-lg:mx-auto  h-[400px] object-cover"
-                  src={`${API_BASE_URL}/uploads/${blog.image_url}`}
+                  src={`${API_BASE_URL}/uploads/${blog.image_url ?? ""}`}
                 />
                 <div className="flex flex-col mt-5">
                   <div className="font-bold text-2xl">{blog.title}</div>
