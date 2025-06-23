@@ -1,7 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import Logo from "../../components/Logo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faDashboard, faMoon } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faDashboard,
+  faMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
@@ -9,6 +14,7 @@ import { tabs, navs, adminTabs } from "../../global/global";
 import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../../context/UserDataContext";
 import { Theme } from "../../context/ThemeContext";
+import { useScrollToHash } from "../../hooks/useScrollHash";
 export default function Header({ isStudent = false }) {
   const [nav, setNav] = useState(false);
   const [activeNav, setActiveNav] = useState("Home");
@@ -36,6 +42,7 @@ export default function Header({ isStudent = false }) {
     setIsLogged(loggedIn);
   }, [data]);
 
+  useScrollToHash();
   return (
     <div className="section relative">
       <div className={`${isStudent ? "" : "max-container"}`}>
@@ -57,19 +64,20 @@ export default function Header({ isStudent = false }) {
               )}
               <div className="gap-8 lg:flex hidden">
                 {navs.map((nav) => (
-                  <div
+                  <Link
+                    to={`${nav.url.toLowerCase()}`}
                     key={nav.id}
                     onClick={(e) => {
-                      setActiveNav(e.currentTarget.textContent);
+                      setActiveNav(e.currentTarget.textContent.trim());
                     }}
-                    className={`text-lg py-5 cursor-pointer  px-4 ${
-                      activeNav === nav.name.replace(/\s+/g, "")
+                    className={`text-lg py-5 cursor-pointer px-4 ${
+                      activeNav === nav.name.trim()
                         ? "border-b-4 dark:border-mainClrDark border-mainClr"
                         : ""
                     } `}
                   >
-                    <a href={`#${nav.name.toLowerCase()}`}>{nav.name}</a>
-                  </div>
+                    {nav.name}
+                  </Link>
                 ))}
               </div>
             </>
@@ -121,9 +129,14 @@ export default function Header({ isStudent = false }) {
                   </div>
                   {active && ///
                     (userDataClient.role === "admin" ? (
-                      <DropDown tabs={adminTabs} />
+                      <DropDown tabs={adminTabs} setActive={setActive} />
                     ) : (
-                      <DropDown tabs={tabs} dir="student" isStudent={isStudent} />
+                      <DropDown
+                        tabs={tabs}
+                        dir="student"
+                        isStudent={isStudent}
+                        setActive={setActive}
+                      />
                     ))}
                 </div>
               </div>
@@ -134,8 +147,8 @@ export default function Header({ isStudent = false }) {
               }}
             >
               <FontAwesomeIcon
-                className="cursor-pointer w-7 h-7 hover:bg-gray-700 rounded-md p-2"
-                icon={faMoon}
+                className="cursor-pointer w-7 h-7 hover:bg-gray-600 hover:text-white rounded-md p-2"
+                icon={theme === "dark" ? faSun : faMoon}
               />
             </div>
           </div>
@@ -147,7 +160,7 @@ export default function Header({ isStudent = false }) {
           onClick={() => {
             setActive(false);
           }}
-          className="absolute w-full h-screen bg-transparent left-0 top-0 z-[2]"
+          className="absolute inset-0 bg-transparent z-[2]"
         ></div>
       )}
     </div>
@@ -164,15 +177,15 @@ function NavMobile({ isStudent, isLoggedIn }) {
               <div
                 key={nav.id}
                 onClick={(e) => {
-                  setActiveNav(e.currentTarget.textContent);
+                  setActiveNav(e.currentTarget.textContent.trim());
                 }}
                 className={`text-lg py-3 cursor-pointer px-5 ${
-                  activeNav === nav.name.replace(/\s+/g, "")
+                  activeNav === nav.name.trim()
                     ? "border-b border-borderLight text-mainClr font-bold"
                     : ""
                 } `}
               >
-                {nav.name}
+                <a href={`${nav.url}`}>{nav.name}</a>
               </div>
             ))}
           </div>
@@ -199,25 +212,17 @@ function NavMobile({ isStudent, isLoggedIn }) {
     </>
   );
 }
-function DropDown({ tabs, dir = null, isStudent = false }) {
+function DropDown({ tabs, dir = null, isStudent = false, setActive }) {
   const handleTabsName = (isStudent, tab, dir) => {
-    let result = "";
-    if (isStudent) {
-      return tab.name.replace(/\s+/g, "").toLowerCase();
-    }
+    const baseName = tab.name.replace(/\s+/g, "").toLowerCase();
+    if (isStudent) return baseName;
 
-    if (tab.name === "Log out") {
-      result = tab.name.replace(/\s+/g, "").toLowerCase();
-    } else {
-      result = dir
-        ? `${dir}/${tab.name.replace(/\s+/g, "").toLowerCase()}`
-        : `${tab.name.replace(/\s+/g, "").toLowerCase()}`;
-    }
+    if (tab.name === "Log out") return baseName;
 
-    return result;
+    return dir ? `${dir}/${baseName}` : `${baseName}`;
   };
   return (
-    <div className="shadow-custom z-20 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
+    <div className="transition-all duration-300 opacity-100 scale-100 shadow-custom z-20 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
       {tabs.map((tab) => (
         <Link
           onClick={() => {
@@ -226,7 +231,7 @@ function DropDown({ tabs, dir = null, isStudent = false }) {
           key={tab.key}
           to={handleTabsName(isStudent, tab, dir)}
         >
-          <div key={tab.key} className="flex flex-col">
+          <div className="flex flex-col">
             <div
               className={`flex items-center gap-3 text-lg py-3 px-5 cursor-pointer hover:bg-gray-300/20 dark:hover:bg-gray-200/20`}
             >
