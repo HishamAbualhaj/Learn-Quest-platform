@@ -39,7 +39,7 @@ function Feature() {
     },
   ];
   return (
-    <div className="section bg-lightLayout dark:bg-lightDark lg:py-16 py-10">
+    <div id="features" className="section bg-lightLayout dark:bg-lightDark lg:py-16 py-10">
       <div className="max-container">
         <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 xl:gap-0 gap-5">
           {features.map((feature) => (

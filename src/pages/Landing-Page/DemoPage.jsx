@@ -15,8 +15,13 @@ function DemoPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button outlined={true} text="Join a course" size="xl" url={""} />
-            <Button outlined={false} text="Sign up" size="xl" url={""} />
+            <Button
+              outlined={true}
+              text="Join a course"
+              size="xl"
+              url="/student/allcourses"
+            />
+            <Button outlined={false} text="Sign up" size="xl" url="/signup" />
           </div>
         </div>
       </div>

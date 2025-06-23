@@ -59,8 +59,12 @@ function Testimonials() {
                 {testimonial.review}
               </div>
               <div className="flex gap-1">
-                {testimonial.stars.map(() => (
-                  <FontAwesomeIcon className="text-yellow-400 " icon={faStar} />
+                {testimonial.stars.map((_, i) => (
+                  <FontAwesomeIcon
+                    key={i}
+                    className="text-yellow-400 "
+                    icon={faStar}
+                  />
                 ))}
               </div>
             </div>

@@ -13,7 +13,12 @@ function FeatureDetails() {
             comprehensive analytics, and personalized recommendations to help
             you succeed.
           </div>
-          <Button outlined={true} text="All Courses" size="xl" url={""} />
+          <Button
+            outlined={true}
+            text="All Courses"
+            size="xl"
+            url="/student/allcourses"
+          />
         </div>
         <img src="../../src/assets/goals.jpg" alt="" />
       </div>

@@ -56,8 +56,8 @@ function CoursePreview() {
                   {course.description}
                 </div>
                 <div className="mt-5 flex gap-2 flex-wrap">
-                  {course.categories.map((category) => (
-                    <div className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark ">
+                  {course.categories.map((category,i) => (
+                    <div key={i} className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark ">
                       {category}
                     </div>
                   ))}
