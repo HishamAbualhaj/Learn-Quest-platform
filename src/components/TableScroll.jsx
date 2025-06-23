@@ -54,7 +54,7 @@ function TableScroll({
 
       <div
         ref={dataContainer}
-        className="xl:w-full lg:w-[850px] md:w-[600px] [450px]:w-[400px] w-[330px]  h-[650px] mt-10 overflow-auto pr-5"
+        className="h-[650px] mt-10 overflow-auto pr-5"
       >
         <table className="dark:text-gray-300 text-lightText w-full">
           <thead>

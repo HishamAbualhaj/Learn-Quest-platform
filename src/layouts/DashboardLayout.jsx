@@ -84,7 +84,7 @@ function Dashboard() {
 
   let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 dark:bg-hoverDark bg-hoverLight`;
   return (
-    <div className="flex h-[100vh]">
+    <div className="flex h-screen">
       <div
         className={` border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-white w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full dark:shadow-none shadow-custom ${
           isTranslate ? "!translate-x-0 " : ""
@@ -141,7 +141,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="flex-1 dark:bg-dark bg-lightLayout">
+      <div className="w-full flex-1 dark:bg-dark bg-lightLayout">
         <div className="text-white py-3 border-b dark:bg-black/20 dark:border-borderDark border-borderLight xl:px-12 sm:px-10 px-5 ">
           <div className="flex items-center justify-between">
             <FontAwesomeIcon
