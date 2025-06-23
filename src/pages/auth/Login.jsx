@@ -6,6 +6,7 @@ import useFetch from "../../hooks/useFetch";
 import Alert from "../../components/Alert";
 import { useMutation } from "@tanstack/react-query";
 import API_BASE_URL from "../../config/config";
+import Logo from "../../components/Logo";
 function Login() {
   const [alert, setAlert] = useState(null);
 
@@ -42,8 +43,8 @@ function Login() {
 
   return (
     <div className="dark:bg-dark bg-lightLayout h-[100vh] md:px-0 px-5">
-      <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pt-10 pl-0 md:pl-10 font-bold flex gap-1">
-        LEARN <div className="text-purple-600">QUEST</div>
+      <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pl-0 md:pl-10 font-bold flex gap-1">
+        <Logo />
       </div>
       <div className="mx-auto max-w-[500px] p-7 mt-10 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl">
         {alert &&

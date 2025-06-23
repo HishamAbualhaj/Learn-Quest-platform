@@ -6,6 +6,7 @@ import Button from "../../components/Button";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
 import { useMutation } from "@tanstack/react-query";
+import Logo from "../../components/Logo";
 function Signup() {
   const [alert, setAlert] = useState(null);
 
@@ -33,7 +34,6 @@ function Signup() {
     });
   }
 
-
   const { mutate, isPending, data } = useMutation({
     mutationFn: async () => {
       return await useFetch(`${API_BASE_URL}/signup`, userData, "POST");
@@ -46,8 +46,8 @@ function Signup() {
 
   return (
     <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 h-[100vh]">
-      <div className="dark:text-white text-lightText text-2xl max-md:justify-center pt-5 pl-0 md:pl-10 font-bold flex gap-1">
-        LEARN <div className="text-purple-600">QUEST</div>
+      <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pl-0 md:pl-10 font-bold flex gap-1">
+        <Logo />
       </div>
       <div className="mx-auto max-w-[500px] p-7 mt-5 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl relative">
         {alert &&
