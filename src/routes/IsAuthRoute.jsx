@@ -6,14 +6,14 @@ function IsAuthRoute({ children, isMaintenance = false }) {
   const dataFetched = useLoaderData();
   const { loggedIn, userData: [{ role }] = [{}] } = dataFetched;
 
-
   // isMaintenance is true which is server is went down
   const navigate = useNavigate();
 
   const currentUrl = useLocation();
   useEffect(() => {
-    const url = currentUrl.pathname;
+    const url = currentUrl.pathname.toLowerCase();
 
+    const isInSetFound = (url, routes) => routes.has(url);
     // only for admin
     const isAdminRoutes = new Set(["/dashboard"]);
     // allow these while not logined in
@@ -25,20 +25,26 @@ function IsAuthRoute({ children, isMaintenance = false }) {
       "/confirmpass",
     ]);
 
+    const alwaysAllowedRoutes = new Set([
+      "/",
+      "/student/allcourses",
+      "/student/blog",
+    ]);
+
+    const isAlwaysAllowed = isInSetFound(url, alwaysAllowedRoutes);
+    
     if (url === "/maintenance" && !isMaintenance) {
       navigate("/");
       return;
     }
-    if (url === "/" && !isMaintenance) {
+    if (isAlwaysAllowed && !isMaintenance) {
       setIsLoading(false);
       return;
     }
-    const isInSetOrStartsWith = (url, routes) =>
-      routes.has(url) || [...routes].some((route) => url.startsWith(route));
 
-    const isAdmin = isInSetOrStartsWith(url, isAdminRoutes);
+    const isAdmin = isInSetFound(url, isAdminRoutes);
 
-    const isAllowed = isInSetOrStartsWith(url, isAllowedRoutesWhileNotLogin);
+    const isAllowed = isInSetFound(url, isAllowedRoutesWhileNotLogin);
 
     // Only while system is shut down
     if (isMaintenance) {
@@ -63,7 +69,7 @@ function IsAuthRoute({ children, isMaintenance = false }) {
         setIsLoading(false);
         return;
       }
-      navigate("/");
+      navigate("/login");
       return;
     }
 

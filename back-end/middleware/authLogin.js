@@ -23,6 +23,9 @@ const authLogin = async (req, res, next) => {
     "/resetPass",
     "/getMaintenace",
     "/handleUploads",
+    "/getCourses",
+    "/getBlogData",
+    "/uploads/"
   ]);
 
   const isPublic = publicRoutes.has(req.url);

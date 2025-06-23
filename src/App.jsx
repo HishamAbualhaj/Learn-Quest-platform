@@ -165,6 +165,7 @@ function App() {
         {
           index: true,
           element: <Profile />,
+          errorElement: <ErrorPage />,
         },
         {
           path: "profile",
@@ -174,8 +175,12 @@ function App() {
           },
           errorElement: <ErrorPage />,
         },
-        { path: "chat", element: <ChatStudent /> },
-        { path: "allcourses", element: <AllCourses /> },
+        { path: "chat", element: <ChatStudent />, errorElement: <ErrorPage /> },
+        {
+          path: "allcourses",
+          element: <AllCourses />,
+          errorElement: <ErrorPage />,
+        },
         {
           path: "CoursePage/:courseName",
           element: <CoursePage />,
@@ -187,15 +192,25 @@ function App() {
         {
           path: "mycourses",
           children: [
-            { index: true, element: <MyCourses /> },
+            {
+              index: true,
+              element: <MyCourses />,
+              errorElement: <ErrorPage />,
+            },
             {
               path: ":courseName",
-              element: <CoursePage />,
+              element: (
+                <IsAuthRoute isMaintenance={isMaintenance}>
+                  <CoursePage />
+                </IsAuthRoute>
+              ),
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
+              errorElement: <ErrorPage />,
             },
           ],
+          errorElement: <ErrorPage />,
         },
         {
           path: "blog",
@@ -203,10 +218,15 @@ function App() {
             { index: true, element: <Blog /> },
             {
               path: ":blogId",
-              element: <BlogPost />,
+              element: (
+                <IsAuthRoute isMaintenance={isMaintenance}>
+                  <BlogPost />
+                </IsAuthRoute>
+              ),
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
+              errorElement: <ErrorPage />,
             },
           ],
         },
@@ -240,13 +260,14 @@ function App() {
       loader: () => {
         return fetchData(`${API_BASE_URL}/session`);
       },
+      errorElement: <ErrorPage />,
       children: [
-        { index: true, element: <Users /> },
-        { path: "users", element: <Users /> },
+        { index: true, element: <Users />, errorElement: <ErrorPage /> },
+        { path: "users", element: <Users />, errorElement: <ErrorPage /> },
         {
           path: "courses",
           children: [
-            { index: true, element: <Courses /> },
+            { index: true, element: <Courses />, errorElement: <ErrorPage /> },
             {
               path: "add",
               element: <AddCourse />,
@@ -261,11 +282,16 @@ function App() {
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
+              errorElement: <ErrorPage />,
             },
           ],
         },
-        { path: "analytics", element: <Analytics /> },
-        { path: "reviews", element: <Reviews /> },
+        {
+          path: "analytics",
+          element: <Analytics />,
+          errorElement: <ErrorPage />,
+        },
+        { path: "reviews", element: <Reviews />, errorElement: <ErrorPage /> },
         {
           path: "chat",
           element: <Chat />,
@@ -274,7 +300,11 @@ function App() {
             return fetchData(`${API_BASE_URL}/session`);
           },
         },
-        { path: "systemlog", element: <SystemLog /> },
+        {
+          path: "systemlog",
+          element: <SystemLog />,
+          errorElement: <ErrorPage />,
+        },
         {
           path: "maintenance",
           element: <Maintenance />,
@@ -294,7 +324,7 @@ function App() {
         {
           path: "blogs",
           children: [
-            { index: true, element: <Blogs /> },
+            { index: true, element: <Blogs />, errorElement: <ErrorPage /> },
             {
               path: "add",
               element: <AddBlog />,
@@ -309,8 +339,10 @@ function App() {
               loader: () => {
                 return fetchData(`${API_BASE_URL}/session`);
               },
+              errorElement: <ErrorPage />,
             },
           ],
+          errorElement: <ErrorPage />,
         },
       ],
     },
