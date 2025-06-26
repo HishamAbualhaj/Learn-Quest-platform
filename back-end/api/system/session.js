@@ -1,11 +1,10 @@
-
 import handleResponse from "../../utils/handleResponse.js";
 import { getUsersModel } from "../../models/userModel.js";
 import { validateSessionModel } from "../../models/systemModel.js";
 const session = (req, res) => {
   const cookies = req.headers.cookie || "";
   let sessionId = "";
-
+  console.log("Cookies:", cookies);
   if (cookies) {
     sessionId = cookies.match(/session_id=([\w\d]+)/)?.[1];
   }
