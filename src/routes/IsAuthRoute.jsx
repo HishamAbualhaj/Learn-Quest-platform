@@ -14,12 +14,15 @@ function IsAuthRoute({ children, isMaintenance = false }) {
     const url = currentUrl.pathname.toLowerCase();
 
     const isInSetFound = (url, routes) => routes.has(url);
-    const isAdminPath = (url, routes) =>
+    const isPrefixPath = (url, routes) =>
       [...routes].some((route) => url.startsWith(route));
     // only for admin
     const isAdminRoutes = new Set(["/dashboard"]);
+
+    const loggedInSharedRoutes = new Set(["/student/coursepage"]);
+
     // allow these while not logined in
-    const isAllowedRoutesWhileNotLogin = new Set([
+    const allowedRoutesWhileNotLogin = new Set([
       "/login",
       "/signup",
       "/forgotpassword",
@@ -27,27 +30,27 @@ function IsAuthRoute({ children, isMaintenance = false }) {
       "/confirmpass",
     ]);
 
-    const alwaysAllowedRoutes = new Set([
-      "/",
-      "/student/allcourses",
-      "/student/blog",
-    ]);
+    const allowedForBoth = new Set(["/student/allcourses", "/student/blog"]);
 
-    const isAlwaysAllowed = isInSetFound(url, alwaysAllowedRoutes);
+    const isAllowedForBoth = isPrefixPath(url, allowedForBoth);
 
+    const isAdmin = isPrefixPath(url, isAdminRoutes);
+
+    const isAllowedNotLogin = isInSetFound(url, allowedRoutesWhileNotLogin);
+
+    // both user and admin can access it ONLY WHILE LOGIN
+    const isLoggedInShared = isPrefixPath(url, loggedInSharedRoutes);
+
+    // allow landing page while system is running
+    if (url === "/" && !isMaintenance) {
+      setIsLoading(false);
+      return;
+    }
+    // allow maintenance page
     if (url === "/maintenance" && !isMaintenance) {
       navigate("/");
       return;
     }
-    if (isAlwaysAllowed && !isMaintenance) {
-      setIsLoading(false);
-      return;
-    }
-
-    const isAdmin =
-      isInSetFound(url, isAdminRoutes) || isAdminPath(url, isAdminRoutes);
-
-    const isAllowed = isInSetFound(url, isAllowedRoutesWhileNotLogin);
 
     // Only while system is shut down
     if (isMaintenance) {
@@ -66,9 +69,9 @@ function IsAuthRoute({ children, isMaintenance = false }) {
       return;
     }
 
-    // While NOT login check allowed routes
+    // NOT LOGIN CASE
     if (!loggedIn) {
-      if (isAllowed) {
+      if (isAllowedNotLogin || isAllowedForBoth) {
         setIsLoading(false);
         return;
       }
@@ -76,17 +79,24 @@ function IsAuthRoute({ children, isMaintenance = false }) {
       return;
     }
 
-    // if user is logged in, then check allowed routes
-    if (isAllowed) {
+    // LOGIN CASE
+    if (isAllowedNotLogin) {
       navigate("/");
       return;
     }
 
+ 
+    if (isLoggedInShared || isAllowedForBoth) {
+      setIsLoading(false);
+      return;
+    }
+
+    // ALLOW ADMIN PAGES
     if ((isAdmin && role !== "admin") || (!isAdmin && role === "admin")) {
       navigate("/");
-    } else {
-      setIsLoading(false);
+      return;
     }
+    setIsLoading(false);
   }, [isMaintenance, currentUrl.pathname, loggedIn, role, navigate]);
 
   return <>{isLoading ? <Loading /> : children}</>;
