@@ -20,7 +20,7 @@ function FeatureDetails() {
             url="/student/allcourses"
           />
         </div>
-        <img src="../../src/assets/goals.jpg" alt="" />
+        <img src="/assets/goals.jpg" alt="" />
       </div>
     </div>
   );
