@@ -14,6 +14,8 @@ function IsAuthRoute({ children, isMaintenance = false }) {
     const url = currentUrl.pathname.toLowerCase();
 
     const isInSetFound = (url, routes) => routes.has(url);
+    const isAdminPath = (url, routes) =>
+      [...routes].some((route) => url.startsWith(route));
     // only for admin
     const isAdminRoutes = new Set(["/dashboard"]);
     // allow these while not logined in
@@ -32,7 +34,7 @@ function IsAuthRoute({ children, isMaintenance = false }) {
     ]);
 
     const isAlwaysAllowed = isInSetFound(url, alwaysAllowedRoutes);
-    
+
     if (url === "/maintenance" && !isMaintenance) {
       navigate("/");
       return;
@@ -42,7 +44,8 @@ function IsAuthRoute({ children, isMaintenance = false }) {
       return;
     }
 
-    const isAdmin = isInSetFound(url, isAdminRoutes);
+    const isAdmin =
+      isInSetFound(url, isAdminRoutes) || isAdminPath(url, isAdminRoutes);
 
     const isAllowed = isInSetFound(url, isAllowedRoutesWhileNotLogin);
 
