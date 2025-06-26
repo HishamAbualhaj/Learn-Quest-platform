@@ -9,12 +9,12 @@ import Alert from "../../components/Alert";
 export default function Maintenance() {
   const data_user = useContext(UserData);
   const [userData, setUserData] = useState(null);
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState(true);
   const [msg, setMsg] = useState(null);
   useEffect(() => {
     if (data_user) {
       const userDataArray = data_user?.userData;
-      const { student_id, email, first_name } = userDataArray[0];
+      const { student_id, email, first_name } = userDataArray?.[0];
       setUserData({ student_id, email, first_name });
     }
   }, [data_user]);
@@ -39,7 +39,7 @@ export default function Maintenance() {
   });
   useEffect(() => {
     if (data) {
-      const [{ status }] = data?.msg;
+      const status = data?.msg?.[0]?.status ?? true;
       setAction(false);
       setMsg(
         `${status ? "System is running now" : "System is down for maintenance"}`

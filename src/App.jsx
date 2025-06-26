@@ -69,7 +69,7 @@ function App() {
 
   useEffect(() => {
     if (data) {
-      const [{ status }] = data?.msg;
+      const status = data?.msg?.[0]?.status ?? true;
       setIsMaintenance(!status);
     }
   }, [data]);
