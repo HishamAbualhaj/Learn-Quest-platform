@@ -2,6 +2,4 @@ back-end/
 node_modules/
 README.md
 .eslint.config.js
-tailwind.config.js
-postcss.config.js
 *.log
