@@ -15,6 +15,7 @@ import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../../context/UserDataContext";
 import { Theme } from "../../context/ThemeContext";
 import { useScrollToHash } from "../../hooks/useScrollHash";
+import ReactDOM from "react-dom";
 export default function Header({ isStudent = false }) {
   const [nav, setNav] = useState(false);
   const [activeNav, setActiveNav] = useState("Home");
@@ -155,15 +156,19 @@ export default function Header({ isStudent = false }) {
         </div>
       </div>
 
-      {active && (
-        <div
-          onClick={() => {
-            setActive(false);
-          }}
-          className="absolute inset-0 bg-transparent z-[2]"
-        ></div>
-      )}
+      {active && <ModalBg setActive={setActive} />}
     </div>
+  );
+}
+function ModalBg({ setActive }) {
+  return ReactDOM.createPortal(
+    <div
+      onClick={() => {
+        setActive(false);
+      }}
+      className="absolute inset-0 bg-transparent z-10"
+    ></div>,
+    document.getElementById("root")
   );
 }
 function NavMobile({ isStudent, isLoggedIn }) {
