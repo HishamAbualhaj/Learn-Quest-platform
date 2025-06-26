@@ -7,6 +7,7 @@ import API_BASE_URL from "../../config/config";
 import Messages from "./Messages";
 import Avatar from "../../components/Avatar";
 import { UserData } from "../../context/UserDataContext";
+import { API_WEB_SOCKET } from "../../config/config";
 function Chat() {
   const [isTranslate, setIsTranslate] = useState(false);
   // Here data will come from server (From other users, WebSocket) , messages
@@ -40,7 +41,7 @@ function Chat() {
   });
 
   const initSocketConnection = (sender_id) => {
-    socketRef.current = new WebSocket("ws://localhost:3002");
+    socketRef.current = new WebSocket(API_WEB_SOCKET);
 
     socketRef.current.onopen = () => {
       socketRef.current.send(

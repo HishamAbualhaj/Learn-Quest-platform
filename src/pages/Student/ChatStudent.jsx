@@ -6,6 +6,7 @@ import { UserData } from "../../context/UserDataContext";
 import { useQuery } from "@tanstack/react-query";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
+import { API_WEB_SOCKET } from "../../config/config";
 function ChatStudent() {
   // Here data will come from server (From other users, WebSocket) , messages
   const [chatData, setChatData] = useState({
@@ -50,7 +51,7 @@ function ChatStudent() {
     }
   }, [data]);
   const initSocketConnection = (sender_id) => {
-    socketRef.current = new WebSocket("ws://localhost:3002");
+    socketRef.current = new WebSocket(API_WEB_SOCKET);
 
     socketRef.current.onopen = () => {
       socketRef.current.send(
