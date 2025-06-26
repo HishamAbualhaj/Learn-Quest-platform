@@ -69,8 +69,7 @@ function BlogPost() {
           />
           <p className="text-lg mt-5">{blogData?.subtitle}</p>
         </div>
-
-        {blogData?.content}
+        <div dangerouslySetInnerHTML={{ __html: blogData?.content }} />
       </div>
 
       {/* comments  */}
