@@ -4,6 +4,7 @@ import handleResponse from "../utils/handleResponse.js";
 import handleSession from "../utils/handleSession.js";
 import connection from "../config/db.js";
 import isEmailFound from "../utils/isEmailFound.js";
+import generateId from "../utils/generateId.js";
 const handleGoogleAuth = async (req, res, client) => {
   const parsedUrl = url.parse(req.url, true);
 
@@ -71,7 +72,7 @@ async function googleAuthQ(
   res
 ) {
   try {
-    let newId = Math.round(Math.random() * 100000000);
+    let newId = generateId();
     const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, gender, birthdate, login_method)
       VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
     await connection

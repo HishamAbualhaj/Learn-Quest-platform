@@ -1,10 +1,13 @@
 import { google } from "googleapis";
+import dotenv from "dotenv";
+dotenv.config();
 const googleAuth = () => {
+  const BackendUlr = process.env.BACKEND_URL;
   const CLIENT_ID =
     "21847936920-lev1cn44ieoa61hmhc29idrgra4k15h2.apps.googleusercontent.com";
   const CLIENT_SECRET = "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";
 
-  const REDIRECT_URI = "http://localhost:3002/oauth2callback";
+  const REDIRECT_URI = `${BackendUlr}/oauth2callback`;
   const oauth2Client = new google.auth.OAuth2(
     CLIENT_ID,
     CLIENT_SECRET,
