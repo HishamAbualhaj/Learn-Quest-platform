@@ -22,7 +22,7 @@ function Messages({
   const queryClient = useQueryClient();
   const msgContainer = useRef(null);
 
-  const { dataFetched, isFetching, refetch } = useInfiniteScroll({
+  const { dataFetched, isFetching, refetch ,isFetchingNextPage } = useInfiniteScroll({
     fetchFn: async (pagePara) => {
       if (!sender_id && !receiver_id) return;
       return await useFetch(
@@ -121,7 +121,7 @@ function Messages({
   }
   return (
     <div ref={msgContainer} className="flex flex-col p-5 gap-5 overflow-auto">
-      {isFetching && (
+      {isFetchingNextPage && (
         <>
           <div className="flex flex-col">
             <div className="flex lg:w-1/2 w-fit h-[40px] bg-gray-700 animate-syncPuls p-2 rounded-md mt-1"></div>
