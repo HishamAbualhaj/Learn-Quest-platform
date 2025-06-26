@@ -64,7 +64,7 @@ function App() {
     queryFn: async () => {
       return await useFetch(`${API_BASE_URL}/getMaintenace`, null, "GET");
     },
-    refetchInterval: 2000,
+    refetchInterval: 10000,
   });
 
   useEffect(() => {
