@@ -41,7 +41,13 @@ function CoursePage() {
       const userDataArray = data_user?.userData;
       if (userDataArray) {
         const { student_id, email, first_name, image_url, role } =
-          userDataArray[0];
+          userDataArray?.[0] ?? {
+            student_id: null,
+            email: null,
+            first_name: null,
+            image_url: null,
+            role,
+          };
         setUserData({
           student_id,
           course_id,
@@ -57,7 +63,6 @@ function CoursePage() {
   const { data, isLoading, refetch } = useQuery({
     queryFn: async () => {
       if (!user_data || !user_data.course_id) return [];
-      console.log("user data", user_data);
       return await useFetch(
         `${API_BASE_URL}/getCourseData`,
         {
@@ -114,7 +119,7 @@ function CoursePage() {
     },
   });
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return <Loading />;
   }
   return (

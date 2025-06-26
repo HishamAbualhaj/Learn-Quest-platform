@@ -14,7 +14,11 @@ export default function Maintenance() {
   useEffect(() => {
     if (data_user) {
       const userDataArray = data_user?.userData;
-      const { student_id, email, first_name } = userDataArray?.[0];
+      const { student_id, email, first_name } = userDataArray?.[0] ?? {
+        student_id: null,
+        email: null,
+        first_name: null,
+      };
       setUserData({ student_id, email, first_name });
     }
   }, [data_user]);
@@ -27,6 +31,7 @@ export default function Maintenance() {
   });
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
+      if (!userData.student_id) return;
       return await useFetch(
         `${API_BASE_URL}/setMaintenance`,
         { ...userData, status },
@@ -38,7 +43,7 @@ export default function Maintenance() {
     },
   });
   useEffect(() => {
-    if (data) {
+    if (data && userData?.student_id) {
       const status = data?.msg?.[0]?.status ?? true;
       setAction(false);
       setMsg(
@@ -46,13 +51,13 @@ export default function Maintenance() {
       );
       setStatus(status);
     }
-  }, [data]);
+  }, [data,userData]);
 
   const [count, setCount] = useState(5);
   const [action, setAction] = useState(false);
   useEffect(() => {
     let countTimer = null;
-    if (action) {
+    if (action && userData?.student_id) {
       setCount(5);
       countTimer = setInterval(() => {
         setCount((prev) => {
@@ -64,7 +69,7 @@ export default function Maintenance() {
       }, 1000);
     }
     return () => clearInterval(countTimer);
-  }, [action]);
+  }, [action, userData]);
 
   return (
     <div>

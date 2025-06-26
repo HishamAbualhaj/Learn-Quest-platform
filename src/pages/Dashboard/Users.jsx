@@ -35,7 +35,7 @@ function Users() {
           {
             key: "joined_at",
             label: "Date joined",
-            render: (value) => value.split("T")[0],
+            render: (value) => value?.split("T")[0],
           },
           {
             key: "status_user",

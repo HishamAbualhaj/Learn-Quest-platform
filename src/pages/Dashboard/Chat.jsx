@@ -71,7 +71,7 @@ function Chat() {
   useEffect(() => {
     if (data_user) {
       const userDataArray = data_user?.userData;
-      const { student_id } = userDataArray[0];
+      const { student_id } = userDataArray?.[0] ?? { student_id: null };
       setServerData((prev) => ({
         ...prev,
         sender_id: student_id,
