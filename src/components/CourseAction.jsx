@@ -64,9 +64,6 @@ export default function CourseAction({
     }
   }, [course_id, user_data]);
 
-  useEffect(() => {
-    console.log("Course data chagned", courseData);
-  }, [courseData]);
   const inputs = [
     {
       key: 1,
@@ -126,7 +123,6 @@ export default function CourseAction({
 
       const { id } = data?.msg;
 
-      console.log("data from add course ", data);
       const currentId = action === "add" ? id : course_id;
 
       if (image) {

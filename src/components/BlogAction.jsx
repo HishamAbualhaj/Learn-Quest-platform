@@ -45,7 +45,6 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
 
   useEffect(() => {
     if (blog_id && user_data) {
-      console.log("Blog id", blog_id);
       async function getData() {
         const res = await useFetch(
           `${API_BASE_URL}/getBlogData`,
