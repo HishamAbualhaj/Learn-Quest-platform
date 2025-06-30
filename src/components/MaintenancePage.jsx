@@ -10,8 +10,8 @@ function MaintenancePage() {
           className="text-[80px] text-purple-500/50 animate-bounce"
         />
         <div className="flex flex-col gap-2 items-center">
-          <div className="text-3xl uppercase font-bold">Website is under maintenance</div>
-          <div className="text-2xl uppercase">We'll be back shortly</div>
+          <div className="md:text-3xl text-2xl uppercase font-bold text-center">Website is under maintenance</div>
+          <div className="md:text-2xl text-xl uppercase">We'll be back shortly</div>
         </div>
       </div>
     </div>
