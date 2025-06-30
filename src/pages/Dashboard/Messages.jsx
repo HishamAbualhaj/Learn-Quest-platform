@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
@@ -21,32 +21,47 @@ function Messages({
   const [lastNode, setLastNode] = useState(null);
   const queryClient = useQueryClient();
   const msgContainer = useRef(null);
-
-  const { dataFetched, isFetching, refetch ,isFetchingNextPage } = useInfiniteScroll({
-    fetchFn: async (pagePara) => {
-      if (!sender_id && !receiver_id) return;
-      return await useFetch(
-        `${API_BASE_URL}/getMsg`,
-        { page: pagePara, ...{ sender_id, receiver_id } },
-        "POST"
-      );
-    },
-    queryKey: ["messages", sender_id, receiver_id],
-    scrollContainer: msgContainer,
-    observedEle: lastNode,
-    data_id: "msg_id",
-  });
-
-  useEffect(() => {
-    setMessages([]);
-    if (receiver_id && !isFetching) {
-      refetch();
-    }
-  }, [receiver_id]);
+  const prevScrollHeight = useRef(0);
+  const scrollReasonRef = useRef(null);
+  const getChatkey = (sender, receiver) => [
+    "messages",
+    [sender, receiver].sort().join("_"),
+  ];
+  const { dataFetched, isFetching, refetch, isFetchingNextPage } =
+    useInfiniteScroll({
+      fetchFn: async (pagePara) => {
+        if (!sender_id && !receiver_id) return;
+        return await useFetch(
+          `${API_BASE_URL}/getMsg`,
+          { page: pagePara, ...{ sender_id, receiver_id } },
+          "POST"
+        );
+      },
+      queryKey: getChatkey(sender_id, receiver_id),
+      scrollContainer: msgContainer,
+      observedEle: lastNode,
+      data_id: "msg_id",
+    });
 
   useEffect(() => {
     if (!msg) return;
     // append the UI for this msg
+    const container = msgContainer.current;
+    const buffer = 5;
+    if (currentUserId === sender_id) {
+      scrollReasonRef.current = "sending";
+    } else {
+      scrollReasonRef.current = "receiving";
+
+      const isScrollBottom =
+        container.scrollHeight - container.scrollTop <=
+        container.clientHeight + buffer;
+
+      if (!isScrollBottom) {
+        scrollReasonRef.current = 'scrolled_top';
+      }
+    }
+
     setMessages((prev) => [
       ...prev,
       {
@@ -57,9 +72,8 @@ function Messages({
         created_date: date,
       },
     ]);
-
     // add new msg to query array, so when we fetch new data it will never disappear
-    queryClient.setQueryData(["messages", sender_id, receiver_id], (oldMsg) => {
+    queryClient.setQueryData(getChatkey(sender_id, receiver_id), (oldMsg) => {
       if (!oldMsg) return;
 
       const { msg: msgApiData = null } = oldMsg?.pages?.at(0);
@@ -74,7 +88,6 @@ function Messages({
         },
         ...msgApiData,
       ];
-
       return {
         ...oldMsg,
         pages: [
@@ -85,21 +98,30 @@ function Messages({
     });
   }, [msg_id]);
 
-  const prevScrollHeight = useRef(0);
   useEffect(() => {
-    const arr = [...dataFetched];
-    setMessages(arr.reverse());
-
     prevScrollHeight.current = msgContainer.current.scrollHeight;
-  }, [dataFetched, dataFetched?.pages?.[0]?.msg]);
+    const arr = [...dataFetched];
+    scrollReasonRef.current = "loading";
+    setMessages(arr.reverse());
+  }, [dataFetched]);
 
-  useEffect(() => {
-    if (msgContainer.current && messages.length <= 10) {
-      msgContainer.current.scrollTop = msgContainer.current.scrollHeight;
-    } else {
-      const container = msgContainer.current;
-      container.scrollTop = container.scrollHeight - prevScrollHeight.current;
-    }
+  useLayoutEffect(() => {
+    const container = msgContainer.current;
+    if (!container) return;
+    requestAnimationFrame(() => {
+      if (messages.length <= 10 || scrollReasonRef.current === "sending") {
+        container.scrollTop = container.scrollHeight;
+      }
+
+      if (scrollReasonRef.current === "loading") {
+        container.scrollTop = container.scrollHeight - prevScrollHeight.current;
+      }
+
+      if (scrollReasonRef.current === "receiving") {
+        container.scrollTop = container.scrollHeight;
+      }
+
+    });
   }, [messages]);
 
   const observeEle = (node) => {
@@ -156,7 +178,7 @@ function Messages({
         messages.map((message) => (
           <div
             key={message?.msg_id}
-            ref={messages[0] === message ? observeEle : null}
+            ref={messages[1] === message ? observeEle : null}
             className={`flex flex-col ${
               message?.sender_id === currentUserId ? "items-start" : "items-end"
             } `}
