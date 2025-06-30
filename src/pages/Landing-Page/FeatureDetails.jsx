@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "./Button";
+import Goals from "../../assets/goals.jpg";
 function FeatureDetails() {
   return (
     <div className="section max-lg:py-16">
@@ -20,7 +21,7 @@ function FeatureDetails() {
             url="/student/allcourses"
           />
         </div>
-        <img src="/assets/goals.jpg" alt="" />
+        <img src={Goals} alt="" />
       </div>
     </div>
   );
