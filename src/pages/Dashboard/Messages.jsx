@@ -146,16 +146,16 @@ function Messages({
       {isFetchingNextPage && (
         <>
           <div className="flex flex-col">
-            <div className="flex lg:w-1/2 w-fit h-[40px] bg-gray-700 animate-syncPuls p-2 rounded-md mt-1"></div>
+            <div className="flex w-1/2 h-[40px] bg-gray-700 animate-syncPuls p-2 rounded-md mt-1"></div>
           </div>
           <div className="flex flex-col items-end">
-            <div className="flex lg:w-1/2 w-fit h-[40px] bg-gray-700 p-2 animate-syncPuls rounded-md mt-1"></div>
+            <div className="flex w-1/2 h-[40px] bg-gray-700 p-2 animate-syncPuls rounded-md mt-1"></div>
           </div>
           <div className="flex flex-col">
-            <div className="flex lg:w-1/2 w-fit h-[40px] bg-gray-700 animate-syncPuls p-2 rounded-md mt-1"></div>
+            <div className="flex w-1/2 h-[40px] bg-gray-700 animate-syncPuls p-2 rounded-md mt-1"></div>
           </div>
           <div className="flex flex-col items-end">
-            <div className="flex lg:w-1/2 w-fit h-[40px] bg-gray-700 p-2 animate-syncPuls rounded-md mt-1"></div>
+            <div className="flex w-1/2 h-[40px] bg-gray-700 p-2 animate-syncPuls rounded-md mt-1"></div>
           </div>
         </>
       )}
