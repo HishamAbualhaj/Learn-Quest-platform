@@ -86,7 +86,7 @@ function Dashboard() {
   return (
     <div className="flex h-screen">
       <div
-        className={` border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-white w-fit xl:h-full h-1/2 xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full dark:shadow-none shadow-custom ${
+        className={`border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-white w-fit xl:h-full h-fit xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full dark:shadow-none shadow-custom ${
           isTranslate ? "!translate-x-0 " : ""
         }`}
       >
@@ -105,7 +105,7 @@ function Dashboard() {
             icon={faChevronDown}
           />
         </div>
-        <div className="tabs-container flex flex-col gap-4 ">
+        <div className="tabs-container flex flex-col gap-4">
           {tabs.map((tab) => (
             <Link key={tab.key} to={`${tab.name.replace(/\s+/g, "")}`}>
               <div
