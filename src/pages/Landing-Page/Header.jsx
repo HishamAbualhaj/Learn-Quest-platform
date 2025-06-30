@@ -224,7 +224,7 @@ function DropDown({ tabs, dir = null, isStudent = false, setActive }) {
 
     if (tab.name === "Log out") return baseName;
 
-    return dir ? `${dir}/${baseName}` : `${baseName}`;
+    return dir ? `${dir}/${baseName}` : `/${baseName}`;
   };
   return (
     <div className="transition-all duration-300 opacity-100 scale-100 shadow-custom z-20 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
