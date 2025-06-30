@@ -32,7 +32,7 @@ function IsAuthRoute({ children, isMaintenance = false }) {
 
     const allowedForBoth = new Set(["/student/allcourses", "/student/blog"]);
 
-    const isAllowedForBoth = isPrefixPath(url, allowedForBoth);
+    const isAllowedForBoth = isInSetFound(url, allowedForBoth);
 
     const isAdmin = isPrefixPath(url, isAdminRoutes);
 
