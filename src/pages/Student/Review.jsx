@@ -1,9 +1,7 @@
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as faStarReg } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
 import Avatar from "../../components/Avatar";
@@ -15,6 +13,10 @@ function Review(user_data) {
   const [reviews, setReviews] = useState([]);
   const queryClient = useQueryClient();
   const [alert, setAlert] = useState(null);
+
+  const [hovered, setHovered] = useState(0);
+  const [selected, setSelected] = useState(0);
+
   const [review_data, setReviewData] = useState({
     review_text: "",
     stars: 1,
@@ -69,6 +71,10 @@ function Review(user_data) {
   const observeEle = (node) => {
     setLastNode(node);
   };
+
+  useEffect(() => {
+    console.log("Review data", review_data);
+  }, [review_data]);
   return (
     <>
       <div className="m-5 rounded-md">
@@ -80,10 +86,10 @@ function Review(user_data) {
           ))}
 
         <div className="font-semibold text-2xl">Reviews</div>
-        <div className="mt-3 p-5">
+        <div className="mt-3 md:p-5 px-0 py-5">
           <div className="flex gap-5">
             <Avatar className={"h-[50px] w-[50px]"} img={user_data.image_url} />
-            <div className="flex flex-1 gap-2">
+            <div className="flex md:flex-row flex-col  flex-1 gap-2">
               <input
                 onKeyDown={async (e) => {
                   if (e.key === "Enter") {
@@ -96,33 +102,31 @@ function Review(user_data) {
                 id="review_text"
                 onChange={handleChange}
                 placeholder="Write a review"
-                className="w-full rounded-sm"
+                className="flex-1 rounded-sm"
                 type="text"
                 value={review_data?.review_text}
               />
-              <div className="flex gap-2">
-                <select
-                  onChange={handleChange}
-                  className="px-5"
-                  name=""
-                  id="stars"
-                >
-                  <option className="text-black" value="1">
-                    1
-                  </option>
-                  <option className="text-black" value="2">
-                    2
-                  </option>
-                  <option className="text-black" value="3">
-                    3
-                  </option>
-                  <option className="text-black" value="4">
-                    4
-                  </option>
-                  <option className="text-black" value="5">
-                    5
-                  </option>
-                </select>
+              <div className="max-md:flex-1 flex justify-between items-center">
+                <div className="">
+                  {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => (
+                    <FontAwesomeIcon
+                      key={star}
+                      onMouseLeave={() => setHovered(0)}
+                      onMouseEnter={() => setHovered(star)}
+                      onClick={() => {
+                        setSelected(star);
+                        setReviewData((prev) => ({
+                          ...prev,
+                          stars: star,
+                        }));
+                      }}
+                      className={`${
+                        star <= (hovered || selected) ? "text-yellow-400" : ""
+                      } px-3 cursor-pointer transition text-xl`}
+                      icon={star <= (hovered || selected) ? faStar : faStarReg}
+                    />
+                  ))}
+                </div>
                 {reviewData.isPending ? (
                   <></>
                 ) : (
