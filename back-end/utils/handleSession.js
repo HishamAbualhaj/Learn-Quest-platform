@@ -24,7 +24,7 @@ async function handleSession(user_id, res, isGoogle = false) {
       if (isGoogle) {
         res.writeHead(200, {
           "Content-Type": "text/html",
-          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400`,
+          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400 SameSite=None; Secure`,
         });
 
         res.end(`
