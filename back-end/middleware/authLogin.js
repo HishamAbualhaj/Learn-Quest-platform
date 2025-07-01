@@ -25,10 +25,12 @@ const authLogin = async (req, res, next) => {
     "/handleUploads",
     "/getCourses",
     "/getBlogData",
-    "/uploads/"
+    "/uploads/",
   ]);
 
-  const isPublic = publicRoutes.has(req.url);
+  const isPublic =
+    publicRoutes.has(req.url) ||
+    [...publicRoutes].some((route) => req.url.startsWith(route));
   if (!isSessionId && !isPublic) {
     handleResponse(
       res,
