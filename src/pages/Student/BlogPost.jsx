@@ -24,7 +24,13 @@ function BlogPost() {
       const userDataArray = data_user?.userData;
       if (userDataArray) {
         const { student_id, email, first_name, image_url, role } =
-          userDataArray[0];
+          userDataArray?.[0] ?? {
+            student_id: null,
+            email: null,
+            first_name: null,
+            image_url: null,
+            role: null,
+          };
         setUserData({
           student_id,
           blog_id,
@@ -34,7 +40,7 @@ function BlogPost() {
         });
       }
     }
-  }, [data_user]);
+  }, [data_user, blog_id]);
 
   const { data } = useQuery({
     queryFn: async () => {

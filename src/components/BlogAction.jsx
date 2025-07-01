@@ -38,31 +38,33 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
   const data_user = useContext(UserData);
   useEffect(() => {
     if (data_user) {
-      const [{ student_id, role, email }] = data_user?.userData;
+      const [{ student_id, role, email }] = data_user?.userData ?? [
+        {
+          student_id: null,
+          role: null,
+          email: null,
+        },
+      ];
       setUserData({ student_id, role, email });
     }
   }, [data_user]);
 
   useEffect(() => {
-    if (blog_id && user_data) {
+    if (blog_id) {
       async function getData() {
         const res = await useFetch(
           `${API_BASE_URL}/getBlogData`,
           { blog_id },
           "POST"
         );
+
         const [blogDataFetched] = res.msg;
 
         setBlogData(blogDataFetched);
-
-        setBlogData((pre) => ({
-          ...pre,
-          blog_id: Number(blog_id),
-        }));
       }
       getData();
     }
-  }, [blog_id, user_data]);
+  }, [blog_id]);
 
   const { data, isPending, mutate } = useMutation({
     mutationFn: async () => {
@@ -103,10 +105,10 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
 
   function handleChange(e) {
     if (typeof e === "string") {
-      setBlogData({
-        ...blogData,
+      setBlogData((prev) => ({
+        ...prev,
         content: e,
-      });
+      }));
 
       return;
     }
@@ -116,10 +118,10 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
       value = e.target.files[0]?.name;
       setImage(e.target);
 
-      setBlogData({
-        ...blogData,
+      setBlogData((prev) => ({
+        ...prev,
         image_url: value,
-      });
+      }));
       return;
     }
     setBlogData((prev) => ({ ...prev, [id]: value }));
@@ -129,9 +131,6 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
     setAlert(data);
   }, [data]);
 
-  useEffect(() => {
-    console.log("Data for blog", blogData);
-  }, [blogData]);
   return (
     <>
       <div className="rounded-sm  w-full overflow-auto h-[800px]">
@@ -164,7 +163,7 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
                 id={input.id}
                 className="mt-2"
                 type={input.inType}
-                value={blogData[input.id] || ""}
+                value={blogData[input.id]}
               />
             </div>
           ))}
