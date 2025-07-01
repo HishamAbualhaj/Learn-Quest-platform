@@ -159,7 +159,7 @@ function MyCourses() {
 
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-5 gap-8  mt-5">
             {!courses.length && !isFetching ? (
-              <div className="flex justify-center xl:text-4xl text-xl font-bold absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+              <div className="w-full text-center xl:text-4xl text-xl font-bold md:absolute md:left-1/2 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2">
                 No courses are available
               </div>
             ) : (
