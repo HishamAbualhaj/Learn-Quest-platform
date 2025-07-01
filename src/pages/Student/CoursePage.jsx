@@ -79,11 +79,12 @@ function CoursePage() {
   const [enrolled, setEnrolled] = useState(data?.msg?.enrolled || null);
   useEffect(() => {
     if (!isLoading && data) {
+      const safeMsg = data?.msg?.msg ?? [];
       const [
         courseVideos = [],
         courseMaterial = [],
         courseMaterialAllowedUrl = [],
-      ] = data.msg.msg;
+      ] = safeMsg;
 
       const mergedMaterials = [
         ...courseMaterial,

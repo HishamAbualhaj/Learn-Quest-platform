@@ -32,7 +32,7 @@ function MyCourses() {
   const user_data = useContext(UserData);
   useEffect(() => {
     if (user_data) {
-      setStudentId(user_data.userData[0].student_id);
+      setStudentId(user_data?.userData?.[0]?.student_id ?? null);
     }
   }, [user_data]);
   const [courses, setCourses] = useState([]);
@@ -81,9 +81,11 @@ function MyCourses() {
 
   useEffect(() => {
     if (data) {
-      const [currentCourses, [count]] = data?.msg;
-
-      setMaxPage(count["COUNT(*)"]);
+      const [currentCourses = [], countArr = []] = Array.isArray(data?.msg)
+        ? data.msg
+        : [];
+      const count = countArr?.[0]?.["COUNT(*)"] ?? 0;
+      setMaxPage(count);
 
       setCourses(currentCourses);
     }
@@ -158,12 +160,12 @@ function MyCourses() {
           </div>
 
           <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 md:grid-cols-2 grid-cols-1 xl:gap-5 gap-8  mt-5">
-            {!courses.length && !isFetching ? (
+            {!courses?.length && !isFetching ? (
               <div className="w-full text-center xl:text-4xl text-xl font-bold md:absolute md:left-1/2 md:-translate-x-1/2 md:top-1/2 md:-translate-y-1/2">
                 No courses are available
               </div>
             ) : (
-              courses.map((course) => (
+              courses?.map((course) => (
                 <div
                   key={course.course_id}
                   className="border dark:border-borderDark rounded-xl bg-white dark:bg-dark"
