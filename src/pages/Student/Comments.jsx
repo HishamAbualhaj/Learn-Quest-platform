@@ -71,7 +71,7 @@ function Comments(user_data) {
 
       <div className="flex gap-5 mt-3">
         <Avatar className={"h-[50px] w-[50px]"} img={user_data.image_url} />
-        <div className="flex flex-1 gap-2">
+        <div className="flex md:flex-row flex-col flex-1 gap-2">
           <input
             onKeyDown={async (e) => {
               if (!comment_text) return;
@@ -89,7 +89,7 @@ function Comments(user_data) {
             type="text"
             value={comment_text}
           />
-          <div className="flex gap-2">
+          <div className="flex justify-end gap-2">
             {commentData.isPending ? (
               <></>
             ) : (
@@ -109,7 +109,7 @@ function Comments(user_data) {
       </div>
       <div
         ref={commentContainer}
-        className="border_platform l px-5 h-[700px] mt-10 overflow-auto"
+        className="border_platform l px-5 h-[700px] md:mt-10 mt-3 overflow-auto"
       >
         {comments.map((comment) => (
           <ReviewData
