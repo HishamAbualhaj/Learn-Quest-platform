@@ -74,7 +74,6 @@ function IsAuthRoute({ children, isMaintenance = false }) {
     if (!loggedIn) {
       if (isAllowedNotLogin || isAllowedForBoth) {
         setIsLoading(false);
-        console.log("Current Url", url);
         return;
       }
       navigate("/login");

@@ -203,7 +203,7 @@ const User = forwardRef(function User(
     adminId,
     lastMessage,
     isActive,
-    image_url,
+    img,
     setIdServer,
     setChatData,
     setActiveTab,
@@ -221,7 +221,7 @@ const User = forwardRef(function User(
           ...prev,
           receiver_id: id,
           receiver_name: name,
-          receiver_image: image_url,
+          receiver_image: img,
         }));
         setActiveTab(id);
         if (!socket) {
@@ -238,7 +238,7 @@ const User = forwardRef(function User(
           isActive ? "bg-green-500" : "bg-red-500"
         }  `}
       ></div>
-      <Avatar img={image_url} className={`h-[70px] w-[70px]`} />
+      <Avatar img={img} className={`h-[70px] w-[70px]`} />
 
       <div className="flex flex-col flex-1">
         <div className="dark:text-white text-black">{name ?? "UserName"}</div>
