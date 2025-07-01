@@ -72,9 +72,6 @@ function Review(user_data) {
     setLastNode(node);
   };
 
-  useEffect(() => {
-    console.log("Review data", review_data);
-  }, [review_data]);
   return (
     <>
       <div className="m-5 rounded-md">
