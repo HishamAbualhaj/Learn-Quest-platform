@@ -73,7 +73,7 @@ async function googleAuthQ(
 ) {
   try {
     let newId = generateId();
-    const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, gender, birthdate, login_method)
+    const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, gender, birthdate, login_method , password)
       VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
     await connection
       .promise()
@@ -86,6 +86,7 @@ async function googleAuthQ(
         gender,
         birthdate,
         "google",
+        "",
       ]);
 
     return newId;
