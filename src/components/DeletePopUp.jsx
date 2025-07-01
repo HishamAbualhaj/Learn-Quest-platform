@@ -32,10 +32,6 @@ function DeletePopUp({
     },
   });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   return (
     <div>
       <div
