@@ -10,6 +10,7 @@ function IsAuthRoute({ children, isMaintenance = false }) {
   const navigate = useNavigate();
 
   const currentUrl = useLocation();
+
   useEffect(() => {
     const url = currentUrl.pathname.toLowerCase();
 
@@ -73,6 +74,7 @@ function IsAuthRoute({ children, isMaintenance = false }) {
     if (!loggedIn) {
       if (isAllowedNotLogin || isAllowedForBoth) {
         setIsLoading(false);
+        console.log("Current Url", url);
         return;
       }
       navigate("/login");
@@ -85,7 +87,6 @@ function IsAuthRoute({ children, isMaintenance = false }) {
       return;
     }
 
- 
     if (isLoggedInShared || isAllowedForBoth) {
       setIsLoading(false);
       return;

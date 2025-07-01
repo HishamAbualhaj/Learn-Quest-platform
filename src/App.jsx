@@ -183,7 +183,11 @@ function App() {
         },
         {
           path: "CoursePage/:courseName",
-          element: <CoursePage />,
+          element: (
+            <IsAuthRoute isMaintenance={isMaintenance}>
+              <CoursePage />
+            </IsAuthRoute>
+          ),
           loader: () => {
             return fetchData(`${API_BASE_URL}/session`);
           },

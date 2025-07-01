@@ -10,7 +10,7 @@ import Button from "../../components/Button";
 import { faCcVisa } from "@fortawesome/free-brands-svg-icons";
 
 import { useLocation } from "react-router-dom";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import useFetch from "../../hooks/useFetch";
 import Loading from "../../components/Loading";
 import { UserData } from "../../context/UserDataContext";
