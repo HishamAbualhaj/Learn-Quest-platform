@@ -29,13 +29,17 @@ const handleGoogleAuth = async (req, res, client) => {
       personFields: "birthdays,genders",
     });
 
-    const d = birthAndGender.data?.birthdays?.[0].date;
+    const d = birthAndGender?.data?.birthdays?.[0].date;
+    let mysqlDate = null;
+    if (d) {
+      mysqlDate = `${d.year}-${String(d.month).padStart(2, "0")}-${String(
+        d.day
+      ).padStart(2, "0")}`;
+    } else {
+      mysqlDate = `2025-01-01`;
+    }
 
-    const mysqlDate = `${d.year}-${String(d.month).padStart(2, "0")}-${String(
-      d.day
-    ).padStart(2, "0")}`;
-
-    const gender = birthAndGender.data.genders?.[0]?.value;
+    const gender = birthAndGender?.data.genders?.[0]?.value ?? "male";
     const fetchId = await isEmailFound(user.data.email, res);
 
     // we don't use google id because it's not compatable with our system id
@@ -73,7 +77,7 @@ async function googleAuthQ(
 ) {
   try {
     let newId = generateId();
-    const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, gender, birthdate, login_method , password)
+    const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, gender, birthdate, login_method)
       VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
     await connection
       .promise()
@@ -86,7 +90,6 @@ async function googleAuthQ(
         gender,
         birthdate,
         "google",
-        "",
       ]);
 
     return newId;
