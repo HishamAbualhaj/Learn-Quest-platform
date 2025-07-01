@@ -71,7 +71,7 @@ const updateUserModel = async (
 };
 const increaseCourseJoinedModel = async (student_id) => {
   const query =
-    "UPDATE user set course_joined = course_joined + 1  WHERE student_id = ?";
+    "UPDATE user set course_joined = IFNULL(course_joined,0) + 1  WHERE student_id = ?";
   await connection.promise().query(query, [student_id]);
 };
 
