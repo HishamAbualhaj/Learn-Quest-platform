@@ -1,4 +1,4 @@
-# LearnQuest
+# LearnQuest v1.0.0
 LearnQuest is an innovative e-learning platform developed as a graduation project. The platform provides educational services with two main actors: Admin, and User. It offers a modern, responsive, and user-friendly interface to enhance online learning experiences.
 
 ## Tech Stack
@@ -17,11 +17,14 @@ LearnQuest is an innovative e-learning platform developed as a graduation projec
 - **Email service:** Mailer
 
 ## Features
+- Dark mode switch for UX
 - User-friendly interface for learners
 - Role-based access control for admin, and users
 - Fast and efficient back-end API using Node.js
 - Fully responsive design built with TailwindCSS
 - Login with google apis
+- Chat for both admin and user
+- Blog with comments section
 
 ## Getting Started
 
@@ -94,7 +97,7 @@ back-end/
 ├── ⚙️ config/           # Configuration files (DB, environment)
 ├── 🎮 controllers/      # Request/response controllers
 ├── 🧱 middleware/       # Authentication and other middleware
-├── 🧬 models/           # Mongoose schema definitions
+├── 🧬 models/           # MYSQL data models
 ├── 🔁 services/         # Business logic and helpers
 ├── 📁 uploads/          # Uploaded files (images, course materials)
 ├── 🧰 utils/            # Utility functions
@@ -127,8 +130,9 @@ back-end/
 
 ## Future Enhancements
 - Add real-time notifications
-- Add chat system for both admin and user
-- Develop a blog to share experience between people
+- Enable type safety for react
+- Security improvements for back end
+- Improve Landing page UI 
 
 ## Contributors
 - **Hesham Abualhaj**: UI/UX, Front-End Development and Back-end Development.
