@@ -1,6 +1,45 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Colors */
+  --color-dark: #12131a;
+  --color-lightDark: #1d1e26;
+  --color-textDark: rgba(255, 255, 255, 0.78);
+  --color-loginDark: #292b33;
+  --color-borderDark: rgba(255, 255, 255, 0.12);
+  --color-hoverDark: rgba(255, 255, 255, 0.06);
+
+  --color-mainClr: rgba(76, 100, 217, 1);
+  --color-mainClrDark: rgba(163, 178, 255, 1);
+  --color-borderLight: rgba(0, 17, 102, 0.1);
+  --color-lightText: rgba(0, 6, 38, 0.9);
+  --color-lightLayout: rgba(0, 21, 128, 0.03);
+  --color-btn: #4c64d9;
+  --color-lightBtn: #a3b2ff;
+  --color-hoverLight: rgba(0, 21, 128, 0.04);
+
+  /* Font */
+  --font-terminal: terminal;
+
+  /* Box shadow */
+  --shadow-custom: rgba(149, 157, 165, 0.2) 0px 12px 20px;
+
+  /* Animations */
+  --animate-syncPuls: syncPuls 1.5s infinite ease-in-out;
+
+  @keyframes syncPuls {
+    0%,
+    100% {
+      opacity: 0.9;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+}
+
 @layer base {
   @font-face {
     font-family: terminal;
@@ -43,7 +82,6 @@
     border: 2px solid transparent;
   }
 }
-
 @layer components {
   .ql-editor {
     min-height: 250px !important;
@@ -64,7 +102,7 @@
   }
 
   .section {
-    @apply dark:bg-dark border-b dark:border-borderDark text-lightText dark:text-white sm:px-5 px-4;
+    @apply dark:bg-dark border-b dark:border-borderDark border-borderLight text-lightText dark:text-white sm:px-5 px-4;
   }
 
   .section_student {
@@ -113,7 +151,6 @@
     @apply border-borderDark;
   }
 }
-
 @layer utilities {
   .box-shadow {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 5px 0px;

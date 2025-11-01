@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../pages/Landing-Page/Header";
+import Header from "../pages/Landing-Page/Header/Header";
 import Hero from "../pages/Landing-Page/Hero";
 import Feature from "../pages/Landing-Page/Feature";
 import FeatureDetails from "../pages/Landing-Page/FeatureDetails";

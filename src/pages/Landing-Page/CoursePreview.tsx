@@ -1,7 +1,3 @@
-import React from "react";
-import web from "../../assets/web.jpg";
-import ui from "../../assets/uiux.jpg";
-import cyber from "../../assets/cyber.jpg";
 function CoursePreview() {
   const courses = [
     {
@@ -10,7 +6,7 @@ function CoursePreview() {
       description:
         "Kickstart your web development journey with this beginner-friendly course. Learn the fundamentals of HTML, CSS, and JavaScript, and build your first website. Ideal for those with no prior experience.",
       categories: ["Web Technologies", "Front End", "IT"],
-      image: web,
+      image: "web.jpg",
     },
     {
       id: 2,
@@ -18,7 +14,7 @@ function CoursePreview() {
       description:
         "Master the art of creating user-centered designs. This course will guide you through the principles of UI/UX design, including wireframing, prototyping, and user testing, to ensure great user experiences.",
       categories: ["UI/UX", "Front End", "DESIGN"],
-      image: ui,
+      image: "uiux.jpg",
     },
     {
       id: 3,
@@ -26,13 +22,13 @@ function CoursePreview() {
       description:
         "Gain a solid foundation in cybersecurity. This course covers essential concepts such as network security, cryptography, threat detection, and best practices for protecting information systems. Perfect for beginners looking to start a career in cybersecurity",
       categories: ["Cybersecurity", "Security", "Computer Science"],
-      image: cyber,
+      image: "cyber.jpg",
     },
   ];
   return (
     <div className="section bg-lightLayout dark:bg-lightDark py-14">
       <div className="max-container">
-        <div className="font-[600] lg:text-4xl text-xl">Our Courses</div>
+        <div className="font-semibold lg:text-4xl text-xl">Our Courses</div>
         <div className="text-black/50 max-w-[600px] dark:text-white/50 mt-2">
           Learn at your own pace with our expertly crafted courses designed to
           take your skills to the next level.
@@ -46,18 +42,18 @@ function CoursePreview() {
               <div>
                 <img
                   className="rounded-tr-xl rounded-tl-xl xl:w-[500px] w-full h-[300px] object-cover"
-                  src={course.image}
+                  src={`/${course.image}`}
                   alt=""
                 />
               </div>
               <div className="p-5 max-w-[400px]">
-                <div className="font-[600] lg:text-xl">{course.title}</div>
+                <div className="font-medium lg:text-xl">{course.title}</div>
                 <div className="text-black/50 leading-7 dark:text-white/50 mt-5 line-clamp-4">
                   {course.description}
                 </div>
                 <div className="mt-5 flex gap-2 flex-wrap">
                   {course.categories.map((category,i) => (
-                    <div key={i} className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark ">
+                    <div key={i} className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark border-borderLight">
                       {category}
                     </div>
                   ))}

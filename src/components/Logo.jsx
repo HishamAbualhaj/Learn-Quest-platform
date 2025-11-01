@@ -1,9 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+
+import Link from "next/link";
 
 export default function Logo({ textSize = "text-2xl" }) {
   return (
-    <Link to="/">
+    <Link href="/">
       <div
         className={`dark:text-white text-black ${textSize} py-[18px] font-bold flex gap-1`}
       >

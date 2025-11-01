@@ -1,19 +1,22 @@
+"use client";
 import { useEffect, useState } from "react";
-import google from "../../assets/google.svg";
-import Alert from "../../components/Alert";
-import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
+import Alert from "@/components/Alert";
+import Button from "@/components/Button";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
 import { useMutation } from "@tanstack/react-query";
-import Logo from "../../components/Logo";
+import Logo from "@/components/Logo";
+import { useRouter } from "next/navigation";
 function Signup() {
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: string;
+  } | null>(null);
 
-  const navigate = useNavigate();
-
+  const router = useRouter();
   useEffect(() => {
-    alert?.redirect && navigate("/login");
+    alert?.redirect && router.push("/");
   }, [alert]);
 
   const [userData, setUserData] = useState({
@@ -41,11 +44,11 @@ function Signup() {
   });
 
   useEffect(() => {
-    setAlert(data);
+    setAlert(data ?? null);
   }, [data]);
 
   return (
-    <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 h-[100vh]">
+    <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 h-screen">
       <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pl-0 md:pl-10 font-bold flex gap-1">
         <Logo />
       </div>
@@ -61,7 +64,7 @@ function Signup() {
           No credit card required
         </div>
         <div className="mt-6 py-3 cursor-pointer  flex gap-2 items-center justify-center border dark:border-textDark/40 border-borderLight rounded-md">
-          <img className="w-7 h-7" src={google} alt="" />
+          <img className="w-7 h-7" src={`/google.svg`} alt="" />
           <div
             onClick={() => {
               window.open(`${API_BASE_URL}/auth/google`, "_self");
@@ -73,9 +76,9 @@ function Signup() {
         </div>
 
         <div className="dark:text-textDark text-lightText mt-8 flex items-center gap-3">
-          <div className="dark:bg-textDark bg-lightText h-[1px] w-1/2"></div>
+          <div className="dark:bg-textDark bg-lightText h-px w-1/2"></div>
           OR
-          <div className="dark:bg-textDark bg-lightText h-[1px] w-1/2"></div>
+          <div className="dark:bg-textDark bg-lightText h-px w-1/2"></div>
         </div>
         <form
           onSubmit={(e) => {
@@ -158,6 +161,9 @@ function Signup() {
             loadingText="Loading"
             isloading={isPending}
             padding="py-4 w-full font-semibold"
+            textDarkClr={undefined}
+            hoverTextClr={undefined}
+            hoverDarkTextClr={undefined}
           />
         </form>
 

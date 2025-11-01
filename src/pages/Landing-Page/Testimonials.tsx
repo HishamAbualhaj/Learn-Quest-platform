@@ -1,5 +1,3 @@
-import React from "react";
-import person from "../../assets/person.png";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -34,7 +32,7 @@ function Testimonials() {
   return (
     <div className="section  py-14">
       <div className="max-container">
-        <div className="font-[600] lg:text-4xl text-xl">
+        <div className="font-semibold lg:text-4xl text-xl">
           What Our Learners Are Saying
         </div>
         <div className="text-black/50 max-w-[600px] dark:text-white/50 mt-2">
@@ -46,7 +44,11 @@ function Testimonials() {
             <div key={testimonial.id} className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <div className="border rounded-full p-3">
-                  <img className="w-[40px] h-[40px]" src={person} alt="" />
+                  <img
+                    className="w-10 h-10"
+                    src={`/person.png`}
+                    alt=""
+                  />
                 </div>
                 <div>
                   <div className="text">{testimonial.name}</div>

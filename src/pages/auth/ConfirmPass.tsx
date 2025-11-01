@@ -1,25 +1,32 @@
-import { useEffect, useState } from "react";
+"use client";
+import { ChangeEvent, useEffect, useState } from "react";
 import Alert from "../../components/Alert";
-import { useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../../config/config";
 import Button from "../../components/Button";
 import useFetch from "../../hooks/useFetch";
+import { useRouter, useSearchParams } from "next/navigation";
 function ConfirmPass() {
-  const [password, setPassword] = useState(null);
-  const [confirmPass, setConfirmPass] = useState(null);
-  const [searchPara, _] = useSearchParams();
-  const [alert, setAlert] = useState(null);
-  const navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: string;
+  } | null>(null);
+
+  const router = useRouter();
+
+  const email = useSearchParams()?.get("email");
+  const code = useSearchParams()?.get("code");
   const { data, mutate, isPending } = useMutation({
     mutationFn: async () => {
-      if (!searchPara.get("email") && !searchPara.get("code")) return;
+      if (!email && !code) return;
       return await useFetch(
         `${API_BASE_URL}/resetPass`,
         {
-          code: searchPara.get("code") || null,
-          email: searchPara.get("email") || null,
+          code: code || null,
+          email: email || null,
           password: password,
         },
         "POST"
@@ -30,31 +37,35 @@ function ConfirmPass() {
     },
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setPassword(value);
     setAlert(null);
   };
 
-  const handleConfirmPass = (e) => {
+  const handleConfirmPass = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setConfirmPass(value);
   };
 
   useEffect(() => {
     if (confirmPass !== password) {
-      setAlert({ status: false, msg: "confirm password correctly" });
+      setAlert({
+        status: false,
+        msg: "confirm password correctly",
+        redirect: false,
+      });
     } else {
       setAlert(null);
     }
   }, [confirmPass]);
 
   useEffect(() => {
-    let timer = null;
-    setAlert(data);
+    let timer: NodeJS.Timeout;
+    setAlert(data ?? null);
     if (data?.status) {
       timer = setTimeout(() => {
-        navigate("/login");
+        router.push("/login");
       }, 2000);
     }
     return () => {
@@ -63,7 +74,7 @@ function ConfirmPass() {
   }, [data]);
 
   return (
-    <div className="dark:bg-dark bg-lightLayout h-[100vh] md:px-0 px-5 ">
+    <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5 ">
       <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pt-10 pl-0 md:pl-10 font-bold flex gap-1">
         LEARN <div className="text-purple-600">QUEST</div>
       </div>
@@ -109,6 +120,9 @@ function ConfirmPass() {
             loadingText="Loading"
             isloading={isPending}
             padding="py-4 w-full font-semibold"
+            textDarkClr={undefined}
+            hoverTextClr={undefined}
+            hoverDarkTextClr={undefined}
           />
         </form>
       </div>

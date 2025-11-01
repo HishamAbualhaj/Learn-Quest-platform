@@ -1,7 +1,12 @@
-import React, { act, useEffect, useState } from "react";
+"use client";
+import { act, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-function Alert({ msg = "", type }) {
+interface AlertProps {
+  msg: string;
+  type?: string;
+}
+function Alert({ msg = "", type }: AlertProps) {
   const [active, setActive] = useState(true);
   useEffect(() => {
     if (msg) setActive(true);

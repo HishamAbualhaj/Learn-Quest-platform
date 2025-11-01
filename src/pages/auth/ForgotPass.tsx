@@ -1,15 +1,21 @@
+"use client";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
-import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
-import Alert from "../../components/Alert";
+import { ChangeEvent, useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
+import Button from "@/components/Button";
+import Alert from "@/components/Alert";
+import { useRouter } from "next/navigation";
 function ForgotPass() {
-  const [email, setEmail] = useState(null);
-  const [alert, setAlert] = useState(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: string;
+  } | null>(null);
 
-  const navigate = useNavigate();
+  const router = useRouter();
+
   const { data, mutate, isPending } = useMutation({
     mutationFn: async () => {
       if (!email) return;
@@ -23,21 +29,21 @@ function ForgotPass() {
     },
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setEmail(value);
   };
 
   useEffect(() => {
     if (data?.status) {
-      navigate(`/verifycode?email=${email}`);
+      router.push(`/verifycode?email=${email}`);
     }
-    setAlert(data);
+    setAlert(data ?? null);
   }, [data]);
 
   return (
     <>
-      <div className="dark:bg-dark bg-lightLayout h-[100vh] md:px-0 px-5 ">
+      <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5 ">
         <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pt-10 pl-0 md:pl-10 font-bold flex gap-1">
           LEARN <div className="text-purple-600">QUEST</div>
         </div>
@@ -73,6 +79,9 @@ function ForgotPass() {
               loadingText="Loading"
               isloading={isPending}
               padding="py-4 w-full font-semibold"
+              textDarkClr={undefined}
+              hoverTextClr={undefined}
+              hoverDarkTextClr={undefined}
             />
           </form>
         </div>

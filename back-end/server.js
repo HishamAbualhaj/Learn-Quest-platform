@@ -56,7 +56,7 @@ import getMaintenace from "./api/system/getMaintenance.js";
 let response = null;
 const server = http.createServer(async (req, res) => {
   response = res;
-  const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
+  const frontendURL = process.env.FRONTEND_URL || "http://localhost:3000";
 
   // Add CORS headers
   res.setHeader("Access-Control-Allow-Origin", frontendURL); // Allow requests from React app

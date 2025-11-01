@@ -1,6 +1,16 @@
-async function useFetch(url, data = null, method) {
-  let response = null;
-  let res = null;
+type response = {
+  status: boolean;
+  msg: any;
+  redirect: boolean;
+  nextPage?: number;
+};
+async function useFetch(
+  url: string,
+  data: Record<string, any>,
+  method: string
+) {
+  let response: response;
+  let res;
   try {
     res = await fetch(url, {
       method: method,

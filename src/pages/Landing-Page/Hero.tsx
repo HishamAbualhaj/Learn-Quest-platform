@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import Button from "./Button";
-import HeroImage from "../../assets/hero.jpg";
 function Hero({ data }) {
   const [isLoggedIn, setIsLogged] = useState(false);
   useEffect(() => {
@@ -15,7 +15,7 @@ function Hero({ data }) {
     <div className="section xl:py-24 py-20">
       <div className="max-container flex items-center justify-between xl:flex-row flex-col xl:gap-0 gap-10">
         <div className="flex flex-col gap-5">
-          <div className="text-[50px] font-[600] max-w-[700px]">
+          <div className="text-[50px] font-semibold max-w-[700px]">
             Learning made easy for everyone
           </div>
           <div className="text-[20px] dark:text-white/50 text-black/50 max-w-[800px]">
@@ -32,7 +32,7 @@ function Hero({ data }) {
         </div>
         <img
           className="lg:max-w-[600px] rounded-lg"
-          src={HeroImage}
+          src={`/hero.jpg`}
           alt="Person studying"
         />
       </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Header from "../pages/Landing-Page/Header";
+import Header from "../pages/Landing-Page/Header/Header";
 function Student() {
   return (
     <div className="section_student border-none">

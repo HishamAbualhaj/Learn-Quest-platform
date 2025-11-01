@@ -1,26 +1,30 @@
-import google from "../../assets/google.svg";
-import Button from "../../components/Button";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import useFetch from "../../hooks/useFetch";
-import Alert from "../../components/Alert";
+"use client";
+import Button from "@/components/Button";
+import { ChangeEvent, useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import Alert from "@/components/Alert";
 import { useMutation } from "@tanstack/react-query";
-import API_BASE_URL from "../../config/config";
-import Logo from "../../components/Logo";
+import API_BASE_URL from "@/config/config";
+import Logo from "@/components/Logo";
+import { useRouter } from "next/navigation";
+
 function Login() {
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: string;
+  } | null>(null);
 
-  const navigate = useNavigate();
-
+  const router = useRouter();
   useEffect(() => {
-    alert?.redirect && navigate("/");
+    alert?.redirect && router.push("/");
   }, [alert]);
 
   const [userData, setUserData] = useState({
     email: "",
     password: "",
   });
-  function handleChange(e) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target;
     setUserData({
       ...userData,
@@ -38,11 +42,11 @@ function Login() {
   });
 
   useEffect(() => {
-    setAlert(data);
+    setAlert(data ?? null);
   }, [data]);
 
   return (
-    <div className="dark:bg-dark bg-lightLayout h-[100vh] md:px-0 px-5">
+    <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5">
       <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pl-0 md:pl-10 font-bold flex gap-1">
         <Logo />
       </div>
@@ -51,14 +55,14 @@ function Login() {
           (alert?.status ? (
             <Alert msg={alert?.msg} type="success" />
           ) : (
-            <Alert msg={alert?.msg} />
+            <Alert msg={alert?.msg} type={undefined} />
           ))}
         <div className="lg:text-4xl text-2xl font-bold">Welcome</div>
         <div className="dark:text-textDark text-lightText mt-2">
           Log in to your account
         </div>
         <div className="mt-6 py-3 cursor-pointer  flex gap-2 items-center justify-center border dark:border-textDark/40 border-borderLight rounded-md">
-          <img className="w-7 h-7" src={google} alt="" />
+          <img className="w-7 h-7" src={`/google.svg`} alt="" />
           <div
             onClick={() => {
               window.open(`${API_BASE_URL}/auth/google`, "_self");
@@ -69,9 +73,9 @@ function Login() {
           </div>
         </div>
         <div className="dark:text-textDark text-lightText mt-8 flex items-center gap-3">
-          <div className="dark:bg-textDark bg-lightText h-[1px] w-1/2"></div>
+          <div className="dark:bg-textDark bg-lightText h-px w-1/2"></div>
           OR
-          <div className="dark:bg-textDark bg-lightText h-[1px] w-1/2"></div>
+          <div className="dark:bg-textDark bg-lightText h-px w-1/2"></div>
         </div>
         <form
           onSubmit={(e) => {
@@ -108,6 +112,9 @@ function Login() {
             loadingText="Loading"
             isloading={isPending}
             padding="py-4 w-full font-semibold"
+            textDarkClr={undefined}
+            hoverTextClr={undefined}
+            hoverDarkTextClr={undefined}
           />
         </form>
         <div className="text-darkText mt-3 flex gap-2 items-center">

@@ -1,12 +1,10 @@
-import React from "react";
 import Button from "./Button";
-import Goals from "../../assets/goals.jpg";
 function FeatureDetails() {
   return (
     <div className="section max-lg:py-16">
       <div className="max-container flex justify-between items-center lg:flex-row flex-col lg:gap-0 gap-10">
         <div className="py-10 flex flex-col gap-5">
-          <div className="font-[600] lg:text-4xl text-xl">
+          <div className="font-semibold lg:text-4xl text-xl">
             Everything you need to reach your learning goals
           </div>
           <div className="text-black/50 max-w-[600px] dark:text-white/50">
@@ -21,7 +19,7 @@ function FeatureDetails() {
             url="/student/allcourses"
           />
         </div>
-        <img src={Goals} alt="" />
+        <img src={`/goals.jpg`} alt="" />
       </div>
     </div>
   );

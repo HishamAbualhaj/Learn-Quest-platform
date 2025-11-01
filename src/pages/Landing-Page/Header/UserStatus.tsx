@@ -1,0 +1,94 @@
+"use client";
+import { useContext, useEffect, useState } from "react";
+import Button from "../Button";
+import Avatar from "@/components/Avatar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare } from "@fortawesome/free-solid-svg-icons";
+import DropDown from "./DropDown";
+import { tabs, adminTabs } from "@/global/global";
+import ThemeContext, { Theme } from "@/context/ThemeContext";
+import { faBars, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+interface UserStatusProps {
+  isStudent: boolean;
+  isLoggedIn: boolean;
+  first_name: string;
+  role: string;
+  image_url: string;
+}
+const UserStatus = (userDataClient: UserStatusProps) => {
+  const [active, setActive] = useState(false);
+
+
+
+  const { theme, setTheme } = useContext(Theme) ?? {
+    theme: "",
+    setTheme: () => {},
+  };
+
+  return (
+    <div className="flex items-center">
+      {!userDataClient.isLoggedIn ? (
+        <div className="md:flex hidden gap-2">
+          <Button outlined={true} text="Sign up" size="lg" url={"signup"} />
+          <Button outlined={false} text="Log in" size="lg" url={"login"} />
+        </div>
+      ) : (
+        <div className=" dark:border-borderDark border-borderLight md:px-5 pb-2">
+          <div className="relative">
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                setActive(!active);
+              }}
+              className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
+            >
+              <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
+                <Avatar
+                  img={userDataClient.image_url}
+                  className={"h-[50px] w-[50px]"}
+                />
+              </div>
+              <div className="text-lg">
+                {!userDataClient.first_name
+                  ? "Loading data"
+                  : userDataClient.first_name}
+              </div>
+              <FontAwesomeIcon
+                className="text-lg text-slate-400 dark:text-white"
+                icon={faShare}
+                rotation={90}
+              />
+            </div>
+            {active && ///
+              (userDataClient.role === "admin" ? (
+                <DropDown
+                  tab={adminTabs}
+                  setActive={setActive}
+                  isStudent={false}
+                />
+              ) : (
+                <DropDown
+                  tab={tabs}
+                  dir="student"
+                  isStudent={userDataClient.isStudent}
+                  setActive={setActive}
+                />
+              ))}
+          </div>
+        </div>
+      )}
+      <div
+        onClick={() => {
+          theme === "dark" ? setTheme("light") : setTheme("dark");
+        }}
+      >
+        <FontAwesomeIcon
+          className="cursor-pointer w-7 h-7 hover:bg-gray-600 hover:text-white rounded-md p-2"
+          icon={theme === "dark" ? faSun : faMoon}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default UserStatus;
