@@ -1,10 +1,11 @@
+import { cookies } from "next/headers";
 type response = {
   status: boolean;
   msg: any;
   redirect: boolean;
   nextPage?: number;
 };
-async function useFetch(
+async function useFetchServer(
   url: string,
   data: Record<string, any> | null,
   method: string
@@ -16,6 +17,7 @@ async function useFetch(
       method: method,
       headers: {
         "Content-Type": "application/json",
+        Cookie: (await cookies()).toString(),
       },
       body:
         ["POST", "PATCH", "GET", "PUT"].includes(method) && data
@@ -59,4 +61,4 @@ async function useFetch(
   return response;
 }
 
-export default useFetch;
+export default useFetchServer;
