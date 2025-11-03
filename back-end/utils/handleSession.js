@@ -24,7 +24,9 @@ async function handleSession(user_id, res, isGoogle = false) {
       if (isGoogle) {
         res.writeHead(200, {
           "Content-Type": "text/html",
-          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; SameSite=None; Secure`,
+          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; ${
+            isProd ? "SameSite=None; Secure" : "SameSite=Lax;"
+          }`,
         });
 
         res.end(`
@@ -58,11 +60,14 @@ async function handleSession(user_id, res, isGoogle = false) {
         </html>
       `);
       } else {
+        const isProd = process.env.NODE_ENV === "production";
         res.writeHead(200, {
-          "Content-Type": "text/html",
-          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; SameSite=None; Secure`,
+          "Content-Type": "application/json",
+          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; ${
+            isProd ? "SameSite=None; Secure" : "SameSite=Lax;"
+          }`,
         });
-        res.end(JSON.stringify({ status: true , data: 'Logined In ... '}));
+        res.end(JSON.stringify({ status: true, data: "Logined In ... " }));
       }
     } else {
       handleResponse(
