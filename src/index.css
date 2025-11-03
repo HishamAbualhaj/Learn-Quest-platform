@@ -52,7 +52,7 @@
     height: 100vh;
   }
 
-  body.dark {
+  html.dark {
     scrollbar-color: #555 #1e1e2f;
   }
   body.dark {
@@ -98,7 +98,7 @@
   }
 
   select {
-    @apply dark:bg-borderDark dark:border-none border dark:text-white text-lightText focus:outline-none appearance-none p-2;
+    @apply dark:bg-borderDark dark:border-none border border-borderLight dark:text-white text-lightText focus:outline-none appearance-none p-2;
   }
 
   .section {

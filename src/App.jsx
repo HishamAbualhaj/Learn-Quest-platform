@@ -7,7 +7,7 @@ import Student from "./layouts/StudentLayout";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Profile from "./pages/Student/Profile";
+import Profile from "./pages/Student/Profile/Profile";
 import ChatStudent from "./pages/Student/ChatStudent";
 import MyCourses from "./pages/Student/MyCourses";
 import Blog from "./pages/Student/Blog";

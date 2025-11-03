@@ -15,9 +15,14 @@ interface UserStatusProps {
   role: string;
   image_url: string;
 }
-const UserStatus = (userDataClient: UserStatusProps) => {
+const UserStatus = ({
+  isLoggedIn,
+  isStudent,
+  first_name,
+  role,
+  image_url,
+}: UserStatusProps) => {
   const [active, setActive] = useState(false);
-
 
 
   const { theme, setTheme } = useContext(Theme) ?? {
@@ -27,7 +32,7 @@ const UserStatus = (userDataClient: UserStatusProps) => {
 
   return (
     <div className="flex items-center">
-      {!userDataClient.isLoggedIn ? (
+      {!isLoggedIn ? (
         <div className="md:flex hidden gap-2">
           <Button outlined={true} text="Sign up" size="lg" url={"signup"} />
           <Button outlined={false} text="Log in" size="lg" url={"login"} />
@@ -43,15 +48,10 @@ const UserStatus = (userDataClient: UserStatusProps) => {
               className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
             >
               <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
-                <Avatar
-                  img={userDataClient.image_url}
-                  className={"h-[50px] w-[50px]"}
-                />
+                <Avatar img={image_url} className={"h-[50px] w-[50px]"} />
               </div>
               <div className="text-lg">
-                {!userDataClient.first_name
-                  ? "Loading data"
-                  : userDataClient.first_name}
+                {!first_name ? "User Name" : first_name}
               </div>
               <FontAwesomeIcon
                 className="text-lg text-slate-400 dark:text-white"
@@ -60,7 +60,7 @@ const UserStatus = (userDataClient: UserStatusProps) => {
               />
             </div>
             {active && ///
-              (userDataClient.role === "admin" ? (
+              (role === "admin" ? (
                 <DropDown
                   tab={adminTabs}
                   setActive={setActive}
@@ -70,7 +70,7 @@ const UserStatus = (userDataClient: UserStatusProps) => {
                 <DropDown
                   tab={tabs}
                   dir="student"
-                  isStudent={userDataClient.isStudent}
+                  isStudent={isStudent}
                   setActive={setActive}
                 />
               ))}
