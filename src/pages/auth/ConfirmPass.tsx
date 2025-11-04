@@ -62,7 +62,14 @@ function ConfirmPass() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    setAlert(data ?? null);
+    setAlert(
+      data
+        ? {
+            ...data,
+            msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+          }
+        : null
+    );
     if (data?.status) {
       timer = setTimeout(() => {
         router.push("/login");

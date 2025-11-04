@@ -1,18 +1,24 @@
-import { forwardRef, useRef, useState, useEffect } from "react";
-import API_BASE_URL from "../../config/config";
+"use client";
+import { forwardRef, useRef, useState, useEffect, ChangeEvent } from "react";
+import API_BASE_URL from "@/config/config";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import useFetch from "../../hooks/useFetch";
-import Avatar from "../../components/Avatar";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import useFetch from "@/hooks/useFetch";
+import Avatar from "@/components/Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import Alert from "../../components/Alert";
-import ReviewCard from "../../components/ReviewCard";
+import Alert from "@/components/Alert";
+import ReviewCard from "@/components/ReviewCard";
+import { CommentType, User } from "@/types";
 
-function Comments(user_data) {
-  const [comments, setComments] = useState([]);
+function Comments(user_data: User & { blog_id: string }) {
+  const [comments, setComments] = useState<CommentType[]>([]);
   const [comment_text, setCommentText] = useState("");
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: string;
+  } | null>(null);
   const queryClient = useQueryClient();
   const commentData = useMutation({
     mutationFn: async () => {
@@ -25,38 +31,51 @@ function Comments(user_data) {
         "POST"
       );
     },
+    onSuccess: (data) => {
+      setAlert(
+        data
+          ? {
+              ...data,
+              msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+            }
+          : null
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["comments", user_data.blog_id],
+      });
+      setCommentText("");
+    },
     onError: () => {
       console.error("Error", commentData.data);
     },
   });
-  const [lastNode, setLastNode] = useState(null);
-  const commentContainer = useRef();
+  const [lastNode, setLastNode] = useState<HTMLDivElement | null>(null);
+  const commentContainer = useRef<HTMLDivElement | null>(null);
 
-  const { isFetchingNextPage, dataFetched, hasNextPage } = useInfiniteScroll({
-    fetchFn: (pageParam) => {
-      return useFetch(
-        `${API_BASE_URL}/getComments`,
-        { page: pageParam, blog_id: user_data.blog_id },
-        "POST"
-      );
-    },
-    queryKey: ["comments", user_data.blog_id],
-    scrollContainer: commentContainer,
-    observedEle: lastNode,
-    data_id: "comment_id",
-  });
+  const { isFetchingNextPage, dataFetched, hasNextPage } =
+    useInfiniteScroll<CommentType>({
+      fetchFn: (pageParam) => {
+        return useFetch(
+          `${API_BASE_URL}/getComments`,
+          { page: pageParam, blog_id: user_data.blog_id },
+          "POST"
+        );
+      },
+      queryKey: ["comments", user_data.blog_id],
+      scrollContainer: commentContainer,
+      observedEle: lastNode,
+      data_id: "comment_id",
+    });
 
   useEffect(() => {
     setComments(dataFetched);
   }, [dataFetched]);
-  useEffect(() => {
-    setAlert(commentData.data);
-  }, [commentData.data]);
-  const observeEle = (node) => {
+
+  const observeEle = (node: HTMLDivElement) => {
     setLastNode(node);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setCommentText(value);
   };
@@ -77,8 +96,6 @@ function Comments(user_data) {
               if (!comment_text) return;
               if (e.key === "Enter") {
                 await commentData?.mutateAsync();
-                queryClient.invalidateQueries(["comments"]);
-                setCommentText("");
               }
             }}
             required
@@ -97,8 +114,6 @@ function Comments(user_data) {
                 onClick={async () => {
                   if (!comment_text) return;
                   await commentData?.mutateAsync();
-                  queryClient.invalidateQueries(["comments"]);
-                  setCommentText("");
                 }}
                 className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
                 icon={faPaperPlane}
@@ -148,29 +163,36 @@ function Comments(user_data) {
     </>
   );
 }
-const ReviewData = forwardRef(function ReviewData(
-  { name, image, text, date },
-  ref
-) {
-  return (
-    <>
-      <div ref={ref} className="border_platform b pb-5">
-        <ReviewCard review={{ name, image, text, date }}>
-          <div className="flex justify-between mt-5 ">
-            <div className="flex items-center gap-5">
-              <ReviewCard.Avatar />
-              <ReviewCard.username />
+
+type ReviewDataProps = {
+  name: string;
+  image: string;
+  text: string;
+  date: string;
+};
+
+const ReviewData = forwardRef<HTMLDivElement, ReviewDataProps>(
+  function ReviewData({ name, image, text, date }, ref) {
+    return (
+      <>
+        <div ref={ref} className="border_platform b pb-5">
+          <ReviewCard review={{ name, image, text, date }}>
+            <div className="flex justify-between mt-5 ">
+              <div className="flex items-center gap-5">
+                <ReviewCard.Avatar />
+                <ReviewCard.username />
+              </div>
             </div>
-          </div>
-          <div className="flex xl:items-center justify-between xl:flex-row flex-col">
-            <div className="max-w-[1350px] break-words">
-              <ReviewCard.Text />
+            <div className="flex xl:items-center justify-between xl:flex-row flex-col">
+              <div className="max-w-[1350px] wrap-break-word">
+                <ReviewCard.Text />
+              </div>
+              <ReviewCard.Date />
             </div>
-            <ReviewCard.Date />
-          </div>
-        </ReviewCard>
-      </div>
-    </>
-  );
-});
+          </ReviewCard>
+        </div>
+      </>
+    );
+  }
+);
 export default Comments;

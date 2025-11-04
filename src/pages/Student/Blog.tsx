@@ -1,17 +1,19 @@
+"use client"
 import { useEffect, useRef, useState } from "react";
-import Button from "../../components/Button";
-import { Link } from "react-router-dom";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
+import Button from "@/components/Button";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
+import { BlogType } from "@/types";
+import Link from "next/link";
 function Blog() {
-  const [blogs, setBlogs] = useState([]);
-  const [lastNode, setLastNode] = useState(null);
-  const blogsContainer = useRef();
+  const [blogs, setBlogs] = useState<BlogType[]>([]);
+  const [lastNode, setLastNode] = useState<HTMLDivElement | null>(null);
+  const blogsContainer = useRef<HTMLDivElement | null>(null);
 
-  const { dataFetched, isFetching } = useInfiniteScroll({
+  const { dataFetched, isFetching } = useInfiniteScroll<BlogType>({
     fetchFn: (pagePara) => {
-      return useFetch(
+      return useFetch<BlogType>(
         `${API_BASE_URL}/getBlogData`,
         {
           page: pagePara,
@@ -24,7 +26,7 @@ function Blog() {
     observedEle: lastNode,
     data_id: "blog_id",
   });
-  const observedEle = (node) => {
+  const observedEle = (node: HTMLDivElement) => {
     setLastNode(node);
   };
   useEffect(() => {
@@ -32,7 +34,6 @@ function Blog() {
       setBlogs(dataFetched);
     }
   }, [dataFetched]);
-
 
   return (
     <div className="sm:px-5 px-3 py-10">
@@ -65,8 +66,17 @@ function Blog() {
                   <div className="underline mt-5 text-purple-300">
                     Author : "Admin"
                   </div>
-                  <Link to={`${blog.blog_id}-${blog.title.replace(/\//g, "")}`}>
-                    <Button margin="mt-4" text="Read Now" />
+                  <Link
+                    href={`${blog.blog_id}-${blog.title.replace(/\//g, "")}`}
+                  >
+                    <Button
+                      margin="mt-4"
+                      text="Read Now"
+                      type={undefined}
+                      textDarkClr={undefined}
+                      hoverTextClr={undefined}
+                      hoverDarkTextClr={undefined}
+                    />
                   </Link>
                 </div>
               </div>

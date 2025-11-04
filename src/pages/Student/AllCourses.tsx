@@ -9,19 +9,7 @@ import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import API_BASE_URL from "@/config/config";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-type Course = {
-  course_id: number;
-  title: string;
-  description: string;
-  price: number;
-  discount: number;
-  category: string;
-  tabs: string;
-  image_url: string;
-  stars: number;
-  lessons: number;
-  created_date: string;
-};
+import { Course } from "@/types";
 function AllCourses() {
   const search_text = useSearchParams()?.get("search") || null;
   const select_data = useSearchParams()?.get("type") || null;

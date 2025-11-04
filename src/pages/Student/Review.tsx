@@ -1,18 +1,24 @@
+"use client";
 import { faPaperPlane, faStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStarReg } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
-import Avatar from "../../components/Avatar";
-import { forwardRef, useEffect, useRef, useState } from "react";
-import Alert from "../../components/Alert";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import ReviewCard from "../../components/ReviewCard";
-function Review(user_data) {
-  const [reviews, setReviews] = useState([]);
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
+import Avatar from "@/components/Avatar";
+import { ChangeEvent, forwardRef, useEffect, useRef, useState } from "react";
+import Alert from "@/components/Alert";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import ReviewCard from "@/components/ReviewCard";
+import { ReviewType, User } from "@/types";
+function Review(user_data: User & { course_id: string; course_title: string }) {
+  const [reviews, setReviews] = useState<ReviewType[]>([]);
   const queryClient = useQueryClient();
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: string;
+  } | null>(null);
 
   const [hovered, setHovered] = useState(0);
   const [selected, setSelected] = useState(0);
@@ -33,42 +39,51 @@ function Review(user_data) {
         "POST"
       );
     },
+    onSuccess: (data) => {
+      setAlert(
+        data
+          ? {
+              ...data,
+              msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+            }
+          : null
+      );
+      queryClient.invalidateQueries({ queryKey: ["reviews"] });
+      setReviewData({ review_text: "", stars: 1 });
+    },
     onError: () => {
       console.error("Error", reviewData.data);
     },
   });
 
-  useEffect(() => {
-    setAlert(reviewData.data);
-  }, [reviewData.data]);
-
-  function handleChange(e) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target;
     setReviewData((prev) => ({ ...prev, [id]: value }));
   }
 
-  const [lastNode, setLastNode] = useState(null);
-  const reviewContainer = useRef();
+  const [lastNode, setLastNode] = useState<HTMLDivElement | null>(null);
+  const reviewContainer = useRef<HTMLDivElement | null>(null);
 
-  const { isFetchingNextPage, dataFetched, hasNextPage } = useInfiniteScroll({
-    fetchFn: (pageParam) => {
-      return useFetch(
-        `${API_BASE_URL}/getReviews`,
-        { page: pageParam, course_id: user_data.course_id },
-        "POST"
-      );
-    },
-    queryKey: ["reviews", user_data.course_id],
-    scrollContainer: reviewContainer,
-    observedEle: lastNode,
-    data_id: "review_id",
-  });
+  const { isFetchingNextPage, dataFetched, hasNextPage } =
+    useInfiniteScroll<ReviewType>({
+      fetchFn: (pageParam) => {
+        return useFetch<ReviewType>(
+          `${API_BASE_URL}/getReviews`,
+          { page: pageParam, course_id: user_data.course_id },
+          "POST"
+        );
+      },
+      queryKey: ["reviews", user_data.course_id],
+      scrollContainer: reviewContainer,
+      observedEle: lastNode,
+      data_id: "review_id",
+    });
 
   useEffect(() => {
     setReviews(dataFetched);
   }, [dataFetched]);
 
-  const observeEle = (node) => {
+  const observeEle = (node: HTMLDivElement) => {
     setLastNode(node);
   };
 
@@ -91,8 +106,6 @@ function Review(user_data) {
                 onKeyDown={async (e) => {
                   if (e.key === "Enter") {
                     await reviewData?.mutateAsync();
-                    queryClient.invalidateQueries(["reviews"]);
-                    setReviewData({ review_text: "", stars: 1 });
                   }
                 }}
                 required
@@ -130,8 +143,6 @@ function Review(user_data) {
                   <FontAwesomeIcon
                     onClick={async () => {
                       await reviewData?.mutateAsync();
-                      queryClient.invalidateQueries(["reviews"]);
-                      setReviewData({ review_text: "", stars: 1 });
                     }}
                     className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
                     icon={faPaperPlane}
@@ -185,33 +196,39 @@ function Review(user_data) {
     </>
   );
 }
+type ReviewDataProps = {
+  name: string;
+  image: string;
+  text: string;
+  date: string;
+  stars: number;
+};
 
-const ReviewData = forwardRef(function ReviewData(
-  { name, image, text, stars, date },
-  ref
-) {
-  return (
-    <>
-      <div ref={ref} className="border_platform b pb-5">
-        <ReviewCard review={{ name, image, text, stars, date }}>
-          <div className="flex justify-between mt-5 ">
-            <div className="flex items-center gap-5">
-              <ReviewCard.Avatar />
-              <ReviewCard.username />
+const ReviewData = forwardRef<HTMLDivElement, ReviewDataProps>(
+  function ReviewData({ name, image, text, stars, date }, ref) {
+    return (
+      <>
+        <div ref={ref} className="border_platform b pb-5">
+          <ReviewCard review={{ name, image, text, stars, date }}>
+            <div className="flex justify-between mt-5 ">
+              <div className="flex items-center gap-5">
+                <ReviewCard.Avatar />
+                <ReviewCard.username />
+              </div>
+              <ReviewCard.Stars />
             </div>
-            <ReviewCard.Stars />
-          </div>
-          <div className="flex xl:items-center justify-between xl:flex-row flex-col">
-            <div className="max-w-[1350px] break-words">
-              <ReviewCard.Text />
+            <div className="flex xl:items-center justify-between xl:flex-row flex-col">
+              <div className="max-w-[1350px] wrap-break-word">
+                <ReviewCard.Text />
+              </div>
+              <ReviewCard.Date />
             </div>
-            <ReviewCard.Date />
-          </div>
-        </ReviewCard>
-      </div>
-    </>
-  );
-});
+          </ReviewCard>
+        </div>
+      </>
+    );
+  }
+);
 
 export default Review;
 

@@ -14,7 +14,6 @@ function VerifyCode() {
     msg: string;
   } | null>(null);
 
-
   const email = useSearchParams()?.get("email");
   const router = useRouter();
   const { data, mutate, isPending } = useMutation({
@@ -40,7 +39,14 @@ function VerifyCode() {
     if (data?.status) {
       router.push(`/confirmpass?email=${email}&&code=${code}`);
     }
-    setAlert(data ?? null);
+    setAlert(
+      data
+        ? {
+            ...data,
+            msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+          }
+        : null
+    );
   }, [data]);
   return (
     <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5 ">
@@ -59,10 +65,10 @@ function VerifyCode() {
           Code sent to your email - check your spam
         </div>
         <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          mutate();
-        }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            mutate();
+          }}
         >
           <div className="flex flex-col mt-4">
             <label htmlFor="">Code</label>

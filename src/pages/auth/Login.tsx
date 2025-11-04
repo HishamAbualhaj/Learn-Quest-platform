@@ -34,16 +34,20 @@ function Login() {
 
   const { mutate, isPending, data } = useMutation({
     mutationFn: async () => {
-      return await useFetch(`${API_BASE_URL}/login`, userData, "POST");
+      return await useFetch<string>(`${API_BASE_URL}/login`, userData, "POST");
     },
     onError: (error) => {
       console.log("Error", error);
     },
   });
-
-  useEffect(() => {
-    setAlert(data ?? null);
-  }, [data]);
+  setAlert(
+    data
+      ? {
+          ...data,
+          msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+        }
+      : null
+  );
 
   return (
     <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5">

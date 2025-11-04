@@ -53,7 +53,7 @@ function CourseVideos({
               onClick={() => {
                 mutate();
               }}
-              className={`min-w-5 min-h-5 rounded-full flex items-center justify-center border-[2px] border-gray-400 ${
+              className={`min-w-5 min-h-5 rounded-full flex items-center justify-center border-2 border-gray-400 ${
                 checked ? "bg-green-400/90 border-none" : "bg-none"
               }  cursor-pointer`}
             >

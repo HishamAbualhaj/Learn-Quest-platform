@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+"use client";
+import { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -6,28 +7,53 @@ import {
   faMagnifyingGlass,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
-import Button from "../../components/Button";
-import { Link, useSearchParams } from "react-router-dom";
+import Button from "@/components/Button";
 import { useQuery } from "@tanstack/react-query";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
-import { UserData } from "../../context/UserDataContext";
-import Loader from "../../components/Loader";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
+import { UserData } from "@/context/UserDataContext";
+import Loader from "@/components/Loader";
+import { useRouter, useSearchParams } from "next/navigation";
+import { EnrolledCourse } from "@/types";
+import Link from "next/link";
 function MyCourses() {
-  const [arr, setArr] = useState([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [searchPara, setSearchPara] = useSearchParams();
+  const setSearchPara = (params: {
+    search?: string | null;
+    type?: string | null;
+    page?: string | null;
+  }) => {
+    const current = new URLSearchParams(
+      Array.from(searchParams?.entries() || [])
+    );
 
-  const [currentPagePara, setCurrentPage] = useState(
-    Number(searchPara.get("page")) || 1
-  );
+    if (params.search !== undefined) {
+      params.search
+        ? current.set("search", params.search)
+        : current.delete("search");
+    }
+    if (params.type !== undefined) {
+      params.type ? current.set("type", params.type) : current.delete("type");
+    }
+
+    const query = current.toString();
+    router.push(`?${query}`, { scroll: false });
+  };
+
+  const [arr, setArr] = useState<number[]>([]);
+
+  const page = useSearchParams()?.get("page") || 1;
+
+  const [currentPagePara, setCurrentPage] = useState<number>(Number(page));
 
   const [studentId, setStudentId] = useState();
 
   const [fetchData, setFetchData] = useState({
     page: currentPagePara,
-    search_text: searchPara.get("search") || null,
-    select_data: searchPara.get("type") || null,
+    search_text: searchParams?.get("search") || null,
+    select_data: searchParams?.get("type") || null,
   });
   const user_data = useContext(UserData);
   useEffect(() => {
@@ -35,7 +61,9 @@ function MyCourses() {
       setStudentId(user_data?.userData?.[0]?.student_id ?? null);
     }
   }, [user_data]);
-  const [courses, setCourses] = useState([]);
+
+  const [courses, setCourses] = useState<EnrolledCourse[]>([]);
+
   const [maxPage, setMaxPage] = useState(1);
   const { data, isFetching, refetch } = useQuery({
     queryFn: async () => {
@@ -59,7 +87,7 @@ function MyCourses() {
   });
 
   useEffect(() => {
-    let tempArr = [];
+    let tempArr: number[] = [];
 
     let numberOfElemets = 5;
 
@@ -96,7 +124,7 @@ function MyCourses() {
       <div className=" bg-lightLayout dark:bg-lightDark py-10 overflow-auto h-[800px] flex-1">
         <div className="md:px-5 px-2">
           <div className="flex items-center justify-between md:flex-row flex-col max-md:gap-5">
-            <div className="font-[600] text-4xl">My Courses</div>
+            <div className="font-semibold text-4xl">My Courses</div>
             <div className="flex items-center gap-2 border dark:border-borderDark p-5 relative max-md:w-full max-sm:flex-col">
               <div className="absolute top-0 -translate-y-1/2 left-0 text-lg font-semibold px-5">
                 Filter
@@ -112,9 +140,9 @@ function MyCourses() {
                     search_text: e.target.value,
                   }));
                   setSearchPara({
-                    page: currentPagePara,
+                    page: String(currentPagePara),
                     search: e.target.value,
-                    type: searchPara.get("type") || null,
+                    type: searchParams?.get("type") || null,
                   });
                 }}
                 className="border dark:border-borderDark lg:w-[500px] xl:w-[700px] w-full rounded-md"
@@ -129,8 +157,8 @@ function MyCourses() {
                     select_data: e.target.value,
                   }));
                   setSearchPara({
-                    page: currentPagePara,
-                    search: searchPara.get("search") || null,
+                    page: String(currentPagePara),
+                    search: searchParams?.get("search") || null,
                     type: e.target.value,
                   });
                 }}
@@ -138,7 +166,7 @@ function MyCourses() {
                 name="courses"
                 id=""
               >
-                <option className="text-black" value={null}>
+                <option className="text-black" value={""}>
                   Select Value
                 </option>
                 <option className="text-black" value={"Completed"}>
@@ -179,7 +207,7 @@ function MyCourses() {
                   </div>
                   <div className="p-5">
                     <div className="flex justify-between items-center">
-                      <div className="font-[600] lg:text-xl line-clamp-1">
+                      <div className="font-semibold lg:text-xl line-clamp-1">
                         {course.title}
                       </div>
                       <div className="flex gap-2 items-center">
@@ -225,11 +253,17 @@ function MyCourses() {
                       <></>
                     )}
                     <Link
-                      to={`/student/CoursePage/${
+                      href={`/student/CoursePage/${
                         course.course_id
                       }-${course.title.replace(/[\s/]/g, "")}`}
                     >
-                      <Button text="Go to course" />
+                      <Button
+                        text="Go to course"
+                        type={undefined}
+                        textDarkClr={undefined}
+                        hoverTextClr={undefined}
+                        hoverDarkTextClr={undefined}
+                      />
                     </Link>
                   </div>
                 </div>
@@ -251,7 +285,7 @@ function MyCourses() {
                   if (!isFetching) {
                     if (currentPagePara === 1) return;
                     setSearchPara({
-                      page: currentPagePara - 1,
+                      page: String(currentPagePara - 1),
                       search: fetchData.search_text,
                       type: fetchData.select_data,
                     });
@@ -274,13 +308,13 @@ function MyCourses() {
                       <div
                         onClick={() => {
                           if (!isFetching) {
-                            setSearchPara({ page: Number(num) });
+                            setSearchPara({ page: String(num) });
                             setCurrentPage(Number(num));
                           }
                         }}
                         key={num}
                         className={`bg-gray-500/20 py-2 px-4 rounded-md hover:bg-slate-400 cursor-pointer ${
-                          (Number(searchPara.get("page")) || 1) === num
+                          (Number(searchParams?.get("page")) || 1) === num
                             ? "bg-purple-700 text-white"
                             : ""
                         }`}
@@ -296,7 +330,7 @@ function MyCourses() {
                   if (!isFetching) {
                     if (currentPagePara >= Math.ceil(maxPage / 4)) return;
                     setSearchPara({
-                      page: currentPagePara + 1,
+                      page: String(currentPagePara + 1),
                       search: fetchData.search_text,
                       type: fetchData.select_data,
                     });
@@ -304,7 +338,7 @@ function MyCourses() {
                   }
                 }}
                 className={`bg-gray-500/20 p-4 rounded-md hover:bg-slate-400 cursor-pointer ${
-                  Number(searchPara.get("page")) === Math.ceil(maxPage / 4)
+                  Number(searchParams?.get("page")) === Math.ceil(maxPage / 4)
                     ? "bg-gray-500/10 opacity-45 cursor-default hover:bg-gray-500/10"
                     : ""
                 }`}
