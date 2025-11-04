@@ -1,18 +1,17 @@
-type response = {
+export type FetchResponse<T> = {
   status: boolean;
-  msg: any;
+  msg: T[] | string;
   redirect: boolean;
   nextPage?: number;
 };
-async function useFetch(
+
+async function useFetch<T = any>(
   url: string,
   data: Record<string, any> | null,
   method: string
-) {
-  let response: response;
-  let res;
+): Promise<FetchResponse<T>> {
   try {
-    res = await fetch(url, {
+    const res = await fetch(url, {
       method: method,
       headers: {
         "Content-Type": "application/json",
@@ -26,37 +25,35 @@ async function useFetch(
 
     const result = await res.json();
     if (res.status === 404) {
-      response = {
+      return {
         status: false,
         msg: "Page is not found",
         redirect: false,
       };
     } else {
       // Handle success and fail status from server side
-      result.status
-        ? (response = {
+      return result.status
+        ? {
             status: result.status,
             msg: result.data,
             redirect: true,
             nextPage: result?.nextPage,
-          })
-        : (response = {
+          }
+        : {
             status: result.status,
             msg: result.data,
             redirect: false,
             nextPage: result?.nextPage,
-          });
+          };
     }
   } catch (error) {
     console.error("Error connecting to server:", error);
-    response = {
+    return {
       status: false,
       msg: "Error connecting to server",
       redirect: false,
     };
   }
-
-  return response;
 }
 
 export default useFetch;
