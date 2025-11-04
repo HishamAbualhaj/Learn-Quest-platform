@@ -1,25 +1,42 @@
+"use client";
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
-import Button from "../../components/Button";
-import { Link, useSearchParams } from "react-router-dom";
-import Loader from "../../components/Loader";
-import useFetch from "../../hooks/useFetch";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import API_BASE_URL from "../../config/config";
+import Button from "@/components/Button";
+import Loader from "@/components/Loader";
+import useFetch from "@/hooks/useFetch";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import API_BASE_URL from "@/config/config";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+type Course = {
+  course_id: number;
+  title: string;
+  description: string;
+  price: number;
+  discount: number;
+  category: string;
+  tabs: string;
+  image_url: string;
+  stars: number;
+  lessons: number;
+  created_date: string;
+};
 function AllCourses() {
-  const [searchPara, setSearchPara] = useSearchParams();
+  const search_text = useSearchParams()?.get("search") || null;
+  const select_data = useSearchParams()?.get("type") || null;
+
   const [fetchData, setFetchData] = useState({
-    search_text: searchPara.get("search") || null,
-    select_data: searchPara.get("type") || null,
+    search_text: search_text,
+    select_data: select_data,
   });
 
-  const [courses, setCourses] = useState([]);
-  const [lastNode, setLastNode] = useState(null);
-  const coursesContainer = useRef();
-  const { dataFetched, isFetching, refetch } = useInfiniteScroll({
-    fetchFn: (pagePara) => {
-      return useFetch(
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [lastNode, setLastNode] = useState<HTMLDivElement | null>(null);
+  const coursesContainer = useRef<HTMLDivElement | null>(null);
+  const { dataFetched, isFetching, refetch } = useInfiniteScroll<Course>({
+    fetchFn: (pagePara: number) => {
+      return useFetch<Course>(
         `${API_BASE_URL}/getCourses`,
         {
           page: pagePara,
@@ -35,7 +52,7 @@ function AllCourses() {
     data_id: "course_id",
   });
 
-  const observedEle = (node) => {
+  const observedEle = (node: HTMLDivElement) => {
     setLastNode(node);
   };
   useEffect(() => {
@@ -43,6 +60,30 @@ function AllCourses() {
       setCourses(dataFetched);
     }
   }, [dataFetched]);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const setSearchPara = (params: {
+    search?: string | null;
+    type?: string | null;
+  }) => {
+    const current = new URLSearchParams(
+      Array.from(searchParams?.entries() || [])
+    );
+
+    if (params.search !== undefined) {
+      params.search
+        ? current.set("search", params.search)
+        : current.delete("search");
+    }
+    if (params.type !== undefined) {
+      params.type ? current.set("type", params.type) : current.delete("type");
+    }
+
+    const query = current.toString();
+    router.push(`?${query}`, { scroll: false });
+  };
 
   return (
     <div className="sm:px-5 px-1 height-vh-adjust flex items-center">
@@ -52,7 +93,7 @@ function AllCourses() {
       >
         <div className="md:px-5 px-2">
           <div className="flex items-center justify-between md:flex-row flex-col max-md:gap-5">
-            <div className="font-[600] text-4xl">Courses</div>
+            <div className="font-semibold text-4xl">Courses</div>
             <div className="flex items-center gap-2 border dark:border-borderDark p-5 relative max-md:w-full max-sm:flex-col">
               <div className="absolute top-0 -translate-y-1/2 left-0 text-lg font-semibold px-5">
                 Filter
@@ -69,7 +110,7 @@ function AllCourses() {
                   }));
                   setSearchPara({
                     search: e.target.value,
-                    type: searchPara.get("type") || null,
+                    type: searchParams?.get("type") || null,
                   });
                 }}
                 className="border dark:border-borderDark  lg:w-[500px] xl:w-[700px] w-full rounded-md"
@@ -84,7 +125,7 @@ function AllCourses() {
                     select_data: e.target.value,
                   }));
                   setSearchPara({
-                    search: searchPara.get("search") || null,
+                    search: searchParams?.get("search") || null,
                     type: e.target.value,
                   });
                 }}
@@ -92,7 +133,7 @@ function AllCourses() {
                 name="courses"
                 id=""
               >
-                <option className="text-black" value={null}>
+                <option className="text-black" value={""}>
                   Select Value
                 </option>
                 <option className="text-black" value={`Free`}>
@@ -139,7 +180,7 @@ function AllCourses() {
                   </div>
                   <div className="p-5">
                     <div className="flex items-center justify-between">
-                      <div className="font-[600] lg:text-xl line-clamp-1">
+                      <div className="font-semibold lg:text-xl line-clamp-1">
                         {course.title}
                       </div>
                       <div className="flex items-center gap-2">
@@ -179,11 +220,17 @@ function AllCourses() {
                       </div>
                     </div>
                     <Link
-                      to={`/student/CoursePage/${
+                      href={`/student/CoursePage/${
                         course.course_id
                       }-${course.title?.replace(/[\s/]/g, "")}`}
                     >
-                      <Button text="Join Now" />
+                      <Button
+                        text="Join Now"
+                        type={undefined}
+                        textDarkClr={undefined}
+                        hoverTextClr={undefined}
+                        hoverDarkTextClr={undefined}
+                      />
                     </Link>
                   </div>
                 </div>

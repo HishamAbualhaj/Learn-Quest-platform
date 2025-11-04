@@ -55,7 +55,7 @@
   html.dark {
     scrollbar-color: #555 #1e1e2f;
   }
-  body.dark {
+  html.dark {
     @apply bg-dark;
   }
   * {
