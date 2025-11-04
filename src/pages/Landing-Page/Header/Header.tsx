@@ -17,9 +17,9 @@ export default async function Header({ isStudent = false }) {
             <UserStatus
               isStudent={isStudent}
               isLoggedIn={loggedIn ?? false}
-              first_name={userDataServer[0]?.first_name}
-              role={userDataServer[0]?.role}
-              image_url={userDataServer[0]?.image_url}
+              first_name={userDataServer?.[0]?.first_name}
+              role={userDataServer?.[0]?.role}
+              image_url={userDataServer?.[0]?.image_url}
             />
           </ThemeContext>
         </div>
