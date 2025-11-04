@@ -1,8 +1,9 @@
+import { User } from "@/types";
 import { cookies } from "next/headers";
 
 const getSession = async (): Promise<{
   loggedIn: boolean | undefined;
-  userDataServer: any[];
+  userDataServer: User[];
 }> => {
   const cookieStore = await cookies();
   const userSession = cookieStore.get("user-session")?.value;
