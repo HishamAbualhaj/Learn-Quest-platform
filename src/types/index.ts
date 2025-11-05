@@ -65,3 +65,11 @@ export type ReviewType = {
   review_text: string;
   review_date: string;
 };
+
+export type MessageType = {
+  msg_id: string;
+  sender_id: string;
+  receiver_id: string;
+  msg_text: string;
+  created_date: string;
+};

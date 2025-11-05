@@ -1,30 +1,47 @@
+"use client";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Messages from "../Dashboard/Messages";
-import { UserData } from "../../context/UserDataContext";
 import { useQuery } from "@tanstack/react-query";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
-import { API_WEB_SOCKET } from "../../config/config";
-function ChatStudent() {
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
+import { API_WEB_SOCKET } from "@/config/config";
+import { User } from "@/types";
+
+interface ChatStudentProps {
+  adminData: User;
+  userData: User;
+}
+function ChatStudent({ adminData, userData }: ChatStudentProps) {
   // Here data will come from server (From other users, WebSocket) , messages
   const [chatData, setChatData] = useState({
-    sender_id: null,
-    receiver_id: null,
-    msg: null,
+    msg_id: "",
+    sender_id: "",
+    receiver_id: "",
+    msg: "",
+    date: "",
+    sender_name: "",
+    sender_image: "",
+    receiver_name: "",
+    receiver_image: "",
   });
 
   // only for sending purpose where data sender can't be change
-  const [serverData, setServerData] = useState({
+  const [serverData, setServerData] = useState<{
+    type: string;
+    sender_id: string;
+    receiver_id: string;
+    msg: string;
+  }>({
     type: "chat",
-    sender_id: null,
-    receiver_id: null,
-    msg: null,
+    sender_id: "",
+    receiver_id: "",
+    msg: "",
   });
 
-  const inputRef = useRef(null);
-  const socketRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
 
   const { data } = useQuery({
     queryFn: async () => {
@@ -36,25 +53,26 @@ function ChatStudent() {
 
   useEffect(() => {
     if (data) {
-      const [{ student_id, first_name, last_name, image_url }] = data?.msg;
+      const { student_id, first_name, last_name, image_url } = adminData;
+
       setServerData((prev) => ({
         ...prev,
-        receiver_id: student_id,
+        receiver_id: String(student_id),
       }));
 
       setChatData((prev) => ({
         ...prev,
-        receiver_id: student_id,
+        receiver_id: String(student_id),
         receiver_name: `${first_name} ${last_name}`,
         receiver_image: image_url,
       }));
     }
   }, [data]);
   const initSocketConnection = (sender_id) => {
-    socketRef.current = new WebSocket(API_WEB_SOCKET);
+    socketRef.current = new WebSocket(API_WEB_SOCKET ?? "");
 
     socketRef.current.onopen = () => {
-      socketRef.current.send(
+      socketRef.current?.send(
         JSON.stringify({ type: "init", sender_id: sender_id })
       );
     };
@@ -75,32 +93,29 @@ function ChatStudent() {
     };
 
     return () => {
-      socketRef.current.close();
+      socketRef.current?.close();
     };
   };
 
-  const data_user = useContext(UserData);
   useEffect(() => {
-    if (data_user && !socketRef.current) {
-      const userDataArray = data_user?.userData;
-      const { student_id, first_name, last_name, image_url } = userDataArray[0];
-      setServerData((prev) => ({
-        ...prev,
-        sender_id: student_id,
-      }));
+    const { student_id, first_name, last_name, image_url } = userData;
 
-      setChatData((prev) => ({
-        ...prev,
-        sender_id: student_id,
-        sender_name: `${first_name} ${last_name}`,
-        sender_image: image_url,
-      }));
-      initSocketConnection(student_id);
-    }
-  }, [data_user]);
+    setServerData((prev) => ({
+      ...prev,
+      sender_id: String(student_id),
+    }));
+
+    setChatData((prev) => ({
+      ...prev,
+      sender_id: String(student_id),
+      sender_name: `${first_name} ${last_name}`,
+      sender_image: image_url,
+    }));
+    initSocketConnection(student_id);
+  }, []);
 
   const sendDataToServer = () => {
-    socketRef.current.send(JSON.stringify(serverData));
+    socketRef.current?.send(JSON.stringify(serverData));
   };
   const handleChange = (e) => {
     setServerData((prev) => ({ ...prev, msg: e.target.value }));
@@ -118,7 +133,7 @@ function ChatStudent() {
           <div className="flex items-center gap-3 p-2">
             <input
               ref={inputRef}
-              onKeyDown={async (e) => {
+              onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
                 if (
                   !serverData.sender_id ||
                   !serverData.msg?.trim() ||
@@ -127,11 +142,11 @@ function ChatStudent() {
                   return;
                 if (e.code === "Enter") {
                   sendDataToServer();
-                  e.target.value = "";
+                  (e.target as HTMLInputElement).value = "";
                 }
               }}
               onChange={handleChange}
-              className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
+              className="dark:text-white text-lightText border dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
               type="text"
             />
             <FontAwesomeIcon
@@ -143,7 +158,7 @@ function ChatStudent() {
                 )
                   return;
                 sendDataToServer();
-                inputRef.current.value = "";
+                inputRef.current!.value = "";
               }}
               className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
               icon={faPaperPlane}
