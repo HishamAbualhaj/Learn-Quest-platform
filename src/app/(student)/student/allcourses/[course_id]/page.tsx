@@ -13,26 +13,34 @@ const page = async ({ params }: { params: Promise<{ course_id: string }> }) => {
     { course_id, ...user[0] },
     "POST"
   );
-  const safeMsg = data?.msg?.msg ?? [];
-  const [
-    courseVideos = [],
-    courseMaterial = [],
-    courseMaterialAllowedUrl = [],
-  ] = safeMsg;
+  let resObj = data.msg as unknown as {
+    msg: [Course, CourseMaterial[]] | string;
+    enrolled: boolean;
+  };
 
-  const mergedMaterials: CourseMaterial[] = [
-    ...courseMaterial,
-    ...courseMaterialAllowedUrl,
-  ].sort(
-    (a, b) =>
-      new Date(a.created_date).getTime() - new Date(b.created_date).getTime()
-  );
+  let mergedMaterials: CourseMaterial[] = [];
+  let courseVideos: any = {};
+
+  if (typeof resObj.msg !== "string") {
+    const safeMsg = resObj.msg ?? [];
+    const [
+      courseVideosData = {},
+      courseMaterial = [],
+      courseMaterialAllowedUrl = [],
+    ] = safeMsg;
+    courseVideos = courseVideosData;
+    mergedMaterials = [...courseMaterial, ...courseMaterialAllowedUrl].sort(
+      (a, b) =>
+        new Date(a.created_date).getTime() - new Date(b.created_date).getTime()
+    );
+  }
+
   console.log(data);
 
   return (
     <CoursePage
       user_data={user[0]}
-      isEnrolled={data.msg.enrolled}
+      isEnrolled={resObj.enrolled}
       courseVideos={mergedMaterials}
       courseData={{ ...courseVideos, course_id }}
     />
