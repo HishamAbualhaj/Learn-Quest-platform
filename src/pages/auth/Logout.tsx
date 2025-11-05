@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-function Logout() {
-  const navigate = useNavigate();
-  const result = useLoaderData();
+
+async function Logout() {
+  const router = useRouter();
   useEffect(() => {
-    if (result) {
-      navigate("/");
-    }
-  }, [result]);
+    router.push("/");
+  }, []);
   return <></>;
 }
 
