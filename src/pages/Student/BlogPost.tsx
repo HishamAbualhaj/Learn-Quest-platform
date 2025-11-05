@@ -7,7 +7,7 @@ interface BlogPostProps {
 }
 function BlogPost({ blogData, userData }: BlogPostProps) {
   return (
-    <div className="bg-lightLayout dark:bg-gray-800/20 border_platform all xl:m-5 m-2 !mb-0">
+    <div className="bg-lightLayout dark:bg-gray-800/20 border_platform all xl:m-5 m-2 mb-0!">
       <div className="max-w-[1100px] mx-auto leading-8 py-10 sm:max-lg:px-8 px-5 ">
         <div className="">
           <h1 className="sm:text-[30px] text-2xl font-bold leading-10">

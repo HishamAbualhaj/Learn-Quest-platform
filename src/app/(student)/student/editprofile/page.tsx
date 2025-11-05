@@ -79,7 +79,7 @@ const page = async () => {
     dateFormate,
     gender,
     join,
-    course_joined,
+    course_joined || "0",
     image_url,
   ];
 
@@ -91,7 +91,7 @@ const page = async () => {
     };
     return data[index];
   });
-  return <EditProfile data_profile={arr} userId={student_id} />;
+  return <EditProfile data_profile={arr} userId={String(student_id)} />;
 };
 
 export default page;
