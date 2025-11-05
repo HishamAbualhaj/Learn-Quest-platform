@@ -36,18 +36,20 @@ function Login() {
     mutationFn: async () => {
       return await useFetch<string>(`${API_BASE_URL}/login`, userData, "POST");
     },
+    onSuccess: (data) => {
+      setAlert(
+        data
+          ? {
+              ...data,
+              msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+            }
+          : null
+      );
+    },
     onError: (error) => {
       console.log("Error", error);
     },
   });
-  setAlert(
-    data
-      ? {
-          ...data,
-          msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
-        }
-      : null
-  );
 
   return (
     <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5">

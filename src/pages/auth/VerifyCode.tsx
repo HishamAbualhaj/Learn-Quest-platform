@@ -28,6 +28,19 @@ function VerifyCode() {
         "POST"
       );
     },
+    onSuccess: (data) => {
+      setAlert(
+        data
+          ? {
+              ...data,
+              msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+            }
+          : null
+      );
+    },
+    onError: (error) => {
+      console.log("Error", error);
+    },
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,14 +52,6 @@ function VerifyCode() {
     if (data?.status) {
       router.push(`/confirmpass?email=${email}&&code=${code}`);
     }
-    setAlert(
-      data
-        ? {
-            ...data,
-            msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
-          }
-        : null
-    );
   }, [data]);
   return (
     <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5 ">

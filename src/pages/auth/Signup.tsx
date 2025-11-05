@@ -41,18 +41,20 @@ function Signup() {
     mutationFn: async () => {
       return await useFetch(`${API_BASE_URL}/signup`, userData, "POST");
     },
+    onSuccess: (data) => {
+      setAlert(
+        data
+          ? {
+              ...data,
+              msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+            }
+          : null
+      );
+    },
+    onError: (error) => {
+      console.log("Error", error);
+    },
   });
-
-  useEffect(() => {
-    setAlert(
-      data
-        ? {
-            ...data,
-            msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
-          }
-        : null
-    );
-  }, [data]);
 
   return (
     <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 h-screen">

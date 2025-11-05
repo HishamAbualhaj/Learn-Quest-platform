@@ -27,6 +27,19 @@ function ForgotPass() {
         "POST"
       );
     },
+    onSuccess: (data) => {
+      setAlert(
+        data
+          ? {
+              ...data,
+              msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+            }
+          : null
+      );
+    },
+    onError: (error) => {
+      console.log("Error", error);
+    },
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -38,14 +51,6 @@ function ForgotPass() {
     if (data?.status) {
       router.push(`/verifycode?email=${email}`);
     }
-    setAlert(
-      data
-        ? {
-            ...data,
-            msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
-          }
-        : null
-    );
   }, [data]);
 
   return (

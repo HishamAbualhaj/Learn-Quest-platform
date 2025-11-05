@@ -32,6 +32,16 @@ function ConfirmPass() {
         "POST"
       );
     },
+    onSuccess: (data) => {
+      setAlert(
+        data
+          ? {
+              ...data,
+              msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
+            }
+          : null
+      );
+    },
     onError: (e) => {
       console.log("Error", e);
     },
@@ -62,14 +72,6 @@ function ConfirmPass() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    setAlert(
-      data
-        ? {
-            ...data,
-            msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
-          }
-        : null
-    );
     if (data?.status) {
       timer = setTimeout(() => {
         router.push("/login");
