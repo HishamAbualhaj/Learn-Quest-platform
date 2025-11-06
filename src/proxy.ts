@@ -3,7 +3,7 @@ import API_BASE_URL from "./config/config";
 import useFetchServer from "./hooks/useFetchServer";
 import { User } from "./types";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const res = await useFetchServer(`${API_BASE_URL}/session`, null, "GET");
 
   const resMaintenance = await useFetchServer(
@@ -17,9 +17,10 @@ export async function middleware(req: NextRequest) {
   const data = res.msg as unknown as { loggedIn: boolean; userData: User[] };
   const loggedIn = data.loggedIn;
   const userData = data.userData;
-  const role = userData[0].role;
+  const role = userData?.[0]?.role;
 
   const response = NextResponse.next();
+
   response.cookies.set("user-session", JSON.stringify(res.msg), {
     httpOnly: false,
     path: "/",
@@ -57,9 +58,16 @@ export async function middleware(req: NextRequest) {
   // both user and admin can access it ONLY WHILE LOGIN
   const isLoggedInShared = isPrefixPath(url, loggedInSharedRoutes);
 
+  const excludedRoutes = new Set(["/logout"]);
+
+  if (excludedRoutes.has(url)) {
+    response.cookies.delete("user-session");
+    return response;
+  }
+
   // allow landing page while system is running
   if (url === "/" && !isMaintenance) {
-    return NextResponse.next();
+    return response;
   }
   // allow maintenance page
   if (url === "/maintenance" && !isMaintenance) {
@@ -69,12 +77,12 @@ export async function middleware(req: NextRequest) {
   // Only while system is shut down
   if (isMaintenance) {
     if (url === "/maintenance") {
-      return NextResponse.next();
+      return response;
     }
 
     // go to admin dashboard
     if (role === "admin" && isAdmin) {
-      return NextResponse.next();
+      return response;
     }
 
     return navigate("/maintenance", req);
@@ -83,7 +91,7 @@ export async function middleware(req: NextRequest) {
   // NOT LOGIN CASE
   if (!loggedIn) {
     if (isAllowedNotLogin || isAllowedForBoth) {
-      return NextResponse.next();
+      return response;
     }
     return navigate("/login", req);
   }
@@ -94,17 +102,19 @@ export async function middleware(req: NextRequest) {
   }
 
   if (isLoggedInShared || isAllowedForBoth) {
-    return NextResponse.next();
+    return response;
   }
 
   // ALLOW ADMIN PAGES
   if ((isAdmin && role !== "admin") || (!isAdmin && role === "admin")) {
     return navigate("/", req);
   }
-  return NextResponse.next();
+  return response;
 }
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/public).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|.*\\.png$|.*\\.jpg$|.*\\.svg$).*)",
+  ],
 };
 
 const navigate = (route: string, req: NextRequest) => {
