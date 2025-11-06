@@ -1,5 +1,5 @@
+"use client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useLocation, Outlet } from "react-router-dom";
 import {
   faUsers,
   faPersonChalkboard,
@@ -17,62 +17,72 @@ import {
 import { useState, useEffect } from "react";
 
 import Logo from "../components/Logo";
-function Dashboard() {
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+function Dashboard({ children }: { children: React.ReactNode }) {
   const tabs = [
     {
       key: 1,
       name: "users",
       icon: faUsers,
+      link: "/users",
     },
     {
       key: 2,
       name: "courses",
       icon: faPersonChalkboard,
+      link: "/courses",
     },
     {
       key: 3,
       name: "blogs",
       icon: faBlog,
+      link: "/blogs",
     },
     {
       key: 4,
       name: "analytics",
       icon: faChartLine,
+      link: "/analytics",
     },
     {
       key: 5,
       name: "reviews",
       icon: faMessage,
+      link: "/reviews",
     },
     {
       key: 6,
       name: "chat",
       icon: faHeadset,
+      link: "/chat",
     },
     {
       key: 7,
       name: "system log",
       icon: faTerminal,
+      link: "/systemlog",
     },
     {
       key: 8,
       name: "maintenance",
       icon: faCircleExclamation,
+      link: "/maintenance",
     },
   ];
 
-  const [activeStatus, setActiveStatus] = useState(null);
+  const [activeStatus, setActiveStatus] = useState<string>("");
 
   // by default its not resized
   const [resize, setResize] = useState(false);
 
   const [isTranslate, setIsTranslate] = useState(false);
 
-  const link = useLocation();
+  const link = usePathname();
 
   // change sidebar (active or not) status based on URL
   useEffect(() => {
-    const currentLink = link.pathname.split("/")[2];
+    const currentLink = link?.split("/")[2] ?? "";
     setActiveStatus(currentLink);
     setIsTranslate(false);
   }, [link]);
@@ -87,7 +97,7 @@ function Dashboard() {
     <div className="flex h-screen">
       <div
         className={`border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-white w-fit xl:h-full h-fit xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full dark:shadow-none shadow-custom ${
-          isTranslate ? "!translate-x-0 " : ""
+          isTranslate ? "translate-x-0! " : ""
         }`}
       >
         <div
@@ -107,7 +117,7 @@ function Dashboard() {
         </div>
         <div className="tabs-container flex flex-col gap-4">
           {tabs.map((tab) => (
-            <Link key={tab.key} to={`${tab.name.replace(/\s+/g, "")}`}>
+            <Link key={tab.key} href={`/dashboard${tab.link}`}>
               <div
                 id={tab.name.replace(/\s+/g, "")}
                 key={tab.key}
@@ -155,7 +165,7 @@ function Dashboard() {
               <div className="dark:text-white text-black uppercase max-sm:hidden">
                 admin dashboard management
               </div>
-              <Link to="/logout">
+              <Link href="/logout">
                 <FontAwesomeIcon
                   className="text-lg cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-3 px-5 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition"
                   icon={faRightFromBracket}
@@ -165,9 +175,7 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="xl:px-12 sm:px-10 px-5 mt-12">
-          <Outlet />
-        </div>
+        <div className="xl:px-12 sm:px-10 px-5 mt-12">{children}</div>
       </div>
     </div>
   );
