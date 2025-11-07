@@ -6,7 +6,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useMutation } from "@tanstack/react-query";
 import API_BASE_URL from "../config/config";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
+interface DeletePopUpProps {
+  setDeletePopup: Dispatch<SetStateAction<boolean>>;
+  id: string;
+  data_name: string;
+  refetch: () => void;
+  endpoint: string;
+  data_id: string;
+}
 function DeletePopUp({
   setDeletePopup,
   id,
@@ -14,7 +22,7 @@ function DeletePopUp({
   refetch,
   endpoint,
   data_id,
-}) {
+}: DeletePopUpProps) {
   const { isPending, mutate, data } = useMutation({
     mutationFn: async () => {
       return await useFetch(
@@ -64,7 +72,9 @@ function DeletePopUp({
         </div>
         <div className="flex gap-2">
           <div
-            onClick={mutate}
+            onClick={() => {
+              mutate();
+            }}
             className="mt-3 bg-red-500/80 text-center px-4 w-1/2 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer"
           >
             {isPending ? "Loading ... " : "YES !"}

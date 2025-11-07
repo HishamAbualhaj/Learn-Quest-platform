@@ -1,6 +1,6 @@
 export type FetchResponse<T> = {
   status: boolean;
-  msg: T[] | string;
+  msg: T | string;
   redirect: boolean;
   nextPage?: number;
 };

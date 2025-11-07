@@ -13,7 +13,7 @@ function Landing() {
   return (
     <>
       <Header />
-      <Hero />
+      <Hero data={undefined} />
       <Feature />
       <FeatureDetails />
       <Testimonials />
