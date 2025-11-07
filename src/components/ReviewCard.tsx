@@ -1,19 +1,34 @@
-import React, { createContext, useContext } from "react";
-import API_BASE_URL from "../config/config";
+import { createContext, ReactNode, useContext } from "react";
 import Avatar from "./Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
-
-const ReviewCardContext = createContext();
+import { ReviewType } from "@/types";
+interface ReviewCardProps {
+  review: {
+    image: string;
+    name: string;
+    text: string;
+    date: string;
+    stars: number;
+  };
+  children: ReactNode;
+}
+const ReviewCardContext = createContext<{
+  image: string;
+  name: string;
+  text: string;
+  date: string;
+  stars: number;
+} | null>(null);
 
 function useReviewCardContext() {
   const context = useContext(ReviewCardContext);
   if (!context) {
-    return <></>;
+    return;
   }
   return context;
 }
-function ReviewCard({ children, review }) {
+function ReviewCard({ children, review }: ReviewCardProps) {
   return (
     <ReviewCardContext.Provider value={review}>
       {children}
@@ -22,15 +37,15 @@ function ReviewCard({ children, review }) {
 }
 
 ReviewCard.Avatar = () => {
-  const { image } = useReviewCardContext();
+  const { image } = useReviewCardContext() ?? { image: "" };
   return <Avatar img={image} className={"h-[50px] w-[50px]"} />;
 };
 ReviewCard.username = () => {
-  const { name } = useReviewCardContext();
+  const { name } = useReviewCardContext() ?? { name: "" };
   return <div className="text-lg dark:text-white text-lightText">{name}</div>;
 };
 ReviewCard.Stars = () => {
-  const { stars } = useReviewCardContext();
+  const { stars } = useReviewCardContext() ?? { stars: 0 };
   return (
     <div className="flex items-center gap-2">
       {[...Array(stars)].map(() => (
@@ -45,7 +60,7 @@ ReviewCard.Stars = () => {
 };
 
 ReviewCard.Text = () => {
-  const { text } = useReviewCardContext();
+  const { text } = useReviewCardContext() ?? { text: "" };
   return (
     <div className="mt-3 lg:ml-8 dark:text-white/50 text-black leading-8">
       {text}
@@ -54,7 +69,7 @@ ReviewCard.Text = () => {
 };
 
 ReviewCard.Date = () => {
-  const { date } = useReviewCardContext();
+  const { date } = useReviewCardContext() ?? { date: "" };
   return (
     <div className="dark:text-white/50 text-black/50 mt-5 text-sm lg:ml-8">{`${
       date?.split("T")[0]

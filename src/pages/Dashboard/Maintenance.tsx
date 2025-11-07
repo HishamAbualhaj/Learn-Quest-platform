@@ -1,27 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
-import { UserData } from "../../context/UserDataContext";
-import Alert from "../../components/Alert";
-export default function Maintenance() {
-  const data_user = useContext(UserData);
-  const [userData, setUserData] = useState(null);
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
+import Alert from "@/components/Alert";
+import { User } from "@/types";
+export default function Maintenance({ userData }: { userData: User }) {
   const [status, setStatus] = useState(true);
-  const [msg, setMsg] = useState(null);
-  useEffect(() => {
-    if (data_user) {
-      const userDataArray = data_user?.userData;
-      const { student_id, email, first_name } = userDataArray?.[0] ?? {
-        student_id: null,
-        email: null,
-        first_name: null,
-      };
-      setUserData({ student_id, email, first_name });
-    }
-  }, [data_user]);
+  const [msg, setMsg] = useState<string | null>(null);
 
   const { data, refetch } = useQuery({
     queryKey: ["maintenance"],
@@ -51,12 +39,12 @@ export default function Maintenance() {
       );
       setStatus(status);
     }
-  }, [data,userData]);
+  }, [data, userData]);
 
-  const [count, setCount] = useState(5);
+  const [count, setCount] = useState<number>(5);
   const [action, setAction] = useState(false);
   useEffect(() => {
-    let countTimer = null;
+    let countTimer;
     if (action && userData?.student_id) {
       setCount(5);
       countTimer = setInterval(() => {

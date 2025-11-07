@@ -1,28 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
-import useFetch from "../../hooks/useFetch";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import API_BASE_URL from "../../config/config";
+"use client";
+import { useEffect, useRef, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import API_BASE_URL from "@/config/config";
 import { forwardRef } from "react";
-import useArrange from "../../hooks/useArrange";
+import { LogMessage } from "@/types";
+
 function SystemLog() {
-  const [logs, setLogs] = useState([]);
-  const [lastNode, setLastNode] = useState(null);
+  const [logs, setLogs] = useState<LogMessage[]>([]);
+  const [lastNode, setLastNode] = useState<HTMLDivElement | null>(null);
 
-  const logsContainer = useRef();
+  const logsContainer = useRef<HTMLDivElement | null>(null);
 
-  const { dataFetched, isFetching, hasNextPage } = useInfiniteScroll({
-    fetchFn: (pageParam) => {
-      return useFetch(
-        `${API_BASE_URL}/getSystemLog`,
-        { page: pageParam },
-        "POST"
-      );
-    },
-    queryKey: ["systemlogs"],
-    scrollContainer: logsContainer,
-    observedEle: lastNode,
-    data_id: "log_id",
-  });
+  const { dataFetched, isFetching, hasNextPage } =
+    useInfiniteScroll<LogMessage>({
+      fetchFn: (pageParam) => {
+        return useFetch(
+          `${API_BASE_URL}/getSystemLog`,
+          { page: pageParam },
+          "POST"
+        );
+      },
+      queryKey: ["systemlogs"],
+      scrollContainer: logsContainer,
+      observedEle: lastNode,
+      data_id: "log_id",
+    });
   useEffect(() => {
     setLogs(dataFetched);
   }, [dataFetched]);
@@ -68,7 +71,16 @@ function SystemLog() {
     </div>
   );
 }
-const Log = forwardRef(function Log(
+
+type LogDataProps = {
+  id: string;
+  logState: string;
+  userId: string;
+  email: string;
+  time: string;
+  date: string;
+};
+const Log = forwardRef<HTMLDivElement, LogDataProps>(function Log(
   { id, logState, userId, email, time, date },
   ref
 ) {

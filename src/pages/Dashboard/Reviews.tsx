@@ -1,29 +1,21 @@
+"use client";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
-import { useQuery } from "@tanstack/react-query";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import ReviewCard from "../../components/ReviewCard";
-function Reviews() {
-  const [courses, setCourses] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [course_id, setCourseId] = useState(null);
-  const { data } = useQuery({
-    queryFn: async () => {
-      return await useFetch(
-        `${API_BASE_URL}/getCourses`,
-        { page: null },
-        "POST"
-      );
-    },
-    queryKey: ["course_data_review"],
-  });
-  const reviewContainer = useRef();
+import { Course, ReviewType } from "@/types";
+import { FetchResponse } from "@/hooks/useFetchServer";
+function Reviews({ courses }: { courses: Course[] }) {
+  const [reviews, setReviews] = useState<ReviewType[]>([]);
+  const [course_id, setCourseId] = useState<string | null>(null);
+
+  const reviewContainer = useRef<HTMLDivElement | null>(null);
   const [lastNode, setLastNode] = useState(null);
 
-  const { isFetchingNextPage, dataFetched, hasNextPage } = useInfiniteScroll({
+  const { dataFetched } = useInfiniteScroll<ReviewType>({
     fetchFn: (pageParam) => {
-      if (!course_id) return;
+      if (!course_id) return {} as Promise<FetchResponse<ReviewType>>;
       return useFetch(
         `${API_BASE_URL}/getReviews`,
         { page: pageParam, course_id: course_id },
@@ -35,12 +27,6 @@ function Reviews() {
     observedEle: lastNode,
     data_id: "review_id",
   });
-
-  useEffect(() => {
-    if (data) {
-      setCourses(data.msg);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (dataFetched) {
@@ -76,7 +62,7 @@ function Reviews() {
             name="courses"
             id=""
           >
-            <option className="text-black" value={null}>
+            <option className="text-black" value={""}>
               Select Course
             </option>
             {courses.map((course) => (
@@ -117,8 +103,14 @@ function Reviews() {
     </>
   );
 }
-
-const Review = forwardRef(function Review(
+type ReviewDataProps = {
+  name: string;
+  image: string;
+  text: string;
+  date: string;
+  stars: number;
+};
+const Review = forwardRef<HTMLDivElement, ReviewDataProps>(function Review(
   { image, stars, text, name, date },
   ref
 ) {
@@ -135,7 +127,7 @@ const Review = forwardRef(function Review(
             <ReviewCard.Stars />
           </div>
           <div className="flex flex-col">
-            <div className="break-words max-w-[600px]">
+            <div className="wrap-break-word max-w-[600px]">
               <ReviewCard.Text />
             </div>
             <ReviewCard.Date />

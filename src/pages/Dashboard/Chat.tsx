@@ -1,36 +1,49 @@
+"use client";
 import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
 import Messages from "./Messages";
-import Avatar from "../../components/Avatar";
-import { UserData } from "../../context/UserDataContext";
-import { API_WEB_SOCKET } from "../../config/config";
-function Chat() {
+import Avatar from "@/components/Avatar";
+import { API_WEB_SOCKET } from "@/config/config";
+import type { User } from "@/types";
+function Chat({ userData }: { userData: User }) {
   const [isTranslate, setIsTranslate] = useState(false);
   // Here data will come from server (From other users, WebSocket) , messages
   const [chatData, setChatData] = useState({
-    sender_id: null,
-    receiver_id: null,
-    msg: null,
+    msg_id: "",
+    sender_id: "",
+    receiver_id: "",
+    msg: "",
+    date: "",
+    sender_name: "",
+    sender_image: "",
+    receiver_name: "",
+    receiver_image: "",
   });
 
   // only for sending purpose where data sender & receiver can't be change
-  const [serverData, setServerData] = useState({
+  const [serverData, setServerData] = useState<{
+    type: string;
+    sender_id: string;
+    receiver_id: string;
+    msg: string;
+  }>({
     type: "chat",
-    sender_id: null,
-    receiver_id: null,
-    msg: null,
+    sender_id: "",
+    receiver_id: "",
+    msg: "",
   });
-  const [activeTab, setActiveTab] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [lastNode, setLastNode] = useState(null);
-  const inputRef = useRef();
-  const socketRef = useRef(null);
-  const usersContainer = useRef();
-  const { dataFetched, isFetching, hasNextPage } = useInfiniteScroll({
+
+  const [activeTab, setActiveTab] = useState(0);
+  const [users, setUsers] = useState<User[]>([]);
+  const [lastNode, setLastNode] = useState<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
+  const usersContainer = useRef<HTMLDivElement | null>(null);
+  const { dataFetched, isFetching, hasNextPage } = useInfiniteScroll<User>({
     fetchFn: (pagePara) => {
       return useFetch(`${API_BASE_URL}/getUsers`, { page: pagePara }, "POST");
     },
@@ -40,11 +53,11 @@ function Chat() {
     data_id: "student_id",
   });
 
-  const initSocketConnection = (sender_id) => {
-    socketRef.current = new WebSocket(API_WEB_SOCKET);
+  const initSocketConnection = (sender_id: string) => {
+    socketRef.current = new WebSocket(API_WEB_SOCKET ?? "");
 
     socketRef.current.onopen = () => {
-      socketRef.current.send(
+      socketRef.current!.send(
         JSON.stringify({ type: "init", sender_id: sender_id })
       );
     };
@@ -65,36 +78,34 @@ function Chat() {
     };
 
     return () => {
-      socketRef.current.close();
+      socketRef.current!.close();
     };
   };
-  const data_user = useContext(UserData);
   useEffect(() => {
-    if (data_user) {
-      const userDataArray = data_user?.userData;
-      const { student_id } = userDataArray?.[0] ?? { student_id: null };
+    if (dataFetched) {
+      const { student_id, first_name, last_name, image_url } = userData;
       setServerData((prev) => ({
         ...prev,
-        sender_id: student_id,
+        sender_id: String(student_id),
       }));
 
       setChatData((prev) => ({
         ...prev,
-        sender_id: student_id,
+        sender_id: String(student_id),
       }));
     }
-  }, [data_user]);
+  }, [dataFetched]);
 
   useEffect(() => {
     setUsers(dataFetched);
   }, [dataFetched]);
 
-  const observeEle = (node) => {
+  const observeEle = (node: HTMLDivElement) => {
     setLastNode(node);
   };
 
   const sendDataToServer = () => {
-    socketRef.current.send(JSON.stringify(serverData));
+    socketRef.current!.send(JSON.stringify(serverData));
   };
 
   const handleChange = (e) => {
@@ -108,7 +119,7 @@ function Chat() {
         onClick={() => {
           setIsTranslate(!isTranslate);
         }}
-        className="text-2xl text-white cursor-pointer lg:hidden self-end py-2"
+        className="text-2xl text-white cursor-pointer lg:hidden! self-end py-2"
         icon={faBars}
       />
       <div className="flex mt-5 gap-3">
@@ -119,7 +130,7 @@ function Chat() {
             <div className="flex items-center gap-3 p-2">
               <input
                 ref={inputRef}
-                onKeyDown={async (e) => {
+                onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (
                     !serverData.sender_id ||
                     !serverData.msg?.trim() ||
@@ -129,11 +140,11 @@ function Chat() {
 
                   if (e.code === "Enter") {
                     sendDataToServer();
-                    e.target.value = "";
+                    (e.target as HTMLInputElement).value = "";
                   }
                 }}
                 onChange={handleChange}
-                className="dark:text-white text-lightText border dark:border-white dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
+                className="dark:text-white text-lightText border dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
                 type="text"
               />
 
@@ -146,7 +157,7 @@ function Chat() {
                   )
                     return;
                   sendDataToServer();
-                  inputRef.current.value = "";
+                  inputRef.current!.value = "";
                 }}
                 className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
                 icon={faPaperPlane}
@@ -159,7 +170,7 @@ function Chat() {
         <div
           ref={usersContainer}
           className={`${
-            isTranslate ? "!translate-x-0" : ""
+            isTranslate ? "translate-x-0!" : ""
           } transition border dark:border-borderDark border-borderLight h-[700px] w-[350px] lg:relative right-0 absolute dark:bg-lightDark bg-lightLayout overflow-auto max-lg:translate-x-full`}
         >
           {users.map((user) => (
@@ -195,8 +206,21 @@ function Chat() {
     </div>
   );
 }
-
-const User = forwardRef(function User(
+type UserDataProps = {
+  id: number | string;
+  name: string;
+  adminId: number | string;
+  lastMessage?: string;
+  isActive?: boolean | number;
+  img?: string;
+  setIdServer: React.Dispatch<React.SetStateAction<any>>;
+  setChatData: React.Dispatch<React.SetStateAction<any>>;
+  setActiveTab: React.Dispatch<React.SetStateAction<number | string>>;
+  activeTab: string | number;
+  initSocketConnection: (adminId: string | number) => void;
+  socket: any;
+};
+const User = forwardRef<HTMLDivElement, UserDataProps>(function User(
   {
     id,
     name,
