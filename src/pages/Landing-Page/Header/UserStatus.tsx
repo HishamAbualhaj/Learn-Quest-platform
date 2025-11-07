@@ -1,13 +1,12 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../Button";
 import Avatar from "@/components/Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShare } from "@fortawesome/free-solid-svg-icons";
 import DropDown from "./DropDown";
 import { tabs, adminTabs } from "@/global/global";
-import ThemeContext, { Theme } from "@/context/ThemeContext";
-import { faBars, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import DarkModeToggle from "./DarkModeToggle";
 interface UserStatusProps {
   isStudent: boolean;
   isLoggedIn: boolean;
@@ -23,12 +22,6 @@ const UserStatus = ({
   image_url,
 }: UserStatusProps) => {
   const [active, setActive] = useState(false);
-
-
-  const { theme, setTheme } = useContext(Theme) ?? {
-    theme: "",
-    setTheme: () => {},
-  };
 
   return (
     <div className="flex items-center">
@@ -61,32 +54,15 @@ const UserStatus = ({
             </div>
             {active && ///
               (role === "admin" ? (
-                <DropDown
-                  tab={adminTabs}
-                  setActive={setActive}
-                  isStudent={false}
-                />
+                <DropDown tabs={adminTabs} setActive={setActive} />
               ) : (
-                <DropDown
-                  tab={tabs}
-                  dir="student"
-                  isStudent={isStudent}
-                  setActive={setActive}
-                />
+                <DropDown tabs={tabs} setActive={setActive} />
               ))}
           </div>
         </div>
       )}
-      <div
-        onClick={() => {
-          theme === "dark" ? setTheme("light") : setTheme("dark");
-        }}
-      >
-        <FontAwesomeIcon
-          className="cursor-pointer w-7 h-7 hover:bg-gray-600 hover:text-white rounded-md p-2"
-          icon={theme === "dark" ? faSun : faMoon}
-        />
-      </div>
+
+      <DarkModeToggle />
     </div>
   );
 };

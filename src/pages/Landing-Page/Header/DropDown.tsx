@@ -1,35 +1,21 @@
 import Link from "next/link";
-import { tabs } from "@/global/global";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dispatch, SetStateAction } from "react";
+import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 interface DropDownProps {
-  isStudent: boolean;
-  tab: Record<string, any>;
-  dir?: string;
+  tabs: { key: number; name: string; icon: IconDefinition; link: string }[];
   setActive: Dispatch<SetStateAction<boolean>>;
 }
-const DropDown = ({ isStudent, tab, dir, setActive }: DropDownProps) => {
-  const handleTabsName = (
-    isStudent: boolean,
-    tab: Record<string, any>,
-    dir: string
-  ) => {
-    const baseName = tab.name.replace(/\s+/g, "").toLowerCase();
-    if (isStudent) return baseName;
-
-    if (tab.name === "Log out") return baseName;
-
-    return dir ? `${dir}/${baseName}` : `/${baseName}`;
-  };
+const DropDown = ({ tabs, setActive }: DropDownProps) => {
   return (
-    <div className="transition-all duration-300 opacity-100 scale-100 shadow-custom z-20 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark pb-5 bg-white dark:bg-lightDark rounded-md">
+    <div className="transition-all duration-300 opacity-100 scale-100 shadow-custom z-20 dark:shadow-none w-[250px] flex justify-between flex-col absolute text-black dark:text-white md:-left-[45px] -left-[120%] top-[70px] border dark:border-borderDark border-borderLight pb-5 bg-white dark:bg-lightDark rounded-md">
       {tabs.map((tab) => (
         <Link
           onClick={() => {
             setActive(false);
           }}
           key={tab.key}
-          href={handleTabsName(isStudent, tab, dir ?? "")}
+          href={tab.link}
         >
           <div className="flex flex-col">
             <div

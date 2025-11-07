@@ -1,5 +1,4 @@
 import UserStatus from "./UserStatus";
-import ThemeContext from "@/context/ThemeContext";
 import Navs from "./Navs";
 import useSession from "@/lib/getSession";
 import Logo from "@/components/Logo";
@@ -10,18 +9,16 @@ export default async function Header({ isStudent = false }) {
     <div className="section relative">
       <div className={`${isStudent ? "" : "max-container"}`}>
         <div className="flex justify-between lg:gap-0 gap-5 items-center">
-         {isStudent &&  <Logo />}
+          {isStudent && <Logo />}
           {!isStudent && <Navs isStudent={isStudent} isLoggedIn={loggedIn} />}
 
-          <ThemeContext>
-            <UserStatus
-              isStudent={isStudent}
-              isLoggedIn={loggedIn ?? false}
-              first_name={userDataServer?.[0]?.first_name}
-              role={userDataServer?.[0]?.role}
-              image_url={userDataServer?.[0]?.image_url}
-            />
-          </ThemeContext>
+          <UserStatus
+            isStudent={isStudent}
+            isLoggedIn={loggedIn ?? false}
+            first_name={userDataServer?.[0]?.first_name}
+            role={userDataServer?.[0]?.role}
+            image_url={userDataServer?.[0]?.image_url}
+          />
         </div>
       </div>
     </div>
