@@ -1,10 +1,14 @@
+"use client";
 import { useState } from "react";
-import TableScroll from "../../components/TableScroll";
-import DeletePopUp from "../../components/DeletePopUp";
+import TableScroll from "@/components/TableScroll";
+import DeletePopUp from "@/components/DeletePopUp";
+import { User } from "@/types";
 function Users() {
-  const [deleteUserPopup, setdeleteUserPopup] = useState(false);
+  const [deleteUserPopup, setdeleteUserPopup] = useState<boolean>(false);
 
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState<
+    (User & { refetch: () => void }) | null
+  >();
 
   return (
     <>
@@ -12,15 +16,15 @@ function Users() {
         <DeletePopUp
           {...{
             setDeletePopup: setdeleteUserPopup,
-            id: userData.id,
-            data_name: userData.email,
-            refetch: userData.refetch,
+            id: String(userData?.student_id) ?? "",
+            data_name: userData?.email ?? "",
+            refetch: userData?.refetch ?? function () {},
             endpoint: "deleteUser",
             data_id: "user_id",
           }}
         />
       )}
-      <TableScroll
+      <TableScroll<User>
         title="Hello Admin"
         subtitle="Track users here ..."
         data_key="users"
@@ -63,8 +67,7 @@ function Users() {
           <div
             onClick={() => {
               setUserData({
-                id: user.student_id,
-                email: user.email,
+                ...user,
                 refetch,
               });
               setdeleteUserPopup(true);
@@ -74,6 +77,7 @@ function Users() {
             Delete
           </div>
         )}
+        Component={undefined}
       />
     </>
   );
