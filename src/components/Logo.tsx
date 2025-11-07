@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Logo({ textSize = "text-2xl" }: { textSize: string }) {
+export default function Logo({ textSize = "text-2xl" }: { textSize?: string }) {
   return (
     <Link href="/">
       <div
