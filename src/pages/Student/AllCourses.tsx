@@ -82,7 +82,7 @@ function AllCourses() {
         <div className="md:px-5 px-2">
           <div className="flex items-center justify-between md:flex-row flex-col max-md:gap-5">
             <div className="font-semibold text-4xl">Courses</div>
-            <div className="flex items-center gap-2 border dark:border-borderDark p-5 relative max-md:w-full max-sm:flex-col">
+            <div className="flex items-center gap-2 border dark:border-borderDark border-borderLight p-5 relative max-md:w-full max-sm:flex-col">
               <div className="absolute top-0 -translate-y-1/2 left-0 text-lg font-semibold px-5">
                 Filter
               </div>
@@ -101,7 +101,7 @@ function AllCourses() {
                     type: searchParams?.get("type") || null,
                   });
                 }}
-                className="border dark:border-borderDark  lg:w-[500px] xl:w-[700px] w-full rounded-md"
+                className="border dark:border-borderDark border-borderLight  lg:w-[500px] xl:w-[700px] w-full rounded-md"
                 type="text"
                 placeholder="search by name"
               />
@@ -157,7 +157,7 @@ function AllCourses() {
                 <div
                   ref={courses.at(-1) === course ? observedEle : null}
                   key={course.course_id}
-                  className="border dark:border-borderDark rounded-xl bg-white dark:bg-dark"
+                  className="border dark:border-borderDark border-borderLight rounded-xl bg-white dark:bg-dark"
                 >
                   <div>
                     <img
@@ -188,7 +188,7 @@ function AllCourses() {
                       {course.tabs?.split(",").map((category, i) => (
                         <div
                           key={i}
-                          className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark "
+                          className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark border-borderLight"
                         >
                           {category}
                         </div>
@@ -207,11 +207,7 @@ function AllCourses() {
                           : course.price + " $"}
                       </div>
                     </div>
-                    <Link
-                      href={`/student/CoursePage/${
-                        course.course_id
-                      }-${course.title?.replace(/[\s/]/g, "")}`}
-                    >
+                    <Link href={`/student/allcourses/${course.course_id}`}>
                       <Button
                         text="Join Now"
                         type={undefined}

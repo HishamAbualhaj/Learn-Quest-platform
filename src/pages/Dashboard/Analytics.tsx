@@ -37,7 +37,7 @@ function Analytics({ data }: { data: AnalyticsType | string }) {
       </div>
 
       <div className="mt-3">
-        <div className="rounded-md border dark:border-borderDark  p-3">
+        <div className="rounded-md border dark:border-borderDark border-borderLight p-3">
           <Panel
             icon={
               <FontAwesomeIcon
@@ -62,7 +62,7 @@ function Analytics({ data }: { data: AnalyticsType | string }) {
           </div>
         </div>
 
-        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark border-borderLight p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon
@@ -75,7 +75,7 @@ function Analytics({ data }: { data: AnalyticsType | string }) {
           />
         </div>
 
-        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark border-borderLight p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon
@@ -87,7 +87,7 @@ function Analytics({ data }: { data: AnalyticsType | string }) {
             number={obj?.reviews ?? "..."}
           />
         </div>
-        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark border-borderLight p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon
@@ -99,7 +99,7 @@ function Analytics({ data }: { data: AnalyticsType | string }) {
             number={obj?.blogs ?? "..."}
           />
         </div>
-        <div className="rounded-md border dark:border-borderDark p-3 mt-3">
+        <div className="rounded-md border dark:border-borderDark border-borderLight p-3 mt-3">
           <Panel
             icon={
               <FontAwesomeIcon

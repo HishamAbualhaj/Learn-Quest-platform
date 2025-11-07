@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "./Button";
 function DemoPage() {
   return (
@@ -6,7 +5,7 @@ function DemoPage() {
       <div className="max-container ">
         <div className="flex justify-between xl:flex-row flex-col xl:gap-0 gap-5">
           <div>
-            <div className="font-[600] lg:text-4xl text-xl">Our Platform</div>
+            <div className="font-semibold lg:text-4xl text-xl">Our Platform</div>
             <div className="text-black/50 max-w-[600px] dark:text-white/50 mt-2 leading-7">
               Our platform is designed to make learning effortless and
               inspiring, with personalized recommendations, interactive content,

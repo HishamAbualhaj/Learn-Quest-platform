@@ -158,7 +158,7 @@ function Dashboard({ children }: { children: React.ReactNode }) {
               onClick={() => {
                 setIsTranslate(!isTranslate);
               }}
-              className="text-2xl cursor-pointer xl:hidden text-black dark:text-white"
+              className="text-2xl cursor-pointer xl:hidden! text-black dark:text-white"
               icon={faBars}
             />
             <div className="flex justify-between xl:flex-1 items-center gap-3">
@@ -167,7 +167,7 @@ function Dashboard({ children }: { children: React.ReactNode }) {
               </div>
               <Link href="/logout">
                 <FontAwesomeIcon
-                  className="text-lg cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-3 px-5 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition"
+                  className="text-lg cursor-pointer dark:border-borderDark border-borderLight dark:bg-gray-500/70 bg-none dark:border-none border  py-3 px-5 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition"
                   icon={faRightFromBracket}
                 />
               </Link>

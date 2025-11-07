@@ -37,7 +37,7 @@ function CoursePreview() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="border dark:border-borderDark rounded-xl bg-white dark:bg-dark"
+              className="border dark:border-borderDark border-borderLight rounded-xl bg-white dark:bg-dark"
             >
               <div>
                 <img

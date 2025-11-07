@@ -60,7 +60,7 @@ function FrequentlyQuestions() {
     <div className="section py-16">
       <div className="max-container flex justify-center">
         <div className="max-w-[750px]">
-          <div className="font-[600] lg:text-2xl text-xl">
+          <div className="font-semibold lg:text-2xl text-xl">
             Frequently asked questions
           </div>
           <div className="text-black/50 max-w-[600px] dark:text-white/50 mt-2">
@@ -83,7 +83,7 @@ function FrequentlyQuestions() {
 function Question({ question, answer }) {
   const [activeQ, setActiveQ] = useState(false);
   return (
-    <div className="border-t dark:border-borderDark mt-5">
+    <div className="border-t dark:border-borderDark border-borderLight mt-5">
       <div className="flex flex-col gap-2">
         <div
           onClick={() => {

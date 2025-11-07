@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import ButtonAdmin from "../pages/Dashboard/ButtonAdmin";
-import useFetch, { FetchResponse } from "../hooks/useFetch";
+import useFetch from "../hooks/useFetch";
 import Alert from "./Alert";
 import API_BASE_URL from "../config/config";
 import { useMutation } from "@tanstack/react-query";
@@ -128,7 +128,7 @@ export default function CourseAction({
         method
       );
       const res = data.msg as unknown as { id: number; msg: string };
-      console.log("data msg", data?.msg);
+
       const { id } = res;
 
       const currentId = action === "add" ? id : course_id;
