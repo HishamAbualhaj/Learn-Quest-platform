@@ -12,31 +12,37 @@ const tabs = [
     key: 1,
     name: "Profile",
     icon: faUser,
+    link: "/student/profile",
   },
   {
     key: 2,
     name: "All Courses",
     icon: faPersonChalkboard,
+    link: "/student/allcourses",
   },
   {
     key: 3,
     name: "My Courses",
     icon: faPersonChalkboard,
+    link: "/student/mycourses",
   },
   {
     key: 4,
     name: "Chat",
     icon: faMessage,
+    link: "/student/chat",
   },
   {
     key: 5,
     name: "Blog",
     icon: faBlogger,
+    link: "/student/blog",
   },
   {
     key: 6,
     name: "Log out",
     icon: faRightFromBracket,
+    link: "/logout",
   },
 ];
 
@@ -45,11 +51,13 @@ const adminTabs = [
     key: 1,
     name: "dashboard",
     icon: faDashboard,
+    link: "/dashboard",
   },
   {
     key: 2,
     name: "Log out",
     icon: faRightFromBracket,
+    link: "/logout",
   },
 ];
 const navs = [
