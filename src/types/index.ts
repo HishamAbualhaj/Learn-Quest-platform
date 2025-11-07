@@ -47,6 +47,7 @@ export type CommentType = {
 };
 
 export type CourseMaterial = {
+  lesson_count: number;
   material_id: string;
   title: string;
   subtitle: string;
@@ -72,4 +73,19 @@ export type MessageType = {
   receiver_id: string;
   msg_text: string;
   created_date: string;
+};
+
+export type CourseDataResponse = {
+  msg: [Course, CourseMaterial[]] | string;
+  enrolled: boolean;
+};
+
+export type AnalyticsType = {
+  users: number;
+  active_users: number;
+  inactive_users: number;
+  courses: number;
+  reviews:number;
+  blogs:number;
+  time:string;
 };

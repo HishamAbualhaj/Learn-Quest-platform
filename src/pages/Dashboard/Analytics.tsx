@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBlog,
@@ -7,19 +6,23 @@ import {
   faStar,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
-import { useQuery } from "@tanstack/react-query";
-function Analytics() {
-  const { data } = useQuery({
-    queryFn: async () => {
-      return await useFetch(`${API_BASE_URL}/getAnalystic`, null, "GET");
-    },
-    queryKey: ["analytics"],
-    refetchOnWindowFocus: false,
-    refetchInterval: 1000,
-  });
+import { AnalyticsType } from "@/types";
 
+function Analytics({ data }: { data: AnalyticsType | string }) {
+  let obj: AnalyticsType;
+  if (typeof data === "string") {
+    obj = {
+      users: 0,
+      active_users: 0,
+      inactive_users: 0,
+      courses: 0,
+      reviews: 0,
+      blogs: 0,
+      time: "",
+    };
+  } else {
+    obj = { ...data };
+  }
   return (
     <div className="h-[800px] overflow-auto">
       <div className="flex items-center justify-between sm:flex-row flex-col">
@@ -43,18 +46,18 @@ function Analytics() {
               />
             }
             text={"Total users"}
-            number={data?.msg?.users ?? "..."}
+            number={obj?.users ?? "..."}
           />
           <div className="flex gap-3 lg:flex-row flex-col mt-3 ">
             <Panel
               icon={<Ping color={"green"} />}
               text={"Active users"}
-              number={data?.msg?.active_users ?? "..."}
+              number={obj?.active_users ?? "..."}
             />
             <Panel
               icon={<Ping color={"red"} />}
               text={"inactive users"}
-              number={data?.msg?.inactive_users ?? "..."}
+              number={obj?.inactive_users ?? "..."}
             />
           </div>
         </div>
@@ -68,7 +71,7 @@ function Analytics() {
               />
             }
             text={"total courses"}
-            number={data?.msg?.courses ?? "..."}
+            number={obj?.courses ?? "..."}
           />
         </div>
 
@@ -81,7 +84,7 @@ function Analytics() {
               />
             }
             text={"total reviews"}
-            number={data?.msg?.reviews ?? "..."}
+            number={obj?.reviews ?? "..."}
           />
         </div>
         <div className="rounded-md border dark:border-borderDark p-3 mt-3">
@@ -93,7 +96,7 @@ function Analytics() {
               />
             }
             text={"total blog posts"}
-            number={data?.msg?.blogs ?? "..."}
+            number={obj?.blogs ?? "..."}
           />
         </div>
         <div className="rounded-md border dark:border-borderDark p-3 mt-3">
@@ -105,7 +108,7 @@ function Analytics() {
               />
             }
             text={"System up time"}
-            number={`${data?.msg?.time ?? "..."}`}
+            number={`${obj?.time ?? "..."}`}
           />
         </div>
       </div>

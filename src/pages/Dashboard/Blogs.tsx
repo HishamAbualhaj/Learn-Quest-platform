@@ -1,29 +1,33 @@
-import TableScroll from "../../components/TableScroll";
-import { Link } from "react-router-dom";
+"use client";
+import TableScroll from "@/components/TableScroll";
 import ButtonAdmin from "./ButtonAdmin";
-import DeletePopUp from "../../components/DeletePopUp";
+import DeletePopUp from "@/components/DeletePopUp";
 import { useState } from "react";
+import Link from "next/link";
+import { BlogType } from "@/types";
 function Blogs() {
   const [deleteBlogPopup, setdeleteBloPopup] = useState(false);
 
-  const [blogData, setBlogData] = useState({});
+  const [blogData, setBlogData] = useState<
+    (BlogType & { refetch: () => void }) | null
+  >();
   return (
     <>
       {deleteBlogPopup && (
         <DeletePopUp
           {...{
             setDeletePopup: setdeleteBloPopup,
-            id: blogData.id,
-            data_name: blogData.title,
-            refetch: blogData.refetch,
+            id: String(blogData?.blog_id) ?? "",
+            data_name: blogData?.title ?? "",
+            refetch: blogData?.refetch ?? function () {},
             endpoint: "deleteBlog",
             data_id: "blog_id",
           }}
         />
       )}
-      <TableScroll
+      <TableScroll<BlogType>
         title="Blog"
-        subtile="Track blog here"
+        subtitle="Track blog here"
         data_key="blogs"
         data_id="blog_id"
         endpoint="getBlogData"
@@ -34,7 +38,7 @@ function Blogs() {
         ]}
         customActions={(blog, refetch) => (
           <>
-            <Link to={`edit/${blog?.blog_id}`} state={2}>
+            <Link href={`/dashboard/blogs/edit/${blog?.blog_id}`}>
               <div className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition">
                 Edit
               </div>
@@ -43,8 +47,7 @@ function Blogs() {
               onClick={() => {
                 setdeleteBloPopup(!deleteBlogPopup);
                 setBlogData({
-                  id: blog?.blog_id,
-                  title: blog?.title,
+                  ...blog,
                   refetch,
                 });
               }}
@@ -54,11 +57,11 @@ function Blogs() {
             </div>
           </>
         )}
-        Component={() => (
-          <Link to="add">
+        Component={
+          <Link href="/dashboard/blogs/add">
             <ButtonAdmin text="Add Blog" />
           </Link>
-        )}
+        }
       />
     </>
   );

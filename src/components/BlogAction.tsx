@@ -1,24 +1,43 @@
+"use client";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
 import ButtonAdmin from "../pages/Dashboard/ButtonAdmin";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import API_BASE_URL from "../config/config";
 import Alert from "./Alert";
-import { UserData } from "../context/UserDataContext";
-function BlogAction({ endpoint, method, action, blog_id, title }) {
-  const [blogData, setBlogData] = useState({
-    title: "",
-    subtitle: "",
-    content: "",
-  });
-  const [user_data, setUserData] = useState(null);
-  const [image, setImage] = useState(null);
-  const [alert, setAlert] = useState(null);
+import Link from "next/link";
+import { BlogType, User } from "@/types";
+interface BlogActionProps {
+  endpoint: string;
+  blog_id: string;
+  action: "add" | "edit";
+  title: string;
+  method: string;
+  userData: User;
+  blogDataResponse: BlogType | {};
+}
+function BlogAction({
+  endpoint,
+  blog_id,
+  action,
+  title,
+  method,
+  userData,
+  blogDataResponse,
+}: BlogActionProps) {
+  const [blogData, setBlogData] = useState<BlogType | {}>(blogDataResponse);
+
+  const [image, setImage] = useState<HTMLInputElement | null>(null);
+
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: { id: number; msg: string } | string;
+  } | null>(null);
   const inputs = [
     {
       key: 1,
@@ -35,62 +54,38 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
       placeholder: "Blog Subtitle",
     },
   ];
-  const data_user = useContext(UserData);
-  useEffect(() => {
-    if (data_user) {
-      const [{ student_id, role, email }] = data_user?.userData ?? [
-        {
-          student_id: null,
-          role: null,
-          email: null,
-        },
-      ];
-      setUserData({ student_id, role, email });
-    }
-  }, [data_user]);
 
-  useEffect(() => {
-    if (blog_id) {
-      async function getData() {
-        const res = await useFetch(
-          `${API_BASE_URL}/getBlogData`,
-          { blog_id },
-          "POST"
-        );
-
-        const [blogDataFetched] = res.msg;
-
-        setBlogData(blogDataFetched);
-      }
-      getData();
-    }
-  }, [blog_id]);
-
-  const { data, isPending, mutate } = useMutation({
+  const { isPending, mutate } = useMutation({
     mutationFn: async () => {
       const updatedBlogData = {
         ...blogData,
-        admin_id: user_data.student_id,
-        role: user_data.role,
-        email: user_data.email,
+        admin_id: userData.student_id,
+        role: userData.role,
+        email: userData.email,
       };
-      const data = await useFetch(
+      const data = await useFetch<{ id: number; msg: string } | string>(
         `${API_BASE_URL}/${endpoint}`,
         updatedBlogData,
         method
       );
-
-      const { id } = data?.msg;
+      const res = data.msg as unknown as { id: number; msg: string };
+      const { id } = res;
 
       const currentId = action === "add" ? id : blog_id;
 
       if (image) {
         const formData = new FormData();
-        formData.append("image", image.files[0]);
-        formData.append("id", currentId);
+        formData.append("image", image.files![0]);
+        formData.append("id", String(currentId));
         await uploadImage(formData);
       }
       return data;
+    },
+    onSuccess: (data) => {
+      setAlert(data);
+    },
+    onError: (error) => {
+      console.log("Error", error);
     },
   });
   async function uploadImage(file) {
@@ -103,7 +98,9 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
     await response.json();
   }
 
-  function handleChange(e) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     if (typeof e === "string") {
       setBlogData((prev) => ({
         ...prev,
@@ -114,7 +111,11 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
     }
     let { id, value } = e.target;
 
-    if (id === "image") {
+    if (
+      id === "image" &&
+      e.target instanceof HTMLInputElement &&
+      e.target.files
+    ) {
       value = e.target.files[0]?.name;
       setImage(e.target);
 
@@ -126,17 +127,12 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
     }
     setBlogData((prev) => ({ ...prev, [id]: value }));
   }
-
-  useEffect(() => {
-    setAlert(data);
-  }, [data]);
-
   return (
     <>
       <div className="rounded-sm  w-full overflow-auto h-[800px]">
         <div className="text-center dark:text-white text-black text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
           {title}
-          <Link to="/dashboard/blogs">
+          <Link href="/dashboard/blogs">
             <FontAwesomeIcon
               className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
               icon={faXmark}
@@ -147,9 +143,14 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
         <div className="p-3">
           {alert &&
             (alert.status ? (
-              <Alert msg={alert.msg.msg} type="success" />
+              <Alert
+                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
+                type="success"
+              />
             ) : (
-              <Alert msg={alert.msg} />
+              <Alert
+                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
+              />
             ))}
           {inputs.map((input) => (
             <div
@@ -184,18 +185,22 @@ function BlogAction({ endpoint, method, action, blog_id, title }) {
             </div>
           </div>
 
-          <ReactQuill
+          {/* <ReactQuill
             theme="snow"
             value={blogData.content || ""}
             onChange={handleChange}
             className="quill-wrapper mt-5"
-          />
+          /> */}
           {isPending ? (
             <div>
               <ButtonAdmin text="LOADING ... " />
             </div>
           ) : (
-            <div onClick={mutate}>
+            <div
+              onClick={() => {
+                mutate();
+              }}
+            >
               <ButtonAdmin text={String(action).toUpperCase()} />
             </div>
           )}
