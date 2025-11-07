@@ -1,12 +1,16 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+"use client";
+import { Dispatch, SetStateAction, useState } from "react";
 import ButtonAdmin from "./ButtonAdmin";
 import TableScroll from "../../components/TableScroll";
 import DeletePopUp from "../../components/DeletePopUp";
+import { Course } from "@/types";
+import Link from "next/link";
 function Courses() {
-  const [deleteCoursePopup, setdeleteCoursePopup] = useState(false);
+  const [deleteCoursePopup, setdeleteCoursePopup] = useState<boolean>(false);
 
-  const [courseData, setCourseData] = useState({});
+  const [courseData, setCourseData] = useState<
+    (Course & { refetch: () => void }) | null
+  >();
 
   return (
     <>
@@ -14,17 +18,17 @@ function Courses() {
         <DeletePopUp
           {...{
             setDeletePopup: setdeleteCoursePopup,
-            id: courseData.id,
-            data_name: courseData.title,
-            refetch: courseData.refetch,
+            id: String(courseData?.course_id) ?? "",
+            data_name: courseData?.title ?? "",
+            refetch: courseData?.refetch ?? function () {},
             endpoint: "deleteCourse",
             data_id: "course_id",
           }}
         />
       )}
-      <TableScroll
+      <TableScroll<Course>
         title="Course Panel"
-        subtile="Track courses and manage them"
+        subtitle="Track courses and manage them"
         data_key="courses"
         data_id="course_id"
         endpoint="getCoursesAdmin"
@@ -42,7 +46,7 @@ function Courses() {
         ]}
         customActions={(course, refetch) => (
           <>
-            <Link to={`edit/${course?.course_id}`} state={2}>
+            <Link href={`/dashboard/courses/edit/${course?.course_id}`}>
               <div className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition">
                 Edit
               </div>
@@ -51,8 +55,7 @@ function Courses() {
               onClick={() => {
                 setdeleteCoursePopup(!deleteCoursePopup);
                 setCourseData({
-                  id: course?.course_id,
-                  title: course?.title,
+                  ...course,
                   refetch,
                 });
               }}
@@ -62,11 +65,11 @@ function Courses() {
             </div>
           </>
         )}
-        Component={() => (
-          <Link to="add">
-            <ButtonAdmin text="Add Course" />
+        Component={
+          <Link href="/dashboard/courses/add">
+            <ButtonAdmin text="Add Course" props={""} />
           </Link>
-        )}
+        }
       />
     </>
   );

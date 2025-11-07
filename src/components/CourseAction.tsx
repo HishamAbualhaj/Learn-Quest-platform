@@ -1,69 +1,34 @@
-import { useEffect, useState } from "react";
+"use client";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 import ButtonAdmin from "../pages/Dashboard/ButtonAdmin";
-import useFetch from "../hooks/useFetch";
+import useFetch, { FetchResponse } from "../hooks/useFetch";
 import Alert from "./Alert";
-import { UserData } from "../context/UserDataContext";
 import API_BASE_URL from "../config/config";
-import { useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { Course, CourseDataResponse, CourseMaterial, User } from "@/types";
+import Link from "next/link";
+
+interface CourseActionProps {
+  endpoint: string;
+  course_id: string;
+  action: "add" | "edit";
+  title: string;
+  method: string;
+  userData: User;
+  courseDataResponse?: CourseDataResponse;
+}
+
 export default function CourseAction({
   endpoint,
   course_id,
   action,
   title,
   method,
-}) {
-  const [alert, setAlert] = useState(null);
-  const [user_data, setUserData] = useState(null);
-  const [image, setImage] = useState(null);
-
-  const data_user = useContext(UserData);
-  useEffect(() => {
-    if (data_user) {
-      const [{ student_id, role, email }] = data_user?.userData;
-      setUserData({ student_id, role, email });
-    }
-  }, [data_user]);
-  let defaultData = {
-    title: "",
-    price: "",
-    discount: "",
-    category: "",
-    image_url: "",
-    description: "",
-    tabs: [""],
-    materials: [],
-  };
-  const [courseData, setCourseData] = useState(defaultData);
-
-  useEffect(() => {
-    if (course_id && user_data) {
-      async function getData() {
-        const res = await useFetch(
-          `${API_BASE_URL}/getCourseData`,
-          { course_id: course_id, ...user_data },
-          "POST"
-        );
-        const { msg } = res.msg;
-
-        const [courseDataFetched, courseMaterial] = msg;
-
-        setCourseData(courseDataFetched);
-
-        addLessonForEdit(courseMaterial);
-
-        setCourseData((pre) => ({
-          ...pre,
-          course_id: Number(course_id),
-        }));
-      }
-      getData();
-    }
-  }, [course_id, user_data]);
-
+  userData,
+  courseDataResponse,
+}: CourseActionProps) {
   const inputs = [
     {
       key: 1,
@@ -106,41 +71,86 @@ export default function CourseAction({
     { id: 9, name: "Machine Learning and Artificial Intelligence" },
     { id: 10, name: "DevOps and Continuous Integration/Delivery" },
   ];
+  const [alert, setAlert] = useState<{
+    redirect: boolean;
+    status: boolean;
+    msg: { id: number; msg: string } | string;
+  } | null>(null);
 
-  const { data, isPending, mutate } = useMutation({
+  const [image, setImage] = useState<HTMLInputElement | null>(null);
+
+  const course =
+    typeof courseDataResponse?.msg !== "string"
+      ? courseDataResponse?.msg[0]
+      : ({} as Course);
+  const courseMaterial =
+    typeof courseDataResponse?.msg !== "string"
+      ? courseDataResponse?.msg[1]
+      : [];
+  const [courseData, setCourseData] = useState<
+    Course & { materials: CourseMaterial[] }
+  >({
+    course_id: course?.course_id ?? 0,
+    title: course?.title ?? "",
+    description: course?.description ?? "",
+    price: course?.price ?? 0,
+    discount: course?.discount ?? 0,
+    category: course?.category ?? "",
+    image_url: course?.image_url ?? "",
+    tabs: course?.tabs ?? "",
+    stars: course?.stars ?? 0,
+    lessons: course?.lessons ?? 0,
+    created_date: course?.created_date ?? "",
+    materials: courseMaterial ?? [],
+  });
+
+  useEffect(() => {
+    if (typeof courseDataResponse?.msg !== "string")
+      addLessonForEdit(courseDataResponse?.msg[1] ?? []);
+
+    setCourseData((pre) => ({
+      ...pre,
+      course_id: Number(course_id),
+    }));
+  }, []);
+
+  const { isPending, mutate } = useMutation({
     mutationFn: async () => {
       const updatedCourseData = {
         ...courseData,
-        student_id: user_data.student_id,
-        role: user_data.role,
-        email: user_data.email,
+        student_id: userData.student_id,
+        role: userData.role,
+        email: userData.email,
       };
-      const data = await useFetch(
+      const data = await useFetch<{ id: number; msg: string } | string>(
         `${API_BASE_URL}/${endpoint}`,
         updatedCourseData,
         method
       );
-
-      const { id } = data?.msg;
+      const res = data.msg as unknown as { id: number; msg: string };
+      console.log("data msg", data?.msg);
+      const { id } = res;
 
       const currentId = action === "add" ? id : course_id;
 
       if (image) {
         const formData = new FormData();
-        formData.append("image", image.files[0]);
-        formData.append("id", currentId);
+        formData.append("image", image.files![0]);
+        formData.append("id", String(currentId));
         await uploadImage(formData);
       }
 
       return data;
     },
+    onSuccess: (data) => {
+      setAlert(data);
+    },
+    onError: (error) => {
+      console.log("Error", error);
+    },
   });
 
-  useEffect(() => {
-    setAlert(data);
-  }, [data]);
-
-  async function uploadImage(file) {
+  async function uploadImage(file: FormData) {
     //Specific case for uploading image, (No need to manually set Content-Type)
     const response = await fetch(`${API_BASE_URL}/handleUploads`, {
       method: "POST",
@@ -150,10 +160,20 @@ export default function CourseAction({
     await response.json();
   }
 
-  function handleChange(e) {
+  function handleChange(
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) {
     let { id, value } = e.target;
-    if (id === "image") {
-      value = e.target.files[0]?.name;
+    if (
+      id === "image" &&
+      e.target instanceof HTMLInputElement &&
+      e.target.files
+    ) {
+      const file = e.target.files[0];
+
+      value = file.name;
       setImage(e.target);
 
       setCourseData({
@@ -163,16 +183,23 @@ export default function CourseAction({
 
       return;
     }
+
+    let tabsValue: string[] | null = null;
+
     if (id === "tabs") {
-      value = value.split(" ");
+      tabsValue = value.split(" ");
     }
     setCourseData({
       ...courseData,
-      [id]: value,
+      [id]: tabsValue ? tabsValue : value,
     });
   }
+
   // handle lesson change
-  function handleLessonChange(e, lesson_id) {
+  function handleLessonChange(
+    e: ChangeEvent<HTMLInputElement>,
+    lesson_id: number
+  ) {
     const { id, value } = e.target;
     const updateMaterial = [...courseData.materials];
     // update prev value for each lesson
@@ -185,17 +212,20 @@ export default function CourseAction({
       materials: updateMaterial,
     });
   }
-  function addLessonForEdit(courseMaterials) {
-    let courseMaterialsArr = [];
+
+  function addLessonForEdit(courseMaterials: CourseMaterial[]) {
+    let courseMaterialsArr: CourseMaterial[] = [];
     let count = 1;
     courseMaterialsArr = courseMaterials.map((obj) => {
       const { title, subtitle, url } = obj;
       const updateMaterial = {
         lesson_count: count,
-        id: obj.material_id || obj.id,
+        material_id: obj.material_id,
         title: title,
         subtitle: subtitle,
         url: url,
+        isCompleted: 0,
+        created_date: "",
       };
       count += 1;
 
@@ -214,17 +244,19 @@ export default function CourseAction({
         ...courseData.materials,
         {
           lesson_count: (courseData.materials.at(-1)?.lesson_count || 0) + 1,
-          id: Math.round(Math.random() * 10000),
+          material_id: String(Math.round(Math.random() * 10000)),
           title: "",
           subtitle: "",
           url: "",
+          isCompleted: 0,
+          created_date: "",
         },
       ],
     });
   }
-  function deleteLesson(id) {
+  function deleteLesson(id: string) {
     let courseMaterialsArr = courseData.materials.filter(
-      (obj) => id !== obj.id
+      (obj) => id !== obj.material_id
     );
 
     addLessonForEdit(courseMaterialsArr);
@@ -234,7 +266,7 @@ export default function CourseAction({
       <div className="rounded-sm  w-full overflow-auto h-[800px]">
         <div className="text-center dark:text-white text-black text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
           {title}
-          <Link to="/dashboard/courses">
+          <Link href="/dashboard/courses">
             <FontAwesomeIcon
               className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
               icon={faXmark}
@@ -245,9 +277,14 @@ export default function CourseAction({
         <div className="p-3">
           {alert &&
             (alert.status ? (
-              <Alert msg={alert.msg.msg} type="success" />
+              <Alert
+                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
+                type="success"
+              />
             ) : (
-              <Alert msg={alert.msg} />
+              <Alert
+                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
+              />
             ))}
 
           {inputs.map((input) => (
@@ -281,7 +318,7 @@ export default function CourseAction({
                 <option
                   className="text-black"
                   key={category.id}
-                  id={category.id}
+                  id={String(category.id)}
                   value={`${category.name}`}
                 >
                   {category.name}
@@ -321,13 +358,13 @@ export default function CourseAction({
             <div className="h-[450px] overflow-auto border-2 dark:border-borderDark rounded-md p-4 mt-2">
               {courseData.materials.map((obj) => (
                 <div
-                  key={obj.id}
+                  key={obj.material_id}
                   className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
                 >
                   <div className="flex justify-end">
                     <div
                       onClick={() => {
-                        deleteLesson(obj.id);
+                        deleteLesson(obj.material_id);
                       }}
                       className=" dark:bg-borderDark bg-borderLight w-fit p-2 rounded-md cursor-pointer text-red-300 hover:text-red-500"
                     >
@@ -403,7 +440,11 @@ export default function CourseAction({
               <ButtonAdmin text="LOADING ... " />
             </div>
           ) : (
-            <div onClick={mutate}>
+            <div
+              onClick={() => {
+                mutate();
+              }}
+            >
               <ButtonAdmin text={String(action).toUpperCase()} />
             </div>
           )}
