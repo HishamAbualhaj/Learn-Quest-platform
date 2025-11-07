@@ -3,38 +3,53 @@ import useInfiniteScroll from "../hooks/useInfiniteScroll";
 import API_BASE_URL from "../config/config";
 import { useState, useRef, useEffect } from "react";
 
-function TableScroll({
+interface TableScrollProps<T extends Record<string, any> = any> {
+  title: string;
+  subtitle: string;
+  data_key: string;
+  data_id: string;
+  endpoint: string;
+  columns: {
+    key: keyof T | "action";
+    label: string;
+    render?: (value: string, item: T) => React.ReactNode;
+  }[];
+  customActions: (data: T, refetch: () => void) => React.ReactNode;
+  Component: React.ReactNode;
+}
+function TableScroll<T extends Record<string, any> = any>({
   title,
-  subtile,
+  subtitle,
   data_key,
   data_id,
   endpoint,
-  columns = [],
-  customActions = null,
-  Component = () => <></>,
-}) {
-  const [data, setData] = useState([]);
-  const [lastNode, setLastNode] = useState(null);
-  const dataContainer = useRef();
-  const { dataFetched, isFetching, hasNextPage, refetch } = useInfiniteScroll({
-    fetchFn: (pagePara) => {
-      return useFetch(
-        `${API_BASE_URL}/${endpoint}`,
-        { page: pagePara },
-        "POST"
-      );
-    },
-    queryKey: [data_key],
-    scrollContainer: dataContainer,
-    observedEle: lastNode,
-    data_id: data_id,
-  });
+  columns,
+  customActions,
+  Component,
+}: TableScrollProps<T>) {
+  const [data, setData] = useState<T[]>([]);
+  const [lastNode, setLastNode] = useState<HTMLTableRowElement | null>(null);
+  const dataContainer = useRef<HTMLInputElement | null>(null);
+  const { dataFetched, isFetching, hasNextPage, refetch } =
+    useInfiniteScroll<T>({
+      fetchFn: (pagePara) => {
+        return useFetch(
+          `${API_BASE_URL}/${endpoint}`,
+          { page: pagePara },
+          "POST"
+        );
+      },
+      queryKey: [data_key],
+      scrollContainer: dataContainer,
+      observedEle: lastNode,
+      data_id: data_id,
+    });
 
   useEffect(() => {
     setData(dataFetched);
   }, [dataFetched]);
 
-  const observeEle = (node) => {
+  const observeEle = (node: HTMLTableRowElement) => {
     setLastNode(node);
   };
 
@@ -46,21 +61,21 @@ function TableScroll({
             {title}
           </div>
           <div className="dark:text-gray-400 text-lightText mt-2 ">
-            {subtile}
+            {subtitle}
           </div>
         </div>
-        <Component />
+        {Component}
       </div>
 
-      <div
-        ref={dataContainer}
-        className="h-[650px] mt-10 overflow-auto pr-5"
-      >
+      <div ref={dataContainer} className="h-[650px] mt-10 overflow-auto pr-5">
         <table className="dark:text-gray-300 text-lightText w-full">
           <thead>
             <tr className="border-t border-b dark:border-borderDark border-borderLight">
               {columns.map((col) => (
-                <td key={col.key} className="py-4 font-bold whitespace-nowrap">
+                <td
+                  key={String(col.key)}
+                  className="py-4 font-bold whitespace-nowrap"
+                >
                   {col.label}
                 </td>
               ))}
@@ -79,7 +94,7 @@ function TableScroll({
                     <></>
                   ) : (
                     <td
-                      key={col.key}
+                      key={String(col.key)}
                       className="py-4 whitespace-nowrap xl:pr-0 pr-8"
                     >
                       {col.render
