@@ -3,9 +3,6 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import Messages from "../Dashboard/Messages";
-import { useQuery } from "@tanstack/react-query";
-import useFetch from "@/hooks/useFetch";
-import API_BASE_URL from "@/config/config";
 import { API_WEB_SOCKET } from "@/config/config";
 import { User } from "@/types";
 
@@ -43,31 +40,21 @@ function ChatStudent({ adminData, userData }: ChatStudentProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
 
-  const { data } = useQuery({
-    queryFn: async () => {
-      return await useFetch(`${API_BASE_URL}/getAdminId`, null, "GET");
-    },
-    queryKey: ["admin_id"],
-    refetchOnWindowFocus: false,
-  });
-
   useEffect(() => {
-    if (data) {
-      const { student_id, first_name, last_name, image_url } = adminData;
+    const { student_id, first_name, last_name, image_url } = adminData;
 
-      setServerData((prev) => ({
-        ...prev,
-        receiver_id: String(student_id),
-      }));
+    setServerData((prev) => ({
+      ...prev,
+      receiver_id: String(student_id),
+    }));
 
-      setChatData((prev) => ({
-        ...prev,
-        receiver_id: String(student_id),
-        receiver_name: `${first_name} ${last_name}`,
-        receiver_image: image_url,
-      }));
-    }
-  }, [data]);
+    setChatData((prev) => ({
+      ...prev,
+      receiver_id: String(student_id),
+      receiver_name: `${first_name} ${last_name}`,
+      receiver_image: image_url,
+    }));
+  }, []);
   const initSocketConnection = (sender_id) => {
     socketRef.current = new WebSocket(API_WEB_SOCKET ?? "");
 
