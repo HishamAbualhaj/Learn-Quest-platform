@@ -94,7 +94,7 @@ function Messages({
     queryClient.setQueryData(
       getChatkey(Number(sender_id), Number(receiver_id)),
       (oldMsg: {
-        pages: FetchResponse<MessageType>[];
+        pages: FetchResponse<MessageType[]>[];
         pageParams: number[];
       }) => {
         console.log(oldMsg);

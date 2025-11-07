@@ -1,13 +1,7 @@
 import { FetchResponse } from "./useFetch";
-type PageResponse<T> = {
-  status: boolean;
-  msg: T[] | string;
-  redirect: boolean;
-  nextPage?: number;
-};
 
 function useArrange<T extends Record<string, any>>(
-  data: { pages: PageResponse<T>[] } | undefined,
+  data: { pages: FetchResponse<T>[] } | undefined,
   id: keyof T
 ): T[] {
   // extracting data array from each response object

@@ -75,6 +75,14 @@ export type MessageType = {
   created_date: string;
 };
 
+export type LogMessage = {
+  log_id: string;
+  message: string;
+  email: string;
+  time: string;
+  student_id: string;
+  created_date: string;
+};
 export type CourseDataResponse = {
   msg: [Course, CourseMaterial[]] | string;
   enrolled: boolean;
@@ -85,7 +93,7 @@ export type AnalyticsType = {
   active_users: number;
   inactive_users: number;
   courses: number;
-  reviews:number;
-  blogs:number;
-  time:string;
+  reviews: number;
+  blogs: number;
+  time: string;
 };

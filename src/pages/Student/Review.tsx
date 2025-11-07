@@ -231,6 +231,3 @@ const ReviewData = forwardRef<HTMLDivElement, ReviewDataProps>(
 );
 
 export default Review;
-
-{
-}

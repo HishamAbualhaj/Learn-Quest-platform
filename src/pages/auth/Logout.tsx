@@ -2,8 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-
-async function Logout() {
+function Logout() {
   const router = useRouter();
   useEffect(() => {
     router.push("/");
