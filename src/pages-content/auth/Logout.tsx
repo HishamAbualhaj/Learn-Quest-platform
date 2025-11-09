@@ -6,8 +6,8 @@ function Logout() {
   const router = useRouter();
   useEffect(() => {
     router.push("/");
-  }, []);
-  return <></>;
+  }, [router]);
+  return null;
 }
 
 export default Logout;
