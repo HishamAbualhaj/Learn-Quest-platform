@@ -3,6 +3,9 @@ import { Montserrat } from "next/font/google";
 import "@/index.css";
 import { ReactQueryProvider } from "@/lib/ReactQueryProvider";
 import ThemeContext from "@/context/ThemeContext";
+
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Learn Quest",
   description: "E-learning platform",

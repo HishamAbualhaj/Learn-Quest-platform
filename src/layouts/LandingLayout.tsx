@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../pages-content/Landing-Page/Header/Header";
 import Hero from "../pages-content/Landing-Page/Hero";
 import Feature from "../pages-content/Landing-Page/Feature";
