@@ -1,4 +1,4 @@
-import AddBlog from "@/pages/Dashboard/AddBlog";
+import AddBlog from "@/pages-content/Dashboard/AddBlog";
 
 const page = () => {
   return <AddBlog />;

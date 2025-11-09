@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
-import ButtonAdmin from "../pages/Dashboard/ButtonAdmin";
+import ButtonAdmin from "../pages-content/Dashboard/ButtonAdmin";
 import useFetch from "../hooks/useFetch";
 import Alert from "./Alert";
 import API_BASE_URL from "../config/config";

@@ -11,12 +11,11 @@ import Button from "@/components/Button";
 import { useQuery } from "@tanstack/react-query";
 import useFetch from "@/hooks/useFetch";
 import API_BASE_URL from "@/config/config";
-import { UserData } from "@/context/UserDataContext";
 import Loader from "@/components/Loader";
 import { useRouter, useSearchParams } from "next/navigation";
-import { EnrolledCourse } from "@/types";
+import { EnrolledCourse, User } from "@/types";
 import Link from "next/link";
-function MyCourses() {
+function MyCourses({ userData }: { userData: User }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -48,31 +47,23 @@ function MyCourses() {
 
   const [currentPagePara, setCurrentPage] = useState<number>(Number(page));
 
-  const [studentId, setStudentId] = useState();
-
   const [fetchData, setFetchData] = useState({
     page: currentPagePara,
     search_text: searchParams?.get("search") || null,
     select_data: searchParams?.get("type") || null,
   });
-  const user_data = useContext(UserData);
-  useEffect(() => {
-    if (user_data) {
-      setStudentId(user_data?.userData?.[0]?.student_id ?? null);
-    }
-  }, [user_data]);
 
   const [courses, setCourses] = useState<EnrolledCourse[]>([]);
 
   const [maxPage, setMaxPage] = useState(1);
   const { data, isFetching, refetch } = useQuery({
     queryFn: async () => {
-      if (!studentId) return;
+      if (!userData.student_id) return;
       return await useFetch(
         `${API_BASE_URL}/getEnrolledCourses`,
         {
           page: currentPagePara,
-          student_id: studentId,
+          student_id: userData.student_id,
           search_text:
             fetchData.search_text === "null" ? null : fetchData.search_text,
           select_data:
@@ -82,7 +73,7 @@ function MyCourses() {
       );
     },
     queryKey: ["enrolled_courses", currentPagePara, fetchData.select_data],
-    enabled: !!studentId,
+    enabled: !!userData.student_id,
     refetchOnWindowFocus: false,
   });
 

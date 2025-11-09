@@ -1,4 +1,4 @@
-import Profile from "@/pages/Student/Profile/Profile";
+import Profile from "@/pages-content/Student/Profile/Profile";
 const page = () => {
   return <Profile />;
 };

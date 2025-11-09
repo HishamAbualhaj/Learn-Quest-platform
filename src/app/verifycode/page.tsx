@@ -1,4 +1,4 @@
-import VerifyCode from "@/pages/auth/VerifyCode";
+import VerifyCode from "@/pages-content/auth/VerifyCode";
 const page = () => {
   return <VerifyCode />;
 };

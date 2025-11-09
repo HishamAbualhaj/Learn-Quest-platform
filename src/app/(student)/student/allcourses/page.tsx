@@ -1,7 +1,7 @@
 import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getQueryClient from "@/lib/getQueryClient";
-import AllCourses from "@/pages/Student/AllCourses";
+import AllCourses from "@/pages-content/Student/AllCourses";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 const page = async ({

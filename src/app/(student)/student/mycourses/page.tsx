@@ -2,7 +2,7 @@ import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getQueryClient from "@/lib/getQueryClient";
 import getSession from "@/lib/getSession";
-import MyCourses from "@/pages/Student/MyCourses";
+import MyCourses from "@/pages-content/Student/MyCourses";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 const page = async ({
   searchParams,
@@ -36,7 +36,7 @@ const page = async ({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <MyCourses />
+      <MyCourses userData={userDataServer?.[0]}/>
     </HydrationBoundary>
   );
 };

@@ -1,4 +1,4 @@
-import ConfirmPass from "@/pages/auth/ConfirmPass";
+import ConfirmPass from "@/pages-content/auth/ConfirmPass";
 const page = () => {
   return <ConfirmPass />;
 };

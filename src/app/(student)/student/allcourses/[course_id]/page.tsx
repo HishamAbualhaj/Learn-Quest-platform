@@ -1,7 +1,7 @@
 import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";
-import CoursePage from "@/pages/Student/CoursePage";
+import CoursePage from "@/pages-content/Student/CoursePage";
 import { Course, CourseMaterial } from "@/types";
 
 const page = async ({ params }: { params: Promise<{ course_id: string }> }) => {

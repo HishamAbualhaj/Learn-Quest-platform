@@ -1,7 +1,7 @@
 import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";
-import ChatStudent from "@/pages/Student/ChatStudent";
+import ChatStudent from "@/pages-content/Student/ChatStudent";
 import { User } from "@/types";
 
 const page = async () => {

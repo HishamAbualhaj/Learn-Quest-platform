@@ -1,5 +1,5 @@
 import getSession from "@/lib/getSession";
-import EditProfile from "@/pages/Student/Profile/EditProfile";
+import EditProfile from "@/pages-content/Student/Profile/EditProfile";
 
 const page = async () => {
   const data = [

@@ -1,7 +1,7 @@
 "use client";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ButtonAdmin from "../pages/Dashboard/ButtonAdmin";
+import ButtonAdmin from "../pages-content/Dashboard/ButtonAdmin";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";

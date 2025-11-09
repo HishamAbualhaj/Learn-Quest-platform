@@ -1,7 +1,7 @@
 import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";
-import BlogPost from "@/pages/Student/BlogPost";
+import BlogPost from "@/pages-content/Student/BlogPost";
 
 const page = async ({ params }: { params: Promise<{ blog_id: string }> }) => {
   const user = (await getSession()).userDataServer;

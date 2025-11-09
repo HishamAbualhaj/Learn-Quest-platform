@@ -173,10 +173,11 @@ type ReviewDataProps = {
 
 const ReviewData = forwardRef<HTMLDivElement, ReviewDataProps>(
   function ReviewData({ name, image, text, date }, ref) {
+    let stars = 0;
     return (
       <>
         <div ref={ref} className="border_platform b pb-5">
-          <ReviewCard review={{ name, image, text, date }}>
+          <ReviewCard review={{ name, image, text, date, stars }}>
             <div className="flex justify-between mt-5 ">
               <div className="flex items-center gap-5">
                 <ReviewCard.Avatar />

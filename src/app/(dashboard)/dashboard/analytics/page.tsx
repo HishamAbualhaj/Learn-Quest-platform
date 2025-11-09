@@ -1,6 +1,6 @@
 import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
-import Analytics from "@/pages/Dashboard/Analytics";
+import Analytics from "@/pages-content/Dashboard/Analytics";
 import { AnalyticsType } from "@/types";
 
 const page = async () => {

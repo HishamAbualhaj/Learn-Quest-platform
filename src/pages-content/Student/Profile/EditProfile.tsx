@@ -3,7 +3,7 @@ import Alert from "@/components/Alert";
 import Avatar from "@/components/Avatar";
 import API_BASE_URL from "@/config/config";
 import useFetch from "@/hooks/useFetch";
-import ButtonAdmin from "@/pages/Dashboard/ButtonAdmin";
+import ButtonAdmin from "@/pages-content/Dashboard/ButtonAdmin";
 import { faGear, faUpload, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation } from "@tanstack/react-query";
@@ -124,7 +124,7 @@ function EditProfile({ data_profile, userId }: EditProfileProps) {
           <div className="w-fit mx-auto pt-5">
             <Avatar
               isBlob={Boolean(tempUrl)}
-              img={imageChange ? tempUrl : `${dataProfile[7].data}`}
+              img={imageChange ? String(tempUrl) : `${dataProfile[7].data}`}
               className="h-[250px] w-[250px]"
             />
             <div className="relative  cursor-pointer ">

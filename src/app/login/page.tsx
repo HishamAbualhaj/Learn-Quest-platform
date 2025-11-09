@@ -1,4 +1,4 @@
-import Login from "@/pages/auth/Login";
+import Login from "@/pages-content/auth/Login";
 const page = () => {
   return <Login />;
 };

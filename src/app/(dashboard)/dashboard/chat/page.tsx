@@ -1,5 +1,5 @@
 import getSession from "@/lib/getSession";
-import Chat from "@/pages/Dashboard/Chat";
+import Chat from "@/pages-content/Dashboard/Chat";
 
 const page = async () => {
   const { userDataServer } = await getSession();

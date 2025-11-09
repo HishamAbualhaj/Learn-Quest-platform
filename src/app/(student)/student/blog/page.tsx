@@ -1,7 +1,7 @@
 import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getQueryClient from "@/lib/getQueryClient";
-import Blog from "@/pages/Student/Blog";
+import Blog from "@/pages-content/Student/Blog";
 const page = async () => {
   const queryClient = getQueryClient();
 

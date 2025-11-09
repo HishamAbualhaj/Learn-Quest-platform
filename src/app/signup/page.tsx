@@ -1,4 +1,4 @@
-import Signup from "@/pages/auth/Signup";
+import Signup from "@/pages-content/auth/Signup";
 const page = () => {
   return <Signup />;
 };

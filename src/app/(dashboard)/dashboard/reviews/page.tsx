@@ -1,6 +1,6 @@
 import API_BASE_URL from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
-import Reviews from "@/pages/Dashboard/Reviews";
+import Reviews from "@/pages-content/Dashboard/Reviews";
 
 const page = async () => {
   const res = await useFetchServer(

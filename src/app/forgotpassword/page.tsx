@@ -1,4 +1,4 @@
-import ForgotPass from "@/pages/auth/ForgotPass";
+import ForgotPass from "@/pages-content/auth/ForgotPass";
 const page = () => {
   return <ForgotPass />;
 };

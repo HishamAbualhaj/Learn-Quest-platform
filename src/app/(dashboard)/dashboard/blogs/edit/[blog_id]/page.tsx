@@ -1,4 +1,4 @@
-import EditBlog from "@/pages/Dashboard/EditBlog";
+import EditBlog from "@/pages-content/Dashboard/EditBlog";
 
 const page = async ({ params }: { params: Promise<{ blog_id: string }> }) => {
   const { blog_id } = await params;

@@ -1,4 +1,4 @@
-import Users from "@/pages/Dashboard/Users";
+import Users from "@/pages-content/Dashboard/Users";
 
 const page = () => {
   return <Users />;

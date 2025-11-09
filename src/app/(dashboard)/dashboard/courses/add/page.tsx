@@ -1,4 +1,4 @@
-import AddCourse from "@/pages/Dashboard/AddCourse";
+import AddCourse from "@/pages-content/Dashboard/AddCourse";
 const page = () => {
   return <AddCourse />;
 };

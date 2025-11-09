@@ -1,4 +1,4 @@
-import Header from "@/pages/Landing-Page/Header/Header";
+import Header from "@/pages-content/Landing-Page/Header/Header";
 interface StudentProps {
   children: React.ReactNode;
 }
