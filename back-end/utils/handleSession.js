@@ -67,17 +67,14 @@ async function handleSession(user_id, res, isGoogle = false) {
       `);
       } else {
         const isProd = process.env.NODE_ENV === "production";
+
         res.writeHead(200, {
           "Content-Type": "application/json",
           "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; ${
-            isProd
-              ? `SameSite=None; Secure; Domain=${frontendURL.replace(
-                  /^https?:\/\//,
-                  ""
-                )}`
-              : "SameSite=Lax;"
+            isProd ? `SameSite=None; Secure;` : "SameSite=Lax;"
           }`,
         });
+
         res.end(JSON.stringify({ status: true, data: "Logined In ... " }));
       }
     } else {
