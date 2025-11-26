@@ -13,11 +13,14 @@ async function useFetchServer<T = any>(
   method: string
 ): Promise<FetchResponse<T>> {
   try {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get("session_id")?.value;
+
     const res = await fetch(url, {
       method: method,
       headers: {
         "Content-Type": "application/json",
-        Cookie: (await cookies()).toString(),
+        ...(sessionId ? { Cookie: `session_id=${sessionId}` } : {}),
       },
       body:
         ["POST", "PATCH", "GET", "PUT"].includes(method) && data
