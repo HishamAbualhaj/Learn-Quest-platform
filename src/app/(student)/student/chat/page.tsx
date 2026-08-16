@@ -1,4 +1,4 @@
-import API_BASE_URL from "@/config/config";
+import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";
 import ChatStudent from "@/pages-content/Student/ChatStudent";
@@ -7,11 +7,10 @@ import { User } from "@/types";
 const page = async () => {
   const { userDataServer } = await getSession();
   const adminData = await useFetchServer<User>(
-    `${API_BASE_URL}/getAdminId`,
+    `${API_SERVER_BASE_URL}/getAdminId`,
     null,
-    "GET"
+    "GET",
   );
-
 
   return (
     <ChatStudent
