@@ -22,7 +22,7 @@
     "formidable": "^3.5.2",
     "googleapis": "^148.0.0",
     "mysql2": "^3.14.1",
-    "next": "latest",
+    "next": "^16.2.11",
     "nodemailer": "^7.0.3",
     "quill": "^2.0.3",
     "react": "^18.3.1",
