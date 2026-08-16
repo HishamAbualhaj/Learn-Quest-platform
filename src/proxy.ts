@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import API_BASE_URL from "./config/config";
+import { API_SERVER_BASE_URL } from "./config/config";
 import useFetchServer from "./hooks/useFetchServer";
 import { User } from "./types";
 
 export async function proxy(req: NextRequest) {
-  const res = await useFetchServer(`${API_BASE_URL}/session`, null, "GET");
+  const res = await useFetchServer(`${API_SERVER_BASE_URL}/session`, null, "GET");
 
   const resMaintenance = await useFetchServer(
-    `${API_BASE_URL}/getMaintenace`,
+    `${API_SERVER_BASE_URL}/getMaintenace`,
     null,
-    "GET"
+    "GET",
   );
 
   const isMaintenance = !resMaintenance.msg[0].status;
