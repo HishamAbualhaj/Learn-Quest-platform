@@ -96,4 +96,3 @@ async function handleSession(user_id, res, isGoogle = false) {
   }
 }
 export default handleSession;
-export default handleSession;
