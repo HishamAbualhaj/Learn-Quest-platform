@@ -1,14 +1,14 @@
 import CourseAction from "@/components/CourseAction";
-import API_BASE_URL from "@/config/config";
+import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";
 import { Course, CourseDataResponse, CourseMaterial } from "@/types";
 async function EditCourse({ course_id }: { course_id: string }) {
   const { userDataServer } = await getSession();
   const res = await useFetchServer(
-    `${API_BASE_URL}/getCourseData`,
+    `${API_SERVER_BASE_URL}/getCourseData`,
     { course_id: course_id, ...userDataServer[0] },
-    "POST"
+    "POST",
   );
   let resObj = res.msg as unknown as CourseDataResponse;
 
