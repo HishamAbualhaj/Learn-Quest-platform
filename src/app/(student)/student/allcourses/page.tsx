@@ -1,4 +1,4 @@
-import API_BASE_URL from "@/config/config";
+import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getQueryClient from "@/lib/getQueryClient";
 import AllCourses from "@/pages-content/Student/AllCourses";
@@ -20,13 +20,13 @@ const page = async ({
     queryKey: ["courses", type],
     queryFn: async ({ pageParam = page }) => {
       return await useFetchServer(
-        `${API_BASE_URL}/getCourses`,
+        `${API_SERVER_BASE_URL}/getCourses`,
         {
           page: pageParam,
           search_text: search,
           select_data: type,
         },
-        "POST"
+        "POST",
       );
     },
     initialPageParam: 1,

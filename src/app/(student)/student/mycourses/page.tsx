@@ -1,4 +1,4 @@
-import API_BASE_URL from "@/config/config";
+import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getQueryClient from "@/lib/getQueryClient";
 import getSession from "@/lib/getSession";
@@ -22,21 +22,21 @@ const page = async ({
     queryKey: ["enrolled_courses", page, type],
     queryFn: async ({ pageParam = 1 }) => {
       return await useFetchServer(
-        `${API_BASE_URL}/getEnrolledCourses`,
+        `${API_SERVER_BASE_URL}/getEnrolledCourses`,
         {
           page: pageParam,
           student_id: userDataServer?.[0].student_id,
           search_text: search,
           select_data: type,
         },
-        "POST"
+        "POST",
       );
     },
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <MyCourses userData={userDataServer?.[0]}/>
+      <MyCourses userData={userDataServer?.[0]} />
     </HydrationBoundary>
   );
 };

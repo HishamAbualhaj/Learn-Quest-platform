@@ -1,4 +1,4 @@
-import API_BASE_URL from "@/config/config";
+import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getQueryClient from "@/lib/getQueryClient";
 import Blog from "@/pages-content/Student/Blog";
@@ -9,11 +9,11 @@ const page = async () => {
     queryKey: ["blogs"],
     queryFn: async ({ pageParam = 1 }) => {
       return await useFetchServer(
-        `${API_BASE_URL}/getBlogData`,
+        `${API_SERVER_BASE_URL}/getBlogData`,
         {
           page: pageParam,
         },
-        "POST"
+        "POST",
       );
     },
     initialPageParam: 1,

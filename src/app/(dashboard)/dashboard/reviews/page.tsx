@@ -1,12 +1,12 @@
-import API_BASE_URL from "@/config/config";
+import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import Reviews from "@/pages-content/Dashboard/Reviews";
 
 const page = async () => {
   const res = await useFetchServer(
-    `${API_BASE_URL}/getCourses`,
+    `${API_SERVER_BASE_URL}/getCourses`,
     { page: null },
-    "POST"
+    "POST",
   );
   return <Reviews courses={res.msg} />;
 };

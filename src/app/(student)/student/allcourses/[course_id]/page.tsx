@@ -1,4 +1,4 @@
-import API_BASE_URL from "@/config/config";
+import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";
 import CoursePage from "@/pages-content/Student/CoursePage";
@@ -9,9 +9,9 @@ const page = async ({ params }: { params: Promise<{ course_id: string }> }) => {
   const user = (await getSession()).userDataServer;
 
   const data = await useFetchServer(
-    `${API_BASE_URL}/getCourseData`,
+    `${API_SERVER_BASE_URL}/getCourseData`,
     { course_id, ...user[0] },
-    "POST"
+    "POST",
   );
   let resObj = data.msg as unknown as {
     msg: [Course, CourseMaterial[]] | string;
@@ -31,7 +31,7 @@ const page = async ({ params }: { params: Promise<{ course_id: string }> }) => {
     courseVideos = courseVideosData;
     mergedMaterials = [...courseMaterial, ...courseMaterialAllowedUrl].sort(
       (a, b) =>
-        new Date(a.created_date).getTime() - new Date(b.created_date).getTime()
+        new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
     );
   }
 
