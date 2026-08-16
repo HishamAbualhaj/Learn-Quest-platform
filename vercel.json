@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/backend/:path*", "destination": "https://learn-quest-platform.onrender.com/:path*" }
+  ]
+}

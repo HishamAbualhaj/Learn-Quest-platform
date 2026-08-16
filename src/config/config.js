@@ -3,10 +3,7 @@ const BACKEND_URL_PRODUCTION =
 const BACKEND_URL_DEVELOPMENT =
   process.env.NEXT_PUBLIC_BACKEND_URL_DEVELOPMENT || "http://localhost:3002";
 
-const API_BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? BACKEND_URL_PRODUCTION.replace(/\/$/, "")
-    : BACKEND_URL_DEVELOPMENT;
+const API_BASE_URL = "/backend"
 
 const BACKEND_WEBSOCKET_DEVELOPMENT =
   process.env.NEXT_PUBLIC_BACKEND_WEBSOCKET_DEVELOPMENT;
