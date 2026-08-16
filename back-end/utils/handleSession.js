@@ -4,11 +4,10 @@ import connection from "../config/db.js";
 import crypto from "crypto";
 async function handleSession(user_id, res, isGoogle = false) {
   const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
+  const isProd = process.env.NODE_ENV === "production";
 
   try {
-    // Handling session storage at database
     const generateSessionId = () => crypto.randomBytes(8).toString("hex");
-    // Generating random session id
     const sessionId = generateSessionId();
     const expires = new Date(Date.now() + 3600000 * 24); // 1 day
 
@@ -20,27 +19,26 @@ async function handleSession(user_id, res, isGoogle = false) {
     const [data] = result;
     await updateUserStatus(user_id);
 
+    // Single cookie string used for both flows — no Domain attribute at all.
+    // Requests now arrive via the Vercel same-origin proxy, so the cookie
+    // is first-party by default and Domain should be omitted (it defaults
+    // to the responding host, which is what you want).
+    const cookie = `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; ${
+      isProd ? "SameSite=None; Secure;" : "SameSite=Lax;"
+    }`;
+
     if (data.affectedRows) {
       if (isGoogle) {
-        const isProd = process.env.NODE_ENV === "production";
         res.writeHead(200, {
           "Content-Type": "text/html",
-          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; ${
-            isProd
-              ? `SameSite=None; Secure; Domain=${frontendURL.replace(
-                  /^https?:\/\//,
-                  ""
-                )}`
-              : "SameSite=Lax;"
-          }`,
+          "Set-Cookie": cookie,
         });
 
         res.end(`
         <html>
           <head>
             <script>
-              // Redirect to React route
-            window.location.href = '${frontendURL}/';
+              window.location.href = '${frontendURL}/';
             </script>
           </head>
           <style>
@@ -66,13 +64,9 @@ async function handleSession(user_id, res, isGoogle = false) {
         </html>
       `);
       } else {
-        const isProd = process.env.NODE_ENV === "production";
-
         res.writeHead(200, {
           "Content-Type": "application/json",
-          "Set-Cookie": `session_id=${sessionId}; HttpOnly; Path=/; Max-Age=86400; ${
-            isProd ? `SameSite=None; Secure;` : "SameSite=Lax;"
-          }`,
+          "Set-Cookie": cookie,
         });
 
         res.end(JSON.stringify({ status: true, data: "Logined In ... " }));
@@ -101,4 +95,5 @@ async function handleSession(user_id, res, isGoogle = false) {
     return error;
   }
 }
+export default handleSession;
 export default handleSession;
