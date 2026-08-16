@@ -4,7 +4,11 @@ import useFetchServer from "./hooks/useFetchServer";
 import { User } from "./types";
 
 export async function proxy(req: NextRequest) {
-  const res = await useFetchServer(`${API_SERVER_BASE_URL}/session`, null, "GET");
+  const res = await useFetchServer(
+    `${API_SERVER_BASE_URL}/session`,
+    null,
+    "GET",
+  );
 
   const resMaintenance = await useFetchServer(
     `${API_SERVER_BASE_URL}/getMaintenace`,
@@ -113,7 +117,7 @@ export async function proxy(req: NextRequest) {
 }
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|.*\\.png$|.*\\.jpg$|.*\\.svg$).*)",
+    "/((?!backend|api|_next/static|_next/image|.*\\.png$|.*\\.jpg$|.*\\.svg$).*)",
   ],
 };
 
