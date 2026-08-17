@@ -35,8 +35,6 @@ const page = async ({ params }: { params: Promise<{ course_id: string }> }) => {
     );
   }
 
-  console.log(data);
-
   return (
     <CoursePage
       user_data={user[0]}

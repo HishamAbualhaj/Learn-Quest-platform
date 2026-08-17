@@ -4,7 +4,7 @@ const getCoursesSearchModel = async (
   search_text,
   select_data,
   page,
-  maxData = 5
+  maxData = 5,
 ) => {
   const getCoursesQuery = `SELECT * FROM courses 
       WHERE (
@@ -62,11 +62,30 @@ const getCoursesModel = async (course_id, student_id) => {
 const getCourseNotEnrolledModel = async (course_id) => {
   const query = "SELECT * FROM courses WHERE course_id = ?";
 
-  const query_2 =
-    "SELECT material_id,title,subtitle,isCompleted,created_date FROM coursematerials WHERE course_id = ? AND allowed = ? ORDER BY created_date ASC";
+  const query_2 = `
+  SELECT
+    material_id,
+    title,
+    subtitle,
+    created_date
+  FROM coursematerials
+  WHERE course_id = ?
+    AND allowed = ?
+  ORDER BY created_date ASC
+`;
 
-  const query_3 =
-    "SELECT material_id,title,subtitle,isCompleted,url,created_date FROM coursematerials WHERE course_id = ? AND allowed = ? ORDER BY created_date ASC";
+  const query_3 = `
+  SELECT
+    material_id,
+    title,
+    subtitle,
+    url,
+    created_date
+  FROM coursematerials
+  WHERE course_id = ?
+    AND allowed = ?
+  ORDER BY created_date ASC
+`;
 
   const courseData = await connection.promise().query(query, [course_id]);
 
@@ -80,11 +99,12 @@ const getCourseNotEnrolledModel = async (course_id) => {
 
   return [courseData, courseMaterial, allowedCourseMaterial];
 };
+
 const getEnrolledCoursesModel = async (
   search_text,
   select_data,
   page,
-  student_id
+  student_id,
 ) => {
   const getCountQuery = `SELECT COUNT(*) FROM enrollments e join courses c ON e.course_id = c.course_id WHERE student_id = ? 
       AND (
@@ -148,7 +168,7 @@ const addMaterialCompleteionModel = async ({
 }) => {
   const completeion_id = generateId();
   const addMaterialCompleteionQuery =
-    "INSERT INTO completeionmaterial (completeion_id,student_id,material_id,course_id,isCompleted) VALUES (?,?,?,?,?)";
+    "INSERT INTO completeionmaterial (completeion_id,student_id,material_id,course_id,isCompleted) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE isCompleted = VALUES(isCompleted)";
 
   return await connection
     .promise()
@@ -162,8 +182,10 @@ const addMaterialCompleteionModel = async ({
 };
 const updatMaterialCompleteionModel = async ({ value, id }) => {
   const updatMaterialCompleteionQuery =
-    "UPDATE completeionmaterial SET isCompleted = ? WHERE material_id = ?";
-  await connection.promise().query(updatMaterialCompleteionQuery, [!value, id]);
+    "UPDATE completeionmaterial SET isCompleted = ? WHERE material_id = ? AND student_id = ?";
+  await connection
+    .promise()
+    .query(updatMaterialCompleteionQuery, [!value, id, student_id]);
 };
 const countCourseMaterialCompletedModel = async (user_id, course_id) => {
   const countCourseMaterialCompletedQuery = `SELECT COUNT(*) FROM completeionmaterial where student_id = ? AND course_id = ? AND isCompleted = 1`;
