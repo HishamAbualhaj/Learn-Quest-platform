@@ -1,6 +1,10 @@
 # LearnQuest v1.0.0
 LearnQuest is an innovative e-learning platform developed as a graduation project. The platform provides educational services with two main actors: Admin, and User. It offers a modern, responsive, and user-friendly interface to enhance online learning experiences.
 
+### use these to enter admin 
+admin@gmail.com
+admin123
+
 ## Tech Stack
 
 ### Front-End
