@@ -12,19 +12,29 @@ export const Theme = createContext<{
   setTheme: Dispatch<SetStateAction<string>>;
 } | null>(null);
 function ThemeContext({ children }) {
-  const [theme, setThemeData] = useState(
-    localStorage.getItem("theme") || "dark"
-  );
+  const [theme, setThemeData] = useState("dark");
 
   useEffect(() => {
-    changeTheme(theme);
-  }, [theme]);
+    let savedTheme = "dark";
+    try {
+      savedTheme = localStorage.getItem("theme") === "light" ? "light" : "dark";
+    } catch {
+      /* Storage may be unavailable. */
+    }
+    setThemeData(savedTheme);
+    changeTheme(savedTheme);
+  }, []);
 
-  function setTheme(theme) {
-    localStorage.setItem("theme", theme);
-    setThemeData(theme);
-    changeTheme(theme);
-  }
+  const setTheme: Dispatch<SetStateAction<string>> = (value) => {
+    const nextTheme = typeof value === "function" ? value(theme) : value;
+    try {
+      localStorage.setItem("theme", nextTheme);
+    } catch {
+      /* Theme still works without persistence. */
+    }
+    setThemeData(nextTheme);
+    changeTheme(nextTheme);
+  };
 
   return (
     <Theme.Provider value={{ theme, setTheme }}>{children}</Theme.Provider>

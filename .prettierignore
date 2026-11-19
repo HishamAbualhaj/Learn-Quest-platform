@@ -1,0 +1,5 @@
+node_modules/
+.next/
+.agents/
+build/
+coverage/

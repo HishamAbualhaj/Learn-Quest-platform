@@ -1,13 +1,41 @@
 # LearnQuest v1.0.0
+
 LearnQuest is an innovative e-learning platform developed as a graduation project. The platform provides educational services with two main actors: Admin, and User. It offers a modern, responsive, and user-friendly interface to enhance online learning experiences.
 
-### use these to enter admin 
+### use these to enter admin
+
 admin@gmail.com
 admin123
+
+## Current local development
+
+To use the running hosted backend, keep the backend URLs already configured in
+`.env` and run `npm run dev`. Do not override them with localhost URLs unless
+you are also running the API on your machine.
+
+For an entirely local API, keep database credentials in the root `.env` (see
+`back-end/sql/README.md`) and add these overrides to the ignored `.env.local`:
+
+```dotenv
+NEXT_PUBLIC_BACKEND_URL_DEVELOPMENT=http://127.0.0.1:3002
+NEXT_PUBLIC_BACKEND_WEBSOCKET_DEVELOPMENT=ws://127.0.0.1:3002
+BACKEND_URL=http://localhost:3002
+FRONTEND_URL=http://localhost:3000
+```
+
+For that local API setup, start `npm run dev:backend`, then `npm run dev` in a second
+terminal. Keep both running and open `http://localhost:3000`. Restart the
+frontend after changing backend URL overrides, since proxy rewrites are loaded
+at startup. The API command loads `.env`
+and then `.env.local` and requires Node.js 22.9 or newer.
+
+External image URLs load directly; uploaded filenames use `/backend/uploads/`.
+For a local API, Google login uses `http://localhost:3002/oauth2callback`.
 
 ## Tech Stack
 
 ### Front-End
+
 - **Framework:** React (with Vite)
 - **Styling:** TailwindCSS
 - **Icons:** FontAwesome
@@ -15,12 +43,14 @@ admin123
 - **Data fetching:** TanStack Query
 
 ### Back-End
+
 - **Runtime:** Node.js
 - **Database:** MySQL
 - **Additional Tools:** MySQL2 for database integration
 - **Email service:** Mailer
 
 ## Features
+
 - Dark mode switch for UX
 - User-friendly interface for learners
 - Role-based access control for admin, and users
@@ -33,18 +63,21 @@ admin123
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js installed
 - MySQL server set up
 
 ### Installation
 
 1. **Clone the repository:**
+
    ```
    git clone https://github.com/HishamAbualhaj/Learn-Quest-platform.git
    cd Learn-Quest-platform
    ```
 
 2. **Install dependencies:**
+
    ```
    npm install
    ```
@@ -52,24 +85,25 @@ admin123
 3. **Configure the database:**
    - Create a MySQL database.
    - Create database scheme using `createTables.js`
-   - Update database configuration in the back-end server file `db.js` 
+   - Update database configuration in the back-end server file `db.js`
 
-### **Setting up database:**   
+### **Setting up database:**
+
 1. **Open MySQL Command Line:**
-    ```bash
-    mysql -u root -p
-    ```
+   ```bash
+   mysql -u root -p
+   ```
 2. **Create the database:**
-    ```bash
-    CREATE DATABASE learnquest;
-    ```
+   ```bash
+   CREATE DATABASE learnquest;
+   ```
 3. **Create tables for database:**
-    ```bash
-    cd back-end/db;
-    ```
-    ```bash
-    node createTables.js;
-    ```
+   ```bash
+   cd back-end/db;
+   ```
+   ```bash
+   node createTables.js;
+   ```
 4. **Run the back end server:**
    ```bash
    cd back-end
@@ -78,17 +112,20 @@ admin123
    node server.js
    ```
 
-
 #### Run the development server
+
 ```
 npm run dev
 ```
+
 ### Front-End Scripts
+
 - **Development:** `npm run dev`
 - **Build:** `npm run build`
 - **Preview:** `npm run preview`
 
 ## Project Structure
+
 ```
 📂 LEARNQUEST
 back-end/
@@ -133,15 +170,16 @@ back-end/
 ```
 
 ## Future Enhancements
+
 - Add real-time notifications
 - Enable type safety for react
 - Security improvements for back end
-- Improve Landing page UI 
+- Improve Landing page UI
 
 ## Contributors
+
 - **Hesham Abualhaj**: UI/UX, Front-End Development and Back-end Development.
 
-
-
 ## Contact
+
 For any questions, feel free to reach out at **hishamraid0@gmail.com**.

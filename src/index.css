@@ -2,7 +2,50 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+  --control-background: #faf8ff;
+  --control-border: #d4c9e8;
+  --ui-background: #ffffff;
+  --ui-foreground: #261b38;
+  --ui-muted: #62596f;
+  --ui-accent: #f0eaff;
+  --ui-primary: #7c3aed;
+  --ui-on-primary: #ffffff;
+}
+.dark {
+  --control-background: #2b2c38;
+  --control-border: #515260;
+  --ui-background: #1d1e26;
+  --ui-foreground: #f5f3ff;
+  --ui-muted: #cbc6d8;
+  --ui-accent: #353044;
+  --ui-primary: #c4b5fd;
+  --ui-on-primary: #171122;
+}
+@theme inline {
+  --color-control: var(--control-background);
+  --color-input: var(--control-border);
+  --color-background: var(--ui-background);
+  --color-foreground: var(--ui-foreground);
+  --color-popover: var(--ui-background);
+  --color-popover-foreground: var(--ui-foreground);
+  --color-muted-foreground: var(--ui-muted);
+  --color-accent: var(--ui-accent);
+  --color-accent-foreground: var(--ui-primary);
+  --color-primary: var(--ui-primary);
+  --color-primary-foreground: var(--ui-on-primary);
+  --color-ring: var(--ui-primary);
+  --color-border: var(--control-border);
+  --color-secondary: var(--ui-accent);
+  --color-secondary-foreground: var(--ui-foreground);
+  --color-destructive: #dc2626;
+}
+
 @theme {
+  /* Action buttons keep the same high-contrast palette in both themes. */
+  --color-action: #7c3aed;
+  --color-action-hover: #6d28d9;
+  --color-action-foreground: #ffffff;
   /* Colors */
   --color-dark: #12131a;
   --color-lightDark: #1d1e26;
@@ -11,17 +54,19 @@
   --color-borderDark: rgba(255, 255, 255, 0.12);
   --color-hoverDark: rgba(255, 255, 255, 0.06);
 
-  --color-mainClr: rgba(76, 100, 217, 1);
-  --color-mainClrDark: rgba(163, 178, 255, 1);
-  --color-borderLight: rgba(0, 17, 102, 0.1);
-  --color-lightText: rgba(0, 6, 38, 0.9);
-  --color-lightLayout: rgba(0, 21, 128, 0.03);
-  --color-btn: #4c64d9;
-  --color-lightBtn: #a3b2ff;
-  --color-hoverLight: rgba(0, 21, 128, 0.04);
+  /* Shared violet brand colors for landing, student, and dashboard UI. */
+  --color-mainClr: #7c3aed;
+  --color-mainClrDark: #c4b5fd;
+  --color-borderLight: rgba(76, 29, 149, 0.12);
+  --color-lightText: rgba(23, 13, 43, 0.9);
+  --color-lightLayout: rgba(124, 58, 237, 0.035);
+  --color-btn: #7c3aed;
+  --color-lightBtn: #c4b5fd;
+  --color-hoverLight: rgba(124, 58, 237, 0.05);
 
   /* Font */
   --font-terminal: terminal;
+  --font-editorial: Georgia, "Times New Roman", serif;
 
   /* Box shadow */
   --shadow-custom: rgba(149, 157, 165, 0.2) 0px 12px 20px;
@@ -78,7 +123,7 @@
 
   ::-webkit-scrollbar-thumb {
     background-color: #555;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 2px solid transparent;
   }
 }
@@ -87,18 +132,21 @@
     min-height: 250px !important;
   }
 
-  input,
+  .form-control,
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not(
+      [type="file"]
+    ),
   textarea {
-    @apply py-2 pl-2 border dark:border-borderDark border-borderLight rounded-sm dark:bg-lightDark bg-lightLayout;
+    @apply min-h-11 rounded-md border border-input bg-control px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   input:focus,
   textarea:focus {
-    @apply outline-none border-purple-700/70 dark:border-purple-500/70;
+    @apply border-ring ring-2 ring-ring/20;
   }
 
   select {
-    @apply dark:bg-borderDark dark:border-none border border-borderLight dark:text-white text-lightText focus:outline-none appearance-none p-2;
+    @apply min-h-11 rounded-md border border-input bg-control px-3 py-2 text-sm text-foreground outline-none;
   }
 
   .section {

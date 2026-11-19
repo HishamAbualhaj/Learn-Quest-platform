@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:backend": "node --env-file=.env --env-file-if-exists=.env.local back-end/server.js",
+    "format:changed": "node scripts/format-changed.mjs",
+    "format:check": "node scripts/format-changed.mjs --check",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,18 +19,24 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@tanstack/react-query": "^5.66.11",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookie-session": "^2.1.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "formidable": "^3.5.2",
     "googleapis": "^148.0.0",
+    "lucide-react": "^1.62.0",
     "mysql2": "^3.14.1",
     "next": "^16.2.11",
     "nodemailer": "^7.0.3",
     "quill": "^2.0.3",
+    "radix-ui": "^1.4.3",
     "react": "^18.3.1",
+    "react-day-picker": "^9.13.0",
     "react-dom": "^18.3.1",
     "react-quill": "^2.0.0",
+    "tailwind-merge": "^3.7.0",
     "ws": "^8.18.2"
   },
   "devDependencies": {
@@ -44,6 +53,7 @@
     "globals": "^15.9.0",
     "nodemon": "^3.1.7",
     "postcss": "^8.5.6",
+    "prettier": "^3.10.1",
     "tailwindcss": "^4.1.16"
   }
 }
