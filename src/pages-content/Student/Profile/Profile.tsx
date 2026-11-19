@@ -1,3 +1,4 @@
+import PageIntro from "@/components/PageIntro";
 import Avatar from "@/components/Avatar";
 import { faGear, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -108,37 +109,47 @@ async function Profile() {
   image_url_temp = image_url_temp ? image_url_temp : "/person.png";
 
   return (
-    <div className="sm:px-5 px-1">
-      <div className=" dark:bg-lightDark w-full bg-white border dark:border-borderDark border-borderLight flex items-center flex-col  box-shadow-light dark:box-shadow rounded-md h-[800px] overflow-auto">
-        <div className="w-full p-5 flex justify-between">
-          <Link href="editprofile">
-            <FontAwesomeIcon
-              className="text-xl w-10 h-10 dark:text-gray-400 text-black cursor-pointer hover:text-black/50 dark:hover:text-white"
-              icon={faGear}
+    <>
+      <PageIntro
+        eyebrow="05 / YOUR LEARNQUEST"
+        title="A journey that is yours."
+        description="Your details, your progress, and the person behind every new possibility."
+      />
+      <div className="min-w-0">
+        <div className=" dark:bg-lightDark w-full bg-white border dark:border-borderDark border-borderLight flex items-center flex-col  box-shadow-light dark:box-shadow rounded-md min-h-[500px]">
+          <div className="w-full p-5 flex justify-between">
+            <Link href="/student/editprofile" aria-label="Edit your profile">
+              <FontAwesomeIcon
+                className="text-xl w-10 h-10 dark:text-gray-400 text-black cursor-pointer hover:text-lightText/65 dark:hover:text-white"
+                icon={faGear}
+              />
+            </Link>
+          </div>
+
+          <div className="">
+            <Avatar
+              img={image_url_temp}
+              className="h-[120px] w-[120px] ring-8 ring-mainClr/10 dark:ring-mainClrDark/10"
             />
-          </Link>
-        </div>
+          </div>
 
-        <div className="">
-          <Avatar img={image_url_temp} className="h-[250px] w-[250px]" />
-        </div>
-
-        <div className="flex w-full flex-col gap-5 py-6 lg:px-16 md:px-8 sm:px-4 px-2">
-          {arr.map((data) =>
-            data.key == 8 ? (
-              <></>
-            ) : (
-              <div
-                key={data.key}
-                className="text-xl flex gap-2 border dark:border-borderDark border-borderLight p-4 rounded-md"
-              >
-                {data.name}: <div className="font-bold">{data.data}</div>
-              </div>
-            )
-          )}
+          <div className="flex w-full flex-col gap-5 py-6 lg:px-16 md:px-8 sm:px-4 px-2">
+            {arr.map((data) =>
+              data.key == 8 ? (
+                <></>
+              ) : (
+                <div
+                  key={data.key}
+                  className="text-sm flex flex-col gap-2 border dark:border-borderDark border-borderLight p-4 rounded-md"
+                >
+                  {data.name}: <div className="font-bold">{data.data}</div>
+                </div>
+              ),
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
 "use client";
+import { FormSelect } from "@/components/ui/form-select";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
@@ -19,7 +20,7 @@ function Reviews({ courses }: { courses: Course[] }) {
       return useFetch(
         `${API_BASE_URL}/getReviews`,
         { page: pageParam, course_id: course_id },
-        "POST"
+        "POST",
       );
     },
     queryKey: ["admin_reviews", course_id],
@@ -53,7 +54,7 @@ function Reviews({ courses }: { courses: Course[] }) {
           <div className="dark:text-white text-lightText text-xl">
             Select Course
           </div>
-          <select
+          <FormSelect
             onChange={(e) => {
               setReviews([]);
               setCourseId(e.target.value);
@@ -74,7 +75,7 @@ function Reviews({ courses }: { courses: Course[] }) {
                 {course.title}
               </option>
             ))}
-          </select>
+          </FormSelect>
         </div>
       </div>
 
@@ -112,7 +113,7 @@ type ReviewDataProps = {
 };
 const Review = forwardRef<HTMLDivElement, ReviewDataProps>(function Review(
   { image, stars, text, name, date },
-  ref
+  ref,
 ) {
   return (
     <div

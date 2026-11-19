@@ -1,4 +1,7 @@
 "use client";
+import { Textarea } from "@/components/ui/textarea";
+import { FormSelect } from "@/components/ui/form-select";
+import { Input } from "@/components/ui/form-input";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -125,7 +128,7 @@ export default function CourseAction({
       const data = await useFetch<{ id: number; msg: string } | string>(
         `${API_BASE_URL}/${endpoint}`,
         updatedCourseData,
-        method
+        method,
       );
       const res = data.msg as unknown as { id: number; msg: string };
 
@@ -163,7 +166,7 @@ export default function CourseAction({
   function handleChange(
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) {
     let { id, value } = e.target;
     if (
@@ -198,7 +201,7 @@ export default function CourseAction({
   // handle lesson change
   function handleLessonChange(
     e: ChangeEvent<HTMLInputElement>,
-    lesson_id: number
+    lesson_id: number,
   ) {
     const { id, value } = e.target;
     const updateMaterial = [...courseData.materials];
@@ -256,19 +259,19 @@ export default function CourseAction({
   }
   function deleteLesson(id: string) {
     let courseMaterialsArr = courseData.materials.filter(
-      (obj) => id !== obj.material_id
+      (obj) => id !== obj.material_id,
     );
 
     addLessonForEdit(courseMaterialsArr);
   }
   return (
     <div>
-      <div className="rounded-sm  w-full overflow-auto h-[800px]">
+      <div className="rounded-md  w-full overflow-auto h-[800px]">
         <div className="text-center dark:text-white text-black text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
           {title}
           <Link href="/dashboard/courses">
             <FontAwesomeIcon
-              className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
+              className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-md"
               icon={faXmark}
             />
           </Link>
@@ -293,7 +296,7 @@ export default function CourseAction({
               className="flex flex-col mt-2 dark:text-white text-lightText"
             >
               <label htmlFor={input.id}>{input.title}</label>
-              <input
+              <Input
                 onChange={handleChange}
                 placeholder={input.placeholder}
                 id={input.id}
@@ -307,9 +310,9 @@ export default function CourseAction({
           <div className="flex flex-col mt-2 dark:text-white text-lightText gap-2">
             <label htmlFor="category">Category : </label>
 
-            <select
+            <FormSelect
               onChange={handleChange}
-              className="bg-transparent border dark:border-[#888] border-borderLight rounded-sm dark:text-white text-lightText focus:outline-none p-2 text-lg appearance-none w-full mt-2"
+              className="bg-transparent border dark:border-[#888] border-borderLight rounded-md dark:text-white text-lightText focus:outline-none p-2 text-lg appearance-none w-full mt-2"
               name="courses"
               id="category"
               value={courseData?.category || ""}
@@ -324,7 +327,7 @@ export default function CourseAction({
                   {category.name}
                 </option>
               ))}
-            </select>
+            </FormSelect>
           </div>
 
           <div className="flex flex-col mt-2 dark:text-white text-lightText ">
@@ -333,7 +336,7 @@ export default function CourseAction({
             <div className="image-handle relative cursor-pointer mt-2">
               <div className="border_platform all rounded-md flex justify-center py-10">
                 <div className="text-xl ">Upload image</div>
-                <input
+                <Input
                   id="image"
                   onChange={handleChange}
                   type="file"
@@ -378,7 +381,7 @@ export default function CourseAction({
                     <div>
                       <div className="flex flex-col gap-2">
                         <div>Title: </div>
-                        <input
+                        <Input
                           onChange={(e) => {
                             handleLessonChange(e, obj.lesson_count);
                           }}
@@ -393,7 +396,7 @@ export default function CourseAction({
                     <div>
                       <div className="flex flex-col gap-2">
                         <div>Sub Title: </div>
-                        <input
+                        <Input
                           onChange={(e) => {
                             handleLessonChange(e, obj.lesson_count);
                           }}
@@ -408,7 +411,7 @@ export default function CourseAction({
                     <div>
                       <div className="flex flex-col gap-2">
                         <div>Lesson Url: </div>
-                        <input
+                        <Input
                           onChange={(e) => {
                             handleLessonChange(e, obj.lesson_count);
                           }}
@@ -428,7 +431,7 @@ export default function CourseAction({
 
           <div className="flex flex-col mt-2 dark:text-white text-lightText">
             <label htmlFor="description">Description : </label>
-            <textarea
+            <Textarea
               id="description"
               onChange={handleChange}
               className="mt-2"

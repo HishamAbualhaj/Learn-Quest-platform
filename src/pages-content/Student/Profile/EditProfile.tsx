@@ -1,9 +1,12 @@
 "use client";
+import { FormSelect } from "@/components/ui/form-select";
+import { Input } from "@/components/ui/form-input";
+import PageIntro from "@/components/PageIntro";
 import Alert from "@/components/Alert";
 import Avatar from "@/components/Avatar";
 import API_BASE_URL from "@/config/config";
 import useFetch from "@/hooks/useFetch";
-import ButtonAdmin from "@/pages-content/Dashboard/ButtonAdmin";
+
 import { faGear, faUpload, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation } from "@tanstack/react-query";
@@ -57,7 +60,7 @@ function EditProfile({ data_profile, userId }: EditProfileProps) {
       });
       setDataProfile(newProfile);
     },
-    []
+    [],
   );
 
   const handleImageChange = useCallback(
@@ -75,7 +78,7 @@ function EditProfile({ data_profile, userId }: EditProfileProps) {
       setDataProfile(dataProfile);
       if (e.target?.files) setTempUrl(URL.createObjectURL(e.target?.files[0]));
     },
-    [file]
+    [file],
   );
 
   // setting data ready for server formate !
@@ -111,98 +114,101 @@ function EditProfile({ data_profile, userId }: EditProfileProps) {
 
   return (
     <>
-      <div className="sm:px-5 px-1">
-        <div className="dark:bg-lightDark w-full bg-white border dark:border-borderDark border-borderLight box-shadow-light dark:box-shadow rounded-md h-[800px] overflow-auto">
-          <div className="w-full p-5 flex justify-end">
-            <Link href="profile">
-              <FontAwesomeIcon
-                className="text-xl w-10 h-10 dark:text-gray-400 text-black cursor-pointer hover:text-black/50 dark:hover:text-white"
-                icon={faX}
-              />
-            </Link>
-          </div>
-          <div className="w-fit mx-auto pt-5">
-            <Avatar
-              isBlob={Boolean(tempUrl)}
-              img={imageChange ? String(tempUrl) : `${dataProfile[7].data}`}
-              className="h-[250px] w-[250px]"
-            />
-            <div className="relative  cursor-pointer ">
-              <div className="right-0 absolute text-white -top-14 shadow-custom text-xl dark:bg-lightDark bg-dark px-4 py-3 rounded-[100%]">
-                <FontAwesomeIcon icon={faUpload} />
-              </div>
-              <input
-                id="image"
-                onChange={handleImageChange}
-                type="file"
-                className="w-[52px] h-[52px] absolute right-0 -top-14 opacity-0"
-              />
+      <PageIntro
+        eyebrow="05 / MAKE IT YOURS"
+        title="A little more you."
+        description="Keep your details up to date so your learning space feels like home."
+      />
+      <>
+        <div className="min-w-0">
+          <div className="dark:bg-lightDark w-full bg-white border dark:border-borderDark border-borderLight box-shadow-light dark:box-shadow rounded-md min-h-[500px]">
+            <div className="w-full p-5 flex justify-end">
+              <Link href="/student/profile" aria-label="Back to your profile">
+                <FontAwesomeIcon
+                  className="text-xl w-10 h-10 dark:text-gray-400 text-black cursor-pointer hover:text-lightText/65 dark:hover:text-white"
+                  icon={faX}
+                />
+              </Link>
             </div>
-          </div>
-          <div className="py-6 lg:px-16 md:px-8 sm:px-4 px-2">
-            {dataProfile.map((data) =>
-              data.key == 8 ? (
-                <></>
-              ) : (
-                <div
-                  key={data.key}
-                  className="text-xl items-center flex gap-2 border dark:border-borderDark border-borderLight p-4 rounded-md mt-5"
-                >
-                  {data.name}:
-                  <div className="text-slate-300 flex-1">
-                    {data.inType === "select" ? (
-                      <select
-                        onChange={handleChange}
-                        className="w-full"
-                        id={data.key.toString()}
-                        value={data.data}
-                      >
-                        <option className="text-black" value="Male">
-                          Male
-                        </option>
-                        <option className="text-black" value="Female">
-                          Female
-                        </option>
-                      </select>
-                    ) : (
-                      <input
-                        id={data.key.toString()}
-                        onChange={handleChange}
-                        value={data.data || " "}
-                        className="border dark:border-borderDark w-full"
-                        type={data.inType}
-                        disabled={data.key === 6}
-                      />
-                    )}
-                  </div>
+            <div className="w-fit mx-auto pt-5">
+              <Avatar
+                isBlob={Boolean(tempUrl)}
+                img={imageChange ? String(tempUrl) : `${dataProfile[7].data}`}
+                className="h-[120px] w-[120px] ring-8 ring-mainClr/10 dark:ring-mainClrDark/10"
+              />
+              <div className="relative  cursor-pointer ">
+                <div className="right-0 absolute text-white -top-14 shadow-custom text-xl dark:bg-lightDark bg-dark px-4 py-3 rounded-md">
+                  <FontAwesomeIcon icon={faUpload} />
                 </div>
-              )
-            )}
-
-            <div className="mt-5">
-              {alert &&
-                (alert?.status ? (
-                  <Alert msg={alert?.msg} type="success" />
-                ) : (
-                  <Alert msg={alert?.msg} />
-                ))}
+                <Input
+                  aria-label="Upload a profile photo"
+                  id="image"
+                  onChange={handleImageChange}
+                  type="file"
+                  className="w-[52px] h-[52px] absolute right-0 -top-14 opacity-0"
+                />
+              </div>
             </div>
-            {isPending ? (
-              <div>
-                <ButtonAdmin text="LOADING ... " />
+            <div className="py-6 lg:px-16 md:px-8 sm:px-4 px-2">
+              {dataProfile.map((data) =>
+                data.key == 8 ? (
+                  <></>
+                ) : (
+                  <div
+                    key={data.key}
+                    className="text-sm items-start flex flex-col gap-2 border dark:border-borderDark border-borderLight p-4 rounded-md mt-5"
+                  >
+                    <label htmlFor={data.key.toString()}>{data.name}</label>
+                    <div className="w-full text-lightText dark:text-white">
+                      {data.inType === "select" ? (
+                        <FormSelect
+                          onChange={handleChange}
+                          className="w-full"
+                          id={data.key.toString()}
+                          value={data.data}
+                        >
+                          <option className="text-black" value="Male">
+                            Male
+                          </option>
+                          <option className="text-black" value="Female">
+                            Female
+                          </option>
+                        </FormSelect>
+                      ) : (
+                        <Input
+                          id={data.key.toString()}
+                          onChange={handleChange}
+                          value={data.data || " "}
+                          className="border dark:border-borderDark w-full"
+                          type={data.inType}
+                          disabled={data.key === 6}
+                        />
+                      )}
+                    </div>
+                  </div>
+                ),
+              )}
+
+              <div className="mt-5">
+                {alert &&
+                  (alert?.status ? (
+                    <Alert msg={alert?.msg} type="success" />
+                  ) : (
+                    <Alert msg={alert?.msg} />
+                  ))}
               </div>
-            ) : (
-              <div
-                onClick={() => {
-                  mutate();
-                }}
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={() => mutate()}
+                className="mt-4 inline-flex min-h-12 items-center justify-center rounded-md bg-mainClr px-6 text-sm font-semibold text-white transition hover:bg-mainClr/90 disabled:cursor-wait disabled:opacity-60 dark:bg-mainClr dark:text-white"
               >
-                <ButtonAdmin text="Edit Profile" />
-              </div>
-            )}
+                {isPending ? "Saving your details..." : "Save your changes"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     </>
   );
 }

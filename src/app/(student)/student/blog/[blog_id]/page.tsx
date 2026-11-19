@@ -13,7 +13,7 @@ const page = async ({ params }: { params: Promise<{ blog_id: string }> }) => {
     },
     "POST",
   );
-  const blog_data = res.msg[0];
+  const blog_data = res.status && Array.isArray(res.msg) ? res.msg[0] : null;
 
   return (
     <BlogPost

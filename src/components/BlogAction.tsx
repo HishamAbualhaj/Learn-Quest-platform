@@ -1,4 +1,5 @@
 "use client";
+import { Input } from "@/components/ui/form-input";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ButtonAdmin from "../pages-content/Dashboard/ButtonAdmin";
@@ -66,7 +67,7 @@ function BlogAction({
       const data = await useFetch<{ id: number; msg: string } | string>(
         `${API_BASE_URL}/${endpoint}`,
         updatedBlogData,
-        method
+        method,
       );
       const res = data.msg as unknown as { id: number; msg: string };
       const { id } = res;
@@ -99,7 +100,7 @@ function BlogAction({
   }
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     if (typeof e === "string") {
       setBlogData((prev) => ({
@@ -129,12 +130,12 @@ function BlogAction({
   }
   return (
     <>
-      <div className="rounded-sm  w-full overflow-auto h-[800px]">
+      <div className="rounded-md  w-full overflow-auto h-[800px]">
         <div className="text-center dark:text-white text-black text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
           {title}
           <Link href="/dashboard/blogs">
             <FontAwesomeIcon
-              className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-sm"
+              className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-md"
               icon={faXmark}
             />
           </Link>
@@ -158,7 +159,7 @@ function BlogAction({
               className="flex flex-col mt-2 dark:text-white text-lightText"
             >
               <label htmlFor={input.id}>{input.title}</label>
-              <input
+              <Input
                 onChange={handleChange}
                 placeholder={input.placeholder}
                 id={input.id}
@@ -175,7 +176,7 @@ function BlogAction({
             <div className="image-handle relative cursor-pointer mt-2">
               <div className="border_platform all rounded-md flex justify-center py-10">
                 <div className="text-xl "> Upload image</div>
-                <input
+                <Input
                   id="image"
                   onChange={handleChange}
                   type="file"

@@ -23,7 +23,7 @@ export default function Maintenance({ userData }: { userData: User }) {
       return await useFetch(
         `${API_BASE_URL}/setMaintenance`,
         { ...userData, status },
-        "POST"
+        "POST",
       );
     },
     onSuccess: () => {
@@ -35,7 +35,7 @@ export default function Maintenance({ userData }: { userData: User }) {
       const status = data?.msg?.[0]?.status ?? true;
       setAction(false);
       setMsg(
-        `${status ? "System is running now" : "System is down for maintenance"}`
+        `${status ? "System is running now" : "System is down for maintenance"}`,
       );
       setStatus(status);
     }
@@ -80,13 +80,13 @@ export default function Maintenance({ userData }: { userData: User }) {
         </div>
         {status === null ? (
           <div
-            className={`py-2 px-6 rounded-lg text-center text-4xl sm:mt-0 mt-5 sm:w-fit w-fulldark:text-red-300  text-red-400 bg-red-400/20"`}
+            className={`py-2 px-6 rounded-md text-center text-4xl sm:mt-0 mt-5 sm:w-fit w-fulldark:text-red-300  text-red-400 bg-red-400/20"`}
           >
             ...
           </div>
         ) : (
           <div
-            className={`py-2 px-6 rounded-lg text-center text-2xl sm:mt-0 mt-5 sm:w-fit w-full ${
+            className={`py-2 px-6 rounded-md text-center text-2xl sm:mt-0 mt-5 sm:w-fit w-full ${
               status
                 ? "dark:text-green-300 text-green-400 bg-green-400/20"
                 : "dark:text-red-300  text-red-400 bg-red-400/20"
@@ -109,7 +109,7 @@ export default function Maintenance({ userData }: { userData: User }) {
                     status
                       ? "System will shut down after"
                       : "System will run after"
-                  }`
+                  }`,
                 );
                 mutate();
               }}

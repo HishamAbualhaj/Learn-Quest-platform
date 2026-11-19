@@ -110,7 +110,7 @@ function Dashboard({ children }: { children: React.ReactNode }) {
             onClick={() => {
               setResize(!resize);
             }}
-            className="cursor-pointer dark:text-white text-lightText px-2 py-[26px] rounded transition hover:bg-gray-400/20"
+            className="cursor-pointer dark:text-white text-lightText px-2 py-[26px] rounded-md transition hover:bg-gray-400/20"
             rotation={resize ? 270 : 90}
             icon={faChevronDown}
           />

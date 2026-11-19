@@ -1,10 +1,11 @@
+"use client";
 import { useEffect, useState } from "react";
-import useFetch from "../../hooks/useFetch";
+import { Check, LockKeyhole, Play, LoaderCircle } from "lucide-react";
+import useFetch from "@/hooks/useFetch";
 import { useMutation } from "@tanstack/react-query";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLock } from "@fortawesome/free-solid-svg-icons";
-import API_BASE_URL from "../../config/config";
-function CourseVideos({
+import API_BASE_URL from "@/config/config";
+
+export default function CourseVideos({
   student_id,
   course_id,
   lessons,
@@ -18,102 +19,119 @@ function CourseVideos({
   setVideoUrl,
   isEnrolled,
   refetch,
+  number = 1,
+  isActive = false,
 }) {
-  const [checked, setChecked] = useState(isCompleted);
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async () => {
-      return await useFetch(
+  const [checked, setChecked] = useState(Boolean(isCompleted));
+  useEffect(() => setChecked(Boolean(isCompleted)), [isCompleted]);
+  const locked = !isEnrolled && !url;
+  const { mutate, isPending, data } = useMutation({
+    mutationFn: () =>
+      useFetch(
         `${API_BASE_URL}/completeCourse`,
         {
           user_id: student_id,
-          course_id: course_id,
-          lessons: lessons,
-          email: email,
-          first_name: first_name,
+          course_id,
+          lessons,
+          email,
+          first_name,
           id: material_id,
-          value: isCompleted,
-          title: title,
+          value: checked,
+          title,
         },
-        "PUT"
-      );
-    },
-    onSuccess: () => {
-      setChecked((prev) => !prev);
-      refetch();
+        "PUT",
+      ),
+    onSuccess: (result) => {
+      if (result.status) {
+        setChecked((previous) => !previous);
+        refetch();
+      }
     },
   });
-
   return (
-    <div className="flex items-center lg:gap-5 gap-2 dark:hover:bg-gray-500/20 hover:bg-lightLayout/10">
-      {isEnrolled && (
-        <div className="lg:pl-4 pl-2 ">
-          {!isPending ? (
-            <div
-              onClick={() => {
-                mutate();
-              }}
-              className={`min-w-5 min-h-5 rounded-full flex items-center justify-center border-2 border-gray-400 ${
-                checked ? "bg-green-400/90 border-none" : "bg-none"
-              }  cursor-pointer`}
-            >
-              {Boolean(checked) && (
-                <div className="border-2 border-white border-t-0 border-r-0 -rotate-45 w-[13px] h-[7px] mb-1"></div>
-              )}
-            </div>
-          ) : (
-            <svg
-              className="mr-3 -ml-1 size-5 animate-spin dark:text-white text-black"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          )}
-        </div>
-      )}
-
-      <div
-        onClick={() => {
-          if (isEnrolled) {
-            setVideoUrl(url);
-          } else {
-            Boolean(url) ? setVideoUrl(url) : "";
-          }
-        }}
-        className={`text-lg border_platform b relative sm:p-6 p-4 ${
-          !isEnrolled && !Boolean(url) ? "cursor-not-allowed" : "cursor-pointer"
-        } flex-1`}
-      >
-        {title}
-        <div className="ml-5 text-sm mt-2 dark:text-white/50 text-black/50 line-clamp-1">
-          {subtitle}
-        </div>
-        {!isEnrolled && !Boolean(url) && (
-          <div className="absolute top-0 right-0  bg-purple-800/20 z-10  dark:text-purple-300 text-white w-full h-full lg:text-md text-sm flex gap-3 justify-end">
-            <div className="dark:bg-purple-600 bg-purple-500 p-2 rounded-md h-fit">
-              <div>
-                You are not Enrolled <FontAwesomeIcon icon={faLock} />
-              </div>
-            </div>
-          </div>
+    <li
+      className={`border-b border-borderLight last:border-b-0 dark:border-borderDark ${isActive ? "bg-mainClr/5 dark:bg-mainClrDark/10" : ""}`}
+    >
+      <div className="flex items-center gap-1 px-2">
+        {isEnrolled && (
+          <button
+            type="button"
+            aria-label={`${checked ? "Mark incomplete" : "Mark complete"}: ${title}`}
+            aria-pressed={checked}
+            disabled={isPending}
+            onClick={() => mutate()}
+            className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-mainClr disabled:cursor-wait dark:text-mainClrDark"
+          >
+            {isPending ? (
+              <LoaderCircle className="size-4 animate-spin motion-reduce:animate-none" />
+            ) : (
+              <span
+                className={`flex size-5 items-center justify-center rounded-md border ${checked ? "border-mainClr bg-mainClr text-white dark:border-mainClrDark dark:bg-mainClr dark:text-white" : "border-input"}`}
+              >
+                {checked && <Check className="size-3" />}
+              </span>
+            )}
+          </button>
         )}
+        <button
+          type="button"
+          disabled={locked || !url}
+          aria-current={isActive ? "true" : undefined}
+          onClick={() => {
+            if (url) setVideoUrl(url);
+          }}
+          className="group flex min-h-24 min-w-0 flex-1 items-start gap-3 rounded-md px-3 py-5 text-left transition-colors enabled:cursor-pointer enabled:hover:bg-lightLayout disabled:cursor-default dark:enabled:hover:bg-hoverDark"
+        >
+          {!isEnrolled && (
+            <span
+              className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md text-sm ${locked ? "bg-lightLayout text-muted-foreground dark:bg-hoverDark" : "bg-mainClr/10 text-mainClr dark:bg-mainClrDark/15 dark:text-mainClrDark"}`}
+            >
+              {locked ? (
+                <LockKeyhole aria-hidden="true" className="size-3.5" />
+              ) : (
+                <Play aria-hidden="true" className="size-3.5" />
+              )}
+            </span>
+          )}
+          {isEnrolled && (
+            <span className="mt-1 text-sm tabular-nums text-muted-foreground">
+              {String(number).padStart(2, "0")}
+            </span>
+          )}
+          <span className="min-w-0 flex-1">
+            <span
+              className={`block text-sm leading-5 font-medium ${isActive ? "text-mainClr dark:text-mainClrDark" : "text-lightText dark:text-white"}`}
+            >
+              {title}
+            </span>
+            {subtitle && (
+              <span className="mt-1 block text-sm leading-6 text-lightText/80 dark:text-white/85">
+                {subtitle}
+              </span>
+            )}
+            {!isEnrolled && (
+              <span
+                className={`mt-2 inline-flex items-center gap-1 text-sm ${locked ? "text-muted-foreground" : "font-medium text-mainClr dark:text-mainClrDark"}`}
+              >
+                {locked ? "Enroll to unlock" : "Free preview"}
+              </span>
+            )}
+          </span>
+          {isActive && (
+            <span className="mt-1 text-sm font-medium text-mainClr dark:text-mainClrDark">
+              Playing
+            </span>
+          )}
+        </button>
       </div>
-    </div>
+      {data?.status === false && (
+        <p
+          role="alert"
+          className="px-5 pb-3 text-sm text-red-600 dark:text-red-400"
+        >
+          {String(data.msg)}
+        </p>
+      )}
+    </li>
   );
 }
-
-export default CourseVideos;

@@ -46,7 +46,7 @@ function Users() {
             label: "Status",
             render: (value) => (
               <div
-                className={`py-2 px-3 rounded-lg w-fit ${
+                className={`py-2 px-3 rounded-md w-fit ${
                   value
                     ? "dark:text-green-300 text-green-400 bg-green-400/20"
                     : "dark:text-red-300 text-red-400 bg-red-400/20"

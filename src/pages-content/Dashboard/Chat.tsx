@@ -1,4 +1,5 @@
 "use client";
+import { Input } from "@/components/ui/form-input";
 import { forwardRef, useContext, useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -58,7 +59,7 @@ function Chat({ userData }: { userData: User }) {
 
     socketRef.current.onopen = () => {
       socketRef.current!.send(
-        JSON.stringify({ type: "init", sender_id: sender_id })
+        JSON.stringify({ type: "init", sender_id: sender_id }),
       );
     };
 
@@ -123,12 +124,12 @@ function Chat({ userData }: { userData: User }) {
         icon={faBars}
       />
       <div className="flex mt-5 gap-3">
-        <div className="h-[700px] rounded-sm flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
+        <div className="h-[700px] rounded-md flex flex-col justify-end border lg:w-10/12 w-full dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
           <Messages {...{ ...chatData, currentUserId: serverData.sender_id }} />
 
           {chatData.receiver_id && (
             <div className="flex items-center gap-3 p-2">
-              <input
+              <Input
                 ref={inputRef}
                 onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (
@@ -144,7 +145,7 @@ function Chat({ userData }: { userData: User }) {
                   }
                 }}
                 onChange={handleChange}
-                className="dark:text-white text-lightText border dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
+                className="dark:text-white text-lightText border dark:border-borderDark border-borderLight w-full h-[49px] rounded-md"
                 type="text"
               />
 
@@ -235,7 +236,7 @@ const User = forwardRef<HTMLDivElement, UserDataProps>(function User(
     initSocketConnection,
     socket,
   },
-  ref
+  ref,
 ) {
   return (
     <div
@@ -258,7 +259,7 @@ const User = forwardRef<HTMLDivElement, UserDataProps>(function User(
       } relative flex items-center gap-3 p-4 border-b dark:border-borderDark border-borderLight dark:hover:bg-borderDark hover:bg-hoverLight transition cursor-pointer`}
     >
       <div
-        className={`absolute bottom-4 left-6 rounded-full h-3 w-3 ${
+        className={`absolute bottom-4 left-6 rounded-md h-3 w-3 ${
           isActive ? "bg-green-500" : "bg-red-500"
         }  `}
       ></div>

@@ -1,4 +1,6 @@
 "use client";
+import { Input } from "@/components/ui/form-input";
+import PageIntro from "@/components/PageIntro";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
@@ -60,7 +62,7 @@ function ChatStudent({ adminData, userData }: ChatStudentProps) {
 
     socketRef.current.onopen = () => {
       socketRef.current?.send(
-        JSON.stringify({ type: "init", sender_id: sender_id })
+        JSON.stringify({ type: "init", sender_id: sender_id }),
       );
     };
 
@@ -108,52 +110,64 @@ function ChatStudent({ adminData, userData }: ChatStudentProps) {
     setServerData((prev) => ({ ...prev, msg: e.target.value }));
   };
   return (
-    <div className="sm:px-5 px-1 height-vh-adjust flex items-center">
-      <div className="w-full">
-        <div className="text-4xl font-semibold">Chat</div>
-        <div className="mt-5 h-[750px] rounded-sm flex flex-col justify-end border dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
-          <div className="flex flex-col p-5 gap-5 overflow-auto">
-            <Messages
-              {...{ ...chatData, currentUserId: serverData.sender_id }}
-            />
-          </div>
-          <div className="flex items-center gap-3 p-2">
-            <input
-              ref={inputRef}
-              onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (
-                  !serverData.sender_id ||
-                  !serverData.msg?.trim() ||
-                  !serverData.receiver_id
-                )
-                  return;
-                if (e.code === "Enter") {
+    <>
+      <PageIntro
+        eyebrow="04 / KEEP THE CONVERSATION GOING"
+        title="A little guidance goes far."
+        description="Connect with your learning team. Ask a question, share an idea, or get a hand."
+      />
+      <div className="min-w-0">
+        <div className="w-full">
+          <div className="text-lg font-semibold">Your conversation</div>
+          <div className="mt-5 h-[65dvh] min-h-[400px] rounded-md flex flex-col justify-end border dark:border-borderDark border-borderLight dark:bg-lightDark bg-lightLayout overflow-auto">
+            <div className="flex flex-col p-5 gap-5 overflow-auto">
+              <Messages
+                {...{ ...chatData, currentUserId: serverData.sender_id }}
+              />
+            </div>
+            <div className="flex items-center gap-3 p-2">
+              <Input
+                aria-label="Your message"
+                placeholder="Ask a question or share an idea..."
+                ref={inputRef}
+                onKeyDown={async (e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (
+                    !serverData.sender_id ||
+                    !serverData.msg?.trim() ||
+                    !serverData.receiver_id
+                  )
+                    return;
+                  if (e.code === "Enter") {
+                    sendDataToServer();
+                    (e.target as HTMLInputElement).value = "";
+                  }
+                }}
+                onChange={handleChange}
+                className="dark:text-white text-lightText border dark:border-borderDark border-borderLight w-full h-[49px] rounded-md"
+                type="text"
+              />
+              <button
+                type="button"
+                aria-label="Send message"
+                onClick={async () => {
+                  if (
+                    !serverData.sender_id ||
+                    !serverData.msg?.trim() ||
+                    !serverData.receiver_id
+                  )
+                    return;
                   sendDataToServer();
-                  (e.target as HTMLInputElement).value = "";
-                }
-              }}
-              onChange={handleChange}
-              className="dark:text-white text-lightText border dark:border-borderDark border-borderLight w-full h-[49px] rounded-sm"
-              type="text"
-            />
-            <FontAwesomeIcon
-              onClick={async () => {
-                if (
-                  !serverData.sender_id ||
-                  !serverData.msg?.trim() ||
-                  !serverData.receiver_id
-                )
-                  return;
-                sendDataToServer();
-                inputRef.current!.value = "";
-              }}
-              className="p-4 text-lg text-white  cursor-pointer bg-gray-500 hover:bg-gray-800 hover:text-white transition"
-              icon={faPaperPlane}
-            />
+                  inputRef.current!.value = "";
+                }}
+                className="p-4 text-lg text-white  cursor-pointer rounded-md bg-mainClr hover:bg-mainClr/90 dark:bg-mainClr dark:text-white hover:text-white transition"
+              >
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

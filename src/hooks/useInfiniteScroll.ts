@@ -8,8 +8,9 @@ type UseInfiniteScrollProps<T> = {
   scrollContainer: RefObject<HTMLElement | null>;
   observedEle: HTMLElement | null;
   data_id: keyof T;
+  viewportRoot?: boolean;
+  retry?: number;
 };
-
 
 type UseInfiniteScrollReturn<T> = {
   isFetching: boolean;
@@ -17,6 +18,8 @@ type UseInfiniteScrollReturn<T> = {
   dataFetched: T[];
   hasNextPage?: boolean;
   refetch: () => void;
+  loadMore: () => void;
+  error: Error | null;
 };
 
 function useInfiniteScroll<T extends Record<string, any>>({
@@ -25,6 +28,8 @@ function useInfiniteScroll<T extends Record<string, any>>({
   scrollContainer,
   observedEle,
   data_id,
+  viewportRoot = false,
+  retry,
 }: UseInfiniteScrollProps<T>): UseInfiniteScrollReturn<T> {
   const observer = useRef<IntersectionObserver | undefined>(undefined);
 
@@ -36,6 +41,7 @@ function useInfiniteScroll<T extends Record<string, any>>({
     data,
     hasNextPage,
     refetch,
+    error,
   } = useInfiniteQuery({
     queryKey: queryKey,
     queryFn: async ({ pageParam = 1 }) => {
@@ -44,6 +50,7 @@ function useInfiniteScroll<T extends Record<string, any>>({
     getNextPageParam: (lastPage, _) => lastPage?.nextPage ?? undefined,
     refetchOnWindowFocus: false,
     initialPageParam: 1,
+    retry,
   });
 
   useEffect(() => {
@@ -60,23 +67,34 @@ function useInfiniteScroll<T extends Record<string, any>>({
 
       if (!observedEle) return;
       let options = {
-        root: scrollContainer.current,
-        rootMargin: "0px",
-        threshold: 1.0,
+        root: viewportRoot ? null : scrollContainer.current,
+        rootMargin: viewportRoot ? "200px 0px" : "0px",
+        threshold: viewportRoot ? 0 : 1.0,
       };
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          if (!hasNextPage) return;
+          if (!hasNextPage || error) return;
           fetchNextPage();
         }
       }, options);
 
       observer.current.observe(observedEle);
     }
-  }, [observedEle, isFetching]);
+    return () => observer.current?.disconnect();
+  }, [observedEle, isFetching, viewportRoot, error]);
 
-  return { isFetching, isFetchingNextPage, dataFetched, hasNextPage, refetch };
+  return {
+    isFetching,
+    isFetchingNextPage,
+    dataFetched,
+    hasNextPage,
+    refetch,
+    error,
+    loadMore: () => {
+      void fetchNextPage();
+    },
+  };
 }
 
 export default useInfiniteScroll;

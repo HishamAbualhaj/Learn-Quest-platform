@@ -1,6 +1,6 @@
 function Loader() {
   return (
-    <div className=" dark:border-borderDark rounded-xl p-4 bg-white dark:bg-dark">
+    <div className=" dark:border-borderDark rounded-md p-4 bg-white dark:bg-dark">
       <div>
         <div className="rounded-md w-full h-[300px] object-cover bg-gray-500/20 animate-syncPuls"></div>
       </div>
