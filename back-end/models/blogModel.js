@@ -8,7 +8,7 @@ const getBlogModel = async ({ page, blog_id }) => {
   if (page) {
     return await connection
       .promise()
-      .query(query, [10, page === 1 ? 0 : (page - 1) * 5]);
+      .query(query, [10, page === 1 ? 0 : (page - 1) * 10]);
   } else {
     const query = "SELECT * from blog WHERE blog_id = ?";
     return await connection.promise().query(query, [blog_id]);
@@ -37,19 +37,19 @@ const editBlogModel = async ({
     image_url = `${blog_id}-${image_url}`;
 
     editBlogQuery =
-      "UPDATE blog set title = ? , subtitle = ? , content = ? , image_url = ?";
+      "UPDATE blog set title = ? , subtitle = ? , content = ? , image_url = ? WHERE blog_id = ?";
 
     const oldImageUrl = await getImageUrl("blog", "blog_id", blog_id);
     oldImageUrl && (await deleteImage(oldImageUrl));
 
     return await connection
       .promise()
-      .query(editBlogQuery, [title, subtitle, content, image_url]);
+      .query(editBlogQuery, [title, subtitle, content, image_url, blog_id]);
   } else {
-    editBlogQuery = "UPDATE blog set title = ? , subtitle = ? , content = ?";
+    editBlogQuery = "UPDATE blog set title = ? , subtitle = ? , content = ? WHERE blog_id = ?";
     return await connection
       .promise()
-      .query(editBlogQuery, [title, subtitle, content]);
+      .query(editBlogQuery, [title, subtitle, content, blog_id]);
   }
 };
 const deleteBlogModel = async ({ blog_id }) => {

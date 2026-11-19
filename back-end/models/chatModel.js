@@ -26,7 +26,7 @@ const getMessagesModel = async ({ sender_id, receiver_id, page }) => {
       receiver_id,
       sender_id,
       10,
-      page === 1 ? 0 : (page - 1) * 5,
+      page === 1 ? 0 : (page - 1) * 10,
     ]);
 };
 export { sendMessgeModel, getMessagesModel };

@@ -1,5 +1,6 @@
 import mysql from "mysql2";
 import dotenv from "dotenv";
+import { readFileSync } from "node:fs";
 dotenv.config();
 const dbPassword = process.env.DB_PASSWORD;
 const dbUser = process.env.DB_USER;
@@ -13,6 +14,16 @@ const connection = mysql.createConnection({
   password: dbPassword,
   database: dbName,
   port: dbPort,
+  ...(process.env.DB_SSL === "true"
+    ? {
+        ssl: {
+          rejectUnauthorized: true,
+          ...(process.env.DB_SSL_CA
+            ? { ca: readFileSync(process.env.DB_SSL_CA, "utf8") }
+            : {}),
+        },
+      }
+    : {}),
 });
 
 

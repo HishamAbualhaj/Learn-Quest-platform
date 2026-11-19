@@ -28,7 +28,7 @@ const getCoursesSearchModel = async (
       select_data && (select_data === "Discount" ? "Discount" : null),
       select_data && (select_data === "Top-Rated" ? "Top-Rated" : null),
       maxData,
-      page === 1 ? 0 : (page - 1) * 5,
+      page === 1 ? 0 : (page - 1) * maxData,
     ]);
 };
 const getCourseDataForReviewsModel = async () => {
@@ -180,12 +180,12 @@ const addMaterialCompleteionModel = async ({
       !value,
     ]);
 };
-const updatMaterialCompleteionModel = async ({ value, id }) => {
+const updatMaterialCompleteionModel = async ({ value, id, user_id }) => {
   const updatMaterialCompleteionQuery =
     "UPDATE completeionmaterial SET isCompleted = ? WHERE material_id = ? AND student_id = ?";
   await connection
     .promise()
-    .query(updatMaterialCompleteionQuery, [!value, id, student_id]);
+    .query(updatMaterialCompleteionQuery, [!value, id, user_id]);
 };
 const countCourseMaterialCompletedModel = async (user_id, course_id) => {
   const countCourseMaterialCompletedQuery = `SELECT COUNT(*) FROM completeionmaterial where student_id = ? AND course_id = ? AND isCompleted = 1`;

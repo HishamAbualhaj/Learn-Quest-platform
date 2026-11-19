@@ -72,7 +72,7 @@ const addCourseMaterialModel = async (data, course_id) => {
 
     lessons += 1;
   }
-  return;
+  return lessons;
 };
 
 const updateLessonModel = async (lessons, course_id) => {
@@ -128,7 +128,7 @@ const getSystemLogModel = async (page) => {
   const query = `SELECT * FROM systemlogs ORDER BY created_date DESC  LIMIT ? OFFSET ?`;
   return await connection
     .promise()
-    .query(query, [10, page === 1 ? 0 : (page - 1) * 5]);
+    .query(query, [10, page === 1 ? 0 : (page - 1) * 10]);
 };
 
 const updateCourseMaterialsModel = async (course_id, data) => {
