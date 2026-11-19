@@ -181,6 +181,5 @@ wss.on("connection", (socket) => {
   }
 });
 server.listen(PORT, () => {
-  const backendURL = process.env.BACKEND_URL || "http://localhost:3002";
-  console.log(`Server running on ${backendURL}`);
+  console.log(`API listening on http://localhost:${PORT}`);
 });

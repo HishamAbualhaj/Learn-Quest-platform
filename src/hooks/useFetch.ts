@@ -1,3 +1,4 @@
+import { apiResponse } from "@/lib/apiResponse";
 export type FetchResponse<T> = {
   status: boolean;
   msg: T | string;
@@ -8,7 +9,7 @@ export type FetchResponse<T> = {
 async function useFetch<T = any>(
   url: string,
   data: Record<string, any> | null,
-  method: string
+  method: string,
 ): Promise<FetchResponse<T>> {
   try {
     const res = await fetch(url, {
@@ -17,35 +18,13 @@ async function useFetch<T = any>(
         "Content-Type": "application/json",
       },
       body:
-        ["POST", "PATCH", "GET", "PUT"].includes(method) && data
+        ["POST", "PATCH", "PUT", "DELETE"].includes(method) && data
           ? JSON.stringify(data)
           : undefined,
       credentials: "include",
     });
 
-    const result = await res.json();
-    if (res.status === 404) {
-      return {
-        status: false,
-        msg: "Page is not found",
-        redirect: false,
-      };
-    } else {
-      // Handle success and fail status from server side
-      return result.status
-        ? {
-            status: result.status,
-            msg: result.data,
-            redirect: true,
-            nextPage: result?.nextPage,
-          }
-        : {
-            status: result.status,
-            msg: result.data,
-            redirect: false,
-            nextPage: result?.nextPage,
-          };
-    }
+    return await apiResponse<T>(res);
   } catch (error) {
     console.error("Error connecting to server:", error);
     return {

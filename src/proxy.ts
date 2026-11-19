@@ -7,7 +7,11 @@ type Session = { loggedIn: boolean; userData: User[] };
 const GUEST_SESSION: Session = { loggedIn: false, userData: [] };
 const CHECK_TIMEOUT_MS = 5_000;
 const AUTH_ROUTES = new Set([
-  "/login", "/signup", "/forgotpassword", "/verifycode", "/confirmpass",
+  "/login",
+  "/signup",
+  "/forgotpassword",
+  "/verifycode",
+  "/confirmpass",
 ]);
 const PUBLIC_ROUTES = new Set(["/student/allcourses", "/student/blog"]);
 
@@ -27,7 +31,10 @@ async function fetchCheck(path: string, sessionId?: string): Promise<unknown> {
     const result = await response.json();
     return result?.status === true ? result.data : null;
   } catch (error) {
-    console.error(`Route check failed: ${path}`, error);
+    const cause = error as { cause?: { code?: string }; name?: string };
+    console.warn(
+      `Backend check unavailable: ${API_SERVER_BASE_URL}${path} (${cause.cause?.code ?? cause.name ?? "unknown error"})`,
+    );
     return null;
   }
 }
@@ -44,20 +51,43 @@ function parseSession(data: unknown): Session {
   }
   // Only expose the frontend's user fields, never extra backend columns.
   const {
-    student_id, first_name, last_name, email, gender, birthdate,
-    image_url, joined_at, course_joined, role, status_user,
+    student_id,
+    first_name,
+    last_name,
+    email,
+    gender,
+    birthdate,
+    image_url,
+    joined_at,
+    course_joined,
+    role,
+    status_user,
   } = user;
   return {
     loggedIn: true,
-    userData: [{
-      student_id, first_name, last_name, email, gender, birthdate,
-      image_url, joined_at, course_joined, role, status_user,
-    }],
+    userData: [
+      {
+        student_id,
+        first_name,
+        last_name,
+        email,
+        gender,
+        birthdate,
+        image_url,
+        joined_at,
+        course_joined,
+        role,
+        status_user,
+      },
+    ],
   };
 }
 
 export async function proxy(req: NextRequest) {
   const pathname = req.nextUrl.pathname.replace(/\/+$/, "") || "/";
+
+  // The recovery page must render even while the API cannot be reached.
+  if (pathname === "/unavailable") return NextResponse.next();
 
   // Logging out must still work when backend checks are unavailable.
   if (pathname === "/logout") {
@@ -80,8 +110,16 @@ export async function proxy(req: NextRequest) {
   const maintenanceStatus = Array.isArray(maintenanceData)
     ? maintenanceData[0]?.status
     : undefined;
-  // Invalid maintenance data must not crash or open protected pages.
-  const isMaintenance = maintenanceStatus !== 1 && maintenanceStatus !== true;
+  // A failed check is unknown, not an instruction to enable maintenance mode.
+  if (![0, 1, false, true].includes(maintenanceStatus)) {
+    const response = NextResponse.rewrite(new URL("/unavailable", req.url), {
+      status: 503,
+    });
+    response.headers.set("Retry-After", "10");
+    response.headers.set("Cache-Control", "no-store");
+    return response;
+  }
+  const isMaintenance = maintenanceStatus === 0 || maintenanceStatus === false;
 
   let destination: string | undefined;
   if (isMaintenance) {
@@ -99,7 +137,8 @@ export async function proxy(req: NextRequest) {
       !PUBLIC_ROUTES.has(pathname) &&
       !matchesRoute(pathname, "/student/allcourses") &&
       !matchesRoute(pathname, "/student/blog") &&
-      ((isAdminRoute && role !== "admin") || (!isAdminRoute && role === "admin"))
+      ((isAdminRoute && role !== "admin") ||
+        (!isAdminRoute && role === "admin"))
     ) {
       destination = "/";
     }
