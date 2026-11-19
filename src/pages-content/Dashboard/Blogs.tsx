@@ -38,6 +38,12 @@ function Blogs() {
         ]}
         customActions={(blog, refetch) => (
           <>
+            <Link
+              href={`/student/blog/${blog.blog_id}`}
+              className="cursor-pointer border rounded-md py-2 px-2 text-center hover:bg-gray-800 hover:text-white transition"
+            >
+              View
+            </Link>
             <Link href={`/dashboard/blogs/edit/${blog?.blog_id}`}>
               <div className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition">
                 Edit

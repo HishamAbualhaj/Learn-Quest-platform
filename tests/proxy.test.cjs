@@ -48,6 +48,7 @@ test("guests skip session lookup and protected details require login", async () 
   const calls = mockBackend();
   assert.equal(redirectPath(await proxy(request("/student/allcourses"))), null);
   assert.equal(redirectPath(await proxy(request("/student/allcourses/1"))), "/login");
+  assert.equal(redirectPath(await proxy(request("/student/blog/1"))), "/login");
   assert.equal(redirectPath(await proxy(request("/login/"))), null);
   assert.ok(calls.every(({ url }) => url.endsWith("/getMaintenace")));
 });

@@ -244,9 +244,7 @@ function MyCourses({ userData }: { userData: User }) {
                       <></>
                     )}
                     <Link
-                      href={`/student/CoursePage/${
-                        course.course_id
-                      }-${course.title.replace(/[\s/]/g, "")}`}
+                      href={`/student/allcourses/${course.course_id}`}
                     >
                       <Button
                         text="Go to course"

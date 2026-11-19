@@ -67,7 +67,7 @@ function Blog() {
                     Author : "Admin"
                   </div>
                   <Link
-                    href={`${blog.blog_id}-${blog.title.replace(/\//g, "")}`}
+                    href={`/student/blog/${blog.blog_id}`}
                   >
                     <Button
                       margin="mt-4"
