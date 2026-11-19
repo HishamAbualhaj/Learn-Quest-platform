@@ -31,7 +31,7 @@ function Hero({ data }) {
           )}
         </div>
         <img
-          className="lg:max-w-[600px] rounded-lg"
+          className="lg:max-w-[600px] rounded-md"
           src={`/hero.jpg`}
           alt="Person studying"
         />

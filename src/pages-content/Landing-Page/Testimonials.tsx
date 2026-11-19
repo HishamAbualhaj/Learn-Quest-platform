@@ -43,12 +43,8 @@ function Testimonials() {
           {testimonials.map((testimonial) => (
             <div key={testimonial.id} className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <div className="border rounded-full p-3">
-                  <img
-                    className="w-10 h-10"
-                    src={`/person.png`}
-                    alt=""
-                  />
+                <div className="border rounded-md p-3">
+                  <img className="w-10 h-10" src={`/person.png`} alt="" />
                 </div>
                 <div>
                   <div className="text">{testimonial.name}</div>

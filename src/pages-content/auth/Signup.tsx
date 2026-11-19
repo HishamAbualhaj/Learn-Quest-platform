@@ -1,11 +1,14 @@
 "use client";
+import { FormSelect } from "@/components/ui/form-select";
+import { Input } from "@/components/ui/form-input";
+import AuthShell from "./AuthShell";
 import { useEffect, useState } from "react";
 import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import useFetch from "@/hooks/useFetch";
 import API_BASE_URL from "@/config/config";
 import { useMutation } from "@tanstack/react-query";
-import Logo from "@/components/Logo";
+
 import { useRouter } from "next/navigation";
 function Signup() {
   const [alert, setAlert] = useState<{
@@ -48,7 +51,7 @@ function Signup() {
               ...data,
               msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
             }
-          : null
+          : null,
       );
     },
     onError: (error) => {
@@ -57,133 +60,134 @@ function Signup() {
   });
 
   return (
-    <div className="dark:bg-dark bg-lightLayout md:px-0 px-5 h-screen">
-      <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pl-0 md:pl-10 font-bold flex gap-1">
-        <Logo />
+    <AuthShell
+      title="Make today day one."
+      description="Create your free account and make room for something new."
+      step="01 / YOUR JOURNEY STARTS HERE"
+    >
+      {alert &&
+        (alert?.status ? (
+          <Alert msg={alert?.msg} type="success" />
+        ) : (
+          <Alert msg={alert?.msg} />
+        ))}
+
+      <a
+        href={`${API_BASE_URL}/auth/google`}
+        className="mt-6 flex min-h-12 items-center justify-center gap-3 rounded-md border border-borderLight text-sm font-medium transition hover:bg-lightLayout dark:border-borderDark dark:hover:bg-hoverDark"
+      >
+        <img width="20" height="20" src="/google.svg" alt="" />
+        Sign up with Google
+      </a>
+
+      <div className="dark:text-textDark text-lightText mt-8 flex items-center gap-3">
+        <div className="dark:bg-borderDark bg-borderLight h-px w-1/2"></div>
+        OR
+        <div className="dark:bg-borderDark bg-borderLight h-px w-1/2"></div>
       </div>
-      <div className="mx-auto max-w-[500px] p-7 mt-5 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl relative">
-        {alert &&
-          (alert?.status ? (
-            <Alert msg={alert?.msg} type="success" />
-          ) : (
-            <Alert msg={alert?.msg} />
-          ))}
-        <div className="lg:text-4xl text-2xl font-bold">Sign up free</div>
-        <div className="dark:text-textDark text-lightText mt-2">
-          No credit card required
-        </div>
-        <div className="mt-6 py-3 cursor-pointer  flex gap-2 items-center justify-center border dark:border-textDark/40 border-borderLight rounded-md">
-          <img className="w-7 h-7" src={`/google.svg`} alt="" />
-          <div
-            onClick={() => {
-              window.open(`${API_BASE_URL}/auth/google`, "_self");
-            }}
-            className="dark:text-white text-lightDark"
-          >
-            Sign up with Google
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          mutate();
+        }}
+      >
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-6">
+          <div className="flex flex-col flex-1">
+            <label htmlFor="first_name">First name</label>
+            <Input
+              required
+              id="first_name"
+              autoComplete="given-name"
+              onChange={handleChange}
+              className="mt-2 border rounded-md w-full"
+              type="text"
+            />
+          </div>
+          <div className="flex flex-col flex-1">
+            <label htmlFor="last_name">Last name</label>
+            <Input
+              required
+              id="last_name"
+              autoComplete="family-name"
+              onChange={handleChange}
+              className="mt-2 border rounded-md w-full"
+              type="text"
+            />
           </div>
         </div>
 
-        <div className="dark:text-textDark text-lightText mt-8 flex items-center gap-3">
-          <div className="dark:bg-textDark bg-lightText h-px w-1/2"></div>
-          OR
-          <div className="dark:bg-textDark bg-lightText h-px w-1/2"></div>
-        </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            mutate();
-          }}
-        >
-          <div className="flex gap-2 mt-6">
-            <div className="flex flex-col flex-1">
-              <label htmlFor="first_name">First name</label>
-              <input
-                required
-                id="first_name"
-                onChange={handleChange}
-                className="mt-2 border rounded-md w-full"
-                type="text"
-              />
-            </div>
-            <div className="flex flex-col flex-1">
-              <label htmlFor="last_name">Last name</label>
-              <input
-                required
-                id="last_name"
-                onChange={handleChange}
-                className="mt-2 border rounded-md w-full"
-                type="text"
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col mt-4">
-            <label htmlFor="email">Email</label>
-            <input
-              required
-              id="email"
-              onChange={handleChange}
-              className="mt-2 border rounded-md w-full"
-              type="email"
-            />
-          </div>
-          <div className="flex flex-col mt-4">
-            <label htmlFor="gender">Gender</label>
-            <select
-              className="mt-2 border rounded-md w-full"
-              onChange={handleChange}
-              name=""
-              id="gender"
-            >
-              <option className="text-black" value="Male">
-                Male
-              </option>
-              <option className="text-black" value="Female">
-                Female
-              </option>
-            </select>
-          </div>
-          <div className="flex flex-col mt-4">
-            <label htmlFor="password">Password</label>
-            <input
-              required
-              id="password"
-              onChange={handleChange}
-              className="mt-2 border rounded-md w-full"
-              type="password"
-            />
-          </div>
-          <div className="flex flex-col mt-4">
-            <label htmlFor="birthdate">Date of Birth</label>
-            <input
-              required
-              id="birthdate"
-              onChange={handleChange}
-              className="mt-2 border rounded-md w-full"
-              type="date"
-            />
-          </div>
-          <Button
-            type="submit"
-            text="Sign up"
-            loadingText="Loading"
-            isloading={isPending}
-            padding="py-4 w-full font-semibold"
-            textDarkClr={undefined}
-            hoverTextClr={undefined}
-            hoverDarkTextClr={undefined}
+        <div className="flex flex-col mt-4">
+          <label htmlFor="email">Email</label>
+          <Input
+            required
+            id="email"
+            autoComplete="email"
+            onChange={handleChange}
+            className="mt-2 border rounded-md w-full"
+            type="email"
           />
-        </form>
+        </div>
+        <div className="flex flex-col mt-4">
+          <label htmlFor="gender">Gender</label>
+          <FormSelect
+            className="mt-2 border rounded-md w-full"
+            onChange={handleChange}
+            name=""
+            id="gender"
+          >
+            <option className="text-black" value="Male">
+              Male
+            </option>
+            <option className="text-black" value="Female">
+              Female
+            </option>
+          </FormSelect>
+        </div>
+        <div className="flex flex-col mt-4">
+          <label htmlFor="password">Password</label>
+          <Input
+            required
+            id="password"
+            autoComplete="new-password"
+            onChange={handleChange}
+            className="mt-2 border rounded-md w-full"
+            type="password"
+          />
+        </div>
+        <div className="flex flex-col mt-4">
+          <label htmlFor="birthdate">Date of Birth</label>
+          <Input
+            required
+            id="birthdate"
+            autoComplete="bday"
+            onChange={handleChange}
+            className="mt-2 border rounded-md w-full"
+            type="date"
+          />
+        </div>
+        <Button
+          bgClr="bg-mainClr"
+          bgDarkClr="dark:bg-mainClr"
+          hoverBgClr="hover:bg-mainClr/90"
+          hoverDarkBgClr="dark:hover:bg-mainClr/90"
+          type="submit"
+          text="Sign up"
+          loadingText="Loading"
+          isloading={isPending}
+          padding="py-4 w-full font-semibold"
+          textDarkClr="dark:text-white"
+          hoverTextClr={undefined}
+          hoverDarkTextClr={undefined}
+        />
+      </form>
 
-        <div className="text-darkText mt-3 flex gap-2 items-center">
-          Already have an account?
-          <div className="text-lightBtn underline ">
-            <a href="login">Log in</a>
-          </div>
+      <div className="text-darkText mt-3 flex gap-2 items-center">
+        Already have an account?
+        <div className="text-mainClr dark:text-mainClrDark underline ">
+          <a href="login">Log in</a>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 }
 

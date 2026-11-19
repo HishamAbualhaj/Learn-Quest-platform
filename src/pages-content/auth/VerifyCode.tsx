@@ -1,4 +1,7 @@
 "use client";
+import { Input } from "@/components/ui/form-input";
+import Link from "next/link";
+import AuthShell from "./AuthShell";
 import { useMutation } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
@@ -25,7 +28,7 @@ function VerifyCode() {
           code: code,
           email: email || null,
         },
-        "POST"
+        "POST",
       );
     },
     onSuccess: (data) => {
@@ -35,7 +38,7 @@ function VerifyCode() {
               ...data,
               msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
             }
-          : null
+          : null,
       );
     },
     onError: (error) => {
@@ -54,48 +57,57 @@ function VerifyCode() {
     }
   }, [data]);
   return (
-    <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5 ">
-      <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pt-10 pl-0 md:pl-10 font-bold flex gap-1">
-        LEARN <div className="text-purple-600">QUEST</div>
-      </div>
-      <div className="mx-auto max-w-[500px] p-7 mt-48 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl">
-        {alert &&
-          (alert?.status ? (
-            <Alert msg={alert.msg} type="success" />
-          ) : (
-            <Alert msg={alert.msg} />
-          ))}
-        <div className="lg:text-4xl text-2xl">Verify code</div>
-        <div className="dark:text-textDark text-lightText mt-2">
-          Code sent to your email - check your spam
-        </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            mutate();
-          }}
-        >
-          <div className="flex flex-col mt-4">
-            <label htmlFor="">Code</label>
-            <input
-              onChange={handleChange}
-              className="mt-2 border rounded-md w-full"
-              type="text"
-            />
-          </div>
-          <Button
-            type="submit"
-            text="Verify code"
-            loadingText="Loading"
-            isloading={false}
-            padding="py-4 w-full font-semibold"
-            textDarkClr={undefined}
-            hoverTextClr={undefined}
-            hoverDarkTextClr={undefined}
+    <AuthShell
+      title="Check your inbox."
+      description="Enter the code sent to your email. Check your spam folder if you do not see it."
+      step="03 / ONE SMALL CHECK"
+    >
+      {alert &&
+        (alert?.status ? (
+          <Alert msg={alert.msg} type="success" />
+        ) : (
+          <Alert msg={alert.msg} />
+        ))}
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          mutate();
+        }}
+      >
+        <div className="flex flex-col mt-4">
+          <label htmlFor="code">Code</label>
+          <Input
+            onChange={handleChange}
+            className="mt-2 border rounded-md w-full"
+            id="code"
+            type="text"
+            autoComplete="one-time-code"
+            required
           />
-        </form>
-      </div>
-    </div>
+        </div>
+        <Button
+          bgClr="bg-mainClr"
+          bgDarkClr="dark:bg-mainClr"
+          hoverBgClr="hover:bg-mainClr/90"
+          hoverDarkBgClr="dark:hover:bg-mainClr/90"
+          type="submit"
+          text="Verify code"
+          loadingText="Loading"
+          isloading={isPending}
+          padding="py-4 w-full font-semibold"
+          textDarkClr="dark:text-white"
+          hoverTextClr={undefined}
+          hoverDarkTextClr={undefined}
+        />
+      </form>
+      <Link
+        href="/login"
+        className="mt-6 inline-flex min-h-11 items-center text-sm font-medium"
+      >
+        Back to log in
+      </Link>
+    </AuthShell>
   );
 }
 

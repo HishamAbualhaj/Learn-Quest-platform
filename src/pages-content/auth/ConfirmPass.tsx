@@ -1,4 +1,7 @@
 "use client";
+import { Input } from "@/components/ui/form-input";
+import Link from "next/link";
+import AuthShell from "./AuthShell";
 import { ChangeEvent, useEffect, useState } from "react";
 import Alert from "../../components/Alert";
 import { useMutation } from "@tanstack/react-query";
@@ -29,7 +32,7 @@ function ConfirmPass() {
           email: email || null,
           password: password,
         },
-        "POST"
+        "POST",
       );
     },
     onSuccess: (data) => {
@@ -39,7 +42,7 @@ function ConfirmPass() {
               ...data,
               msg: Array.isArray(data.msg) ? data.msg.join(", ") : data.msg,
             }
-          : null
+          : null,
       );
     },
     onError: (e) => {
@@ -77,65 +80,76 @@ function ConfirmPass() {
         router.push("/login");
       }, 2000);
     }
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [data]);
+    return () => clearTimeout(timer);
+  }, [data, router]);
 
   return (
-    <div className="dark:bg-dark bg-lightLayout h-screen md:px-0 px-5 ">
-      <div className="dark:text-white text-lightText text-2xl  max-md:justify-center pt-10 pl-0 md:pl-10 font-bold flex gap-1">
-        LEARN <div className="text-purple-600">QUEST</div>
-      </div>
-      <div className="mx-auto max-w-[500px] p-7 mt-48 dark:bg-loginDark bg-white dark:shadow-none shadow-custom dark:text-white text-lightText rounded-xl">
-        {alert &&
-          (alert?.status ? (
-            <Alert msg={alert.msg} type="success" />
-          ) : (
-            <Alert msg={alert.msg} />
-          ))}
-        <div className="lg:text-4xl text-2xl">Confirm password</div>
-        <div className="dark:text-textDark text-lightText mt-2">
-          Reset password
+    <AuthShell
+      title="Make it yours again."
+      description="Choose a new password to get back to your learning journey."
+      step="04 / READY FOR YOUR NEXT CHAPTER"
+    >
+      {alert &&
+        (alert?.status ? (
+          <Alert msg={alert.msg} type="success" />
+        ) : (
+          <Alert msg={alert.msg} />
+        ))}
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (password !== confirmPass) return;
+          mutate();
+        }}
+      >
+        <div className="flex flex-col mt-4">
+          <label htmlFor="password">Password</label>
+          <Input
+            id="password"
+            autoComplete="new-password"
+            required
+            onChange={handleChange}
+            className="mt-2 border rounded-md w-full"
+            type="password"
+          />
         </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            mutate();
-          }}
-        >
+        {password && (
           <div className="flex flex-col mt-4">
-            <label htmlFor="">Password</label>
-            <input
-              onChange={handleChange}
+            <label htmlFor="confirm-password">Confirm Password</label>
+            <Input
+              id="confirm-password"
+              autoComplete="new-password"
+              required
+              onChange={handleConfirmPass}
               className="mt-2 border rounded-md w-full"
               type="password"
             />
           </div>
-          {password && (
-            <div className="flex flex-col mt-4">
-              <label htmlFor="">Confirm Password</label>
-              <input
-                onChange={handleConfirmPass}
-                className="mt-2 border rounded-md w-full"
-                type="password"
-              />
-            </div>
-          )}
+        )}
 
-          <Button
-            type="submit"
-            text="Reset password"
-            loadingText="Loading"
-            isloading={isPending}
-            padding="py-4 w-full font-semibold"
-            textDarkClr={undefined}
-            hoverTextClr={undefined}
-            hoverDarkTextClr={undefined}
-          />
-        </form>
-      </div>
-    </div>
+        <Button
+          bgClr="bg-mainClr"
+          bgDarkClr="dark:bg-mainClr"
+          hoverBgClr="hover:bg-mainClr/90"
+          hoverDarkBgClr="dark:hover:bg-mainClr/90"
+          type="submit"
+          text="Reset password"
+          loadingText="Loading"
+          isloading={isPending}
+          padding="py-4 w-full font-semibold"
+          textDarkClr="dark:text-white"
+          hoverTextClr={undefined}
+          hoverDarkTextClr={undefined}
+        />
+      </form>
+      <Link
+        href="/login"
+        className="mt-6 inline-flex min-h-11 items-center text-sm font-medium"
+      >
+        Back to log in
+      </Link>
+    </AuthShell>
   );
 }
 

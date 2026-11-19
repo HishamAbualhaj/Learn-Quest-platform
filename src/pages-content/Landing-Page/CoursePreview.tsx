@@ -37,11 +37,11 @@ function CoursePreview() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="border dark:border-borderDark border-borderLight rounded-xl bg-white dark:bg-dark"
+              className="border dark:border-borderDark border-borderLight rounded-md bg-white dark:bg-dark"
             >
               <div>
                 <img
-                  className="rounded-tr-xl rounded-tl-xl xl:w-[500px] w-full h-[300px] object-cover"
+                  className="rounded-tr-md rounded-tl-md xl:w-[500px] w-full h-[300px] object-cover"
                   src={`/${course.image}`}
                   alt=""
                 />
@@ -52,8 +52,11 @@ function CoursePreview() {
                   {course.description}
                 </div>
                 <div className="mt-5 flex gap-2 flex-wrap">
-                  {course.categories.map((category,i) => (
-                    <div key={i} className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-[13px] w-fit px-2 py-2 rounded-xl border dark:border-borderDark border-borderLight">
+                  {course.categories.map((category, i) => (
+                    <div
+                      key={i}
+                      className="bg-lightLayout min-w-10 text-center dark:bg-lightDark text-sm w-fit px-2 py-2 rounded-md border dark:border-borderDark border-borderLight"
+                    >
                       {category}
                     </div>
                   ))}

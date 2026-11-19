@@ -27,7 +27,7 @@ function Button({ outlined, size = "px-4 py-2", text, url, props = "" }) {
       ) : (
         <a
           href={url}
-          className={`${currentSize} ${props} ${btnProperties} border-mainClr border dark:bg-mainClrDark   bg-mainClr dark:text-lightText text-white hover:bg-mainClrDark hover:border-mainClrDark`}
+          className={`${currentSize} ${props} ${btnProperties} border-mainClr border dark:bg-mainClr   bg-mainClr dark:text-white text-white hover:bg-action-hover hover:border-action-hover`}
         >
           {text}
         </a>

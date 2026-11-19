@@ -2,8 +2,8 @@
 import { useState } from "react";
 import Button from "../Button";
 import Avatar from "@/components/Avatar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShare } from "@fortawesome/free-solid-svg-icons";
+import { ChevronDown } from "lucide-react";
+import { DropdownMenu } from "radix-ui";
 import DropDown from "./DropDown";
 import { tabs, adminTabs } from "@/global/global";
 import DarkModeToggle from "./DarkModeToggle";
@@ -14,57 +14,48 @@ interface UserStatusProps {
   role: string;
   image_url: string;
 }
-const UserStatus = ({
+export default function UserStatus({
   isLoggedIn,
-  isStudent,
   first_name,
   role,
   image_url,
-}: UserStatusProps) => {
+}: UserStatusProps) {
   const [active, setActive] = useState(false);
-
   return (
-    <div className="flex items-center">
+    <div className="flex min-w-0 items-center gap-2">
       {!isLoggedIn ? (
-        <div className="md:flex hidden gap-2">
-          <Button outlined={true} text="Sign up" size="lg" url={"signup"} />
-          <Button outlined={false} text="Log in" size="lg" url={"login"} />
+        <div className="hidden gap-2 md:flex">
+          <Button outlined text="Sign up" size="lg" url="/signup" />
+          <Button outlined={false} text="Log in" size="lg" url="/login" />
         </div>
       ) : (
-        <div className=" dark:border-borderDark border-borderLight md:px-5 pb-2">
-          <div className="relative">
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                setActive(!active);
-              }}
-              className="flex items-center gap-3 cursor-pointer hover:bg-gray-300/40 dark:hover:bg-gray-200/20  rounded-md p-2"
+        <DropdownMenu.Root modal={false} open={active} onOpenChange={setActive}>
+          <DropdownMenu.Trigger asChild>
+            <button
+              type="button"
+              aria-label="Account menu"
+              className="flex min-h-10 max-w-[180px] cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium text-lightText outline-none transition-colors hover:bg-lightLayout focus-visible:ring-2 focus-visible:ring-ring dark:text-white dark:hover:bg-hoverDark"
             >
-              <div className=" bg-slate-400/20 rounded-[50%] sm:block hidden">
-                <Avatar img={image_url} className={"h-[50px] w-[50px]"} />
-              </div>
-              <div className="text-lg">
-                {!first_name ? "User Name" : first_name}
-              </div>
-              <FontAwesomeIcon
-                className="text-lg text-slate-400 dark:text-white"
-                icon={faShare}
-                rotation={90}
+              <Avatar
+                img={image_url}
+                className="hidden size-7 shrink-0 sm:block"
               />
-            </div>
-            {active && ///
-              (role === "admin" ? (
-                <DropDown tabs={adminTabs} setActive={setActive} />
-              ) : (
-                <DropDown tabs={tabs} setActive={setActive} />
-              ))}
-          </div>
-        </div>
+              <span className="max-w-24 truncate">
+                {first_name || "My account"}
+              </span>
+              <ChevronDown
+                aria-hidden="true"
+                className={`size-3.5 shrink-0 text-muted-foreground transition-transform ${active ? "rotate-180" : ""}`}
+              />
+            </button>
+          </DropdownMenu.Trigger>
+          <DropDown
+            tabs={role === "admin" ? adminTabs : tabs}
+            setActive={setActive}
+          />
+        </DropdownMenu.Root>
       )}
-
       <DarkModeToggle />
     </div>
   );
-};
-
-export default UserStatus;
+}
