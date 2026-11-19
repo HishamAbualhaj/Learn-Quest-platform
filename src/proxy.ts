@@ -1,126 +1,132 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API_SERVER_BASE_URL } from "./config/config";
-import useFetchServer from "./hooks/useFetchServer";
-import { User } from "./types";
+import type { User } from "./types";
+
+type Session = { loggedIn: boolean; userData: User[] };
+
+const GUEST_SESSION: Session = { loggedIn: false, userData: [] };
+const CHECK_TIMEOUT_MS = 5_000;
+const AUTH_ROUTES = new Set([
+  "/login", "/signup", "/forgotpassword", "/verifycode", "/confirmpass",
+]);
+const PUBLIC_ROUTES = new Set(["/student/allcourses", "/student/blog"]);
+
+// Match a route segment, so /dashboard-other isn't treated as /dashboard.
+function matchesRoute(pathname: string, route: string) {
+  return pathname === route || pathname.startsWith(`${route}/`);
+}
+
+async function fetchCheck(path: string, sessionId?: string): Promise<unknown> {
+  try {
+    const response = await fetch(`${API_SERVER_BASE_URL}${path}`, {
+      headers: sessionId ? { Cookie: `session_id=${sessionId}` } : {},
+      cache: "no-store",
+      signal: AbortSignal.timeout(CHECK_TIMEOUT_MS),
+    });
+    if (!response.ok) return null;
+    const result = await response.json();
+    return result?.status === true ? result.data : null;
+  } catch (error) {
+    console.error(`Route check failed: ${path}`, error);
+    return null;
+  }
+}
+
+function parseSession(data: unknown): Session {
+  if (!data || typeof data !== "object") return GUEST_SESSION;
+  const session = data as Partial<Session>;
+  if (session.loggedIn !== true || !Array.isArray(session.userData)) {
+    return GUEST_SESSION;
+  }
+  const user = session.userData[0];
+  if (!user || !["admin", "user", "teacher"].includes(user.role)) {
+    return GUEST_SESSION;
+  }
+  // Only expose the frontend's user fields, never extra backend columns.
+  const {
+    student_id, first_name, last_name, email, gender, birthdate,
+    image_url, joined_at, course_joined, role, status_user,
+  } = user;
+  return {
+    loggedIn: true,
+    userData: [{
+      student_id, first_name, last_name, email, gender, birthdate,
+      image_url, joined_at, course_joined, role, status_user,
+    }],
+  };
+}
 
 export async function proxy(req: NextRequest) {
-  const res = await useFetchServer(
-    `${API_SERVER_BASE_URL}/session`,
-    null,
-    "GET",
-  );
+  const pathname = req.nextUrl.pathname.replace(/\/+$/, "") || "/";
 
-  const resMaintenance = await useFetchServer(
-    `${API_SERVER_BASE_URL}/getMaintenace`,
-    null,
-    "GET",
-  );
-
-  const isMaintenance = !resMaintenance.msg[0].status;
-
-  const data = res.msg as unknown as { loggedIn: boolean; userData: User[] };
-  const loggedIn = data.loggedIn;
-  const userData = data.userData;
-  const role = userData?.[0]?.role;
-
-  const response = NextResponse.next();
-
-  response.cookies.set("user-session", JSON.stringify(res.msg), {
-    httpOnly: false,
-    path: "/",
-  });
-
-  // isMaintenance is true which is server is went down
-
-  const url = req.nextUrl.pathname;
-
-  const isInSetFound = (url: string, routes: Set<string>) => routes.has(url);
-  const isPrefixPath = (url: string, routes: Set<string>) =>
-    [...routes].some((route) => url.startsWith(route));
-  // only for admin
-  const isAdminRoutes = new Set(["/dashboard"]);
-
-  const loggedInSharedRoutes = new Set(["/student/coursepage"]);
-
-  // allow these while not logined in
-  const allowedRoutesWhileNotLogin = new Set([
-    "/login",
-    "/signup",
-    "/forgotpassword",
-    "/verifycode",
-    "/confirmpass",
-  ]);
-
-  const allowedForBoth = new Set(["/student/allcourses", "/student/blog"]);
-
-  const isAllowedForBoth = isInSetFound(url, allowedForBoth);
-
-  const isAdmin = isPrefixPath(url, isAdminRoutes);
-
-  const isAllowedNotLogin = isInSetFound(url, allowedRoutesWhileNotLogin);
-
-  // both user and admin can access it ONLY WHILE LOGIN
-  const isLoggedInShared = isPrefixPath(url, loggedInSharedRoutes);
-
-  const excludedRoutes = new Set(["/logout"]);
-
-  if (excludedRoutes.has(url)) {
+  // Logging out must still work when backend checks are unavailable.
+  if (pathname === "/logout") {
+    req.cookies.delete("user-session");
+    const response = NextResponse.next({ request: { headers: req.headers } });
     response.cookies.delete("user-session");
     return response;
   }
 
-  // allow landing page while system is running
-  if (url === "/" && !isMaintenance) {
-    return response;
-  }
-  // allow maintenance page
-  if (url === "/maintenance" && !isMaintenance) {
-    return navigate("/", req);
-  }
+  const sessionId = req.cookies.get("session_id")?.value;
+  // These checks are independent. Guests need no backend session lookup.
+  const [sessionData, maintenanceData] = await Promise.all([
+    sessionId ? fetchCheck("/session", sessionId) : Promise.resolve(null),
+    fetchCheck("/getMaintenace"),
+  ]);
+  const session = parseSession(sessionData);
+  const role = session.userData[0]?.role;
+  const isAdminRoute = matchesRoute(pathname, "/dashboard");
+  const isAuthRoute = AUTH_ROUTES.has(pathname);
+  const maintenanceStatus = Array.isArray(maintenanceData)
+    ? maintenanceData[0]?.status
+    : undefined;
+  // Invalid maintenance data must not crash or open protected pages.
+  const isMaintenance = maintenanceStatus !== 1 && maintenanceStatus !== true;
 
-  // Only while system is shut down
+  let destination: string | undefined;
   if (isMaintenance) {
-    if (url === "/maintenance") {
-      return response;
+    if (pathname !== "/maintenance" && !(role === "admin" && isAdminRoute)) {
+      destination = "/maintenance";
     }
-
-    // go to admin dashboard
-    if (role === "admin" && isAdmin) {
-      return response;
+  } else if (pathname === "/maintenance") {
+    destination = "/";
+  } else if (pathname !== "/") {
+    if (!session.loggedIn) {
+      if (!isAuthRoute && !PUBLIC_ROUTES.has(pathname)) destination = "/login";
+    } else if (isAuthRoute) {
+      destination = "/";
+    } else if (
+      !PUBLIC_ROUTES.has(pathname) &&
+      !matchesRoute(pathname, "/student/allcourses") &&
+      !matchesRoute(pathname, "/student/blog") &&
+      ((isAdminRoute && role !== "admin") || (!isAdminRoute && role === "admin"))
+    ) {
+      destination = "/";
     }
-
-    return navigate("/maintenance", req);
   }
 
-  // NOT LOGIN CASE
-  if (!loggedIn) {
-    if (isAllowedNotLogin || isAllowedForBoth) {
-      return response;
-    }
-    return navigate("/login", req);
-  }
+  const sessionCookie = JSON.stringify(session);
+  const previousSession = req.cookies.get("user-session")?.value;
+  // Server Components must see the validated session on this request,
+  // including the first request after login. Ignore the incoming copy.
+  req.cookies.set("user-session", sessionCookie);
+  const response = destination
+    ? NextResponse.redirect(new URL(destination, req.url))
+    : NextResponse.next({ request: { headers: req.headers } });
 
-  // LOGIN CASE
-  if (isAllowedNotLogin) {
-    return navigate("/", req);
-  }
-
-  if (isLoggedInShared || isAllowedForBoth) {
-    return response;
-  }
-
-  // ALLOW ADMIN PAGES
-  if ((isAdmin && role !== "admin") || (!isAdmin && role === "admin")) {
-    return navigate("/", req);
+  if (previousSession !== sessionCookie) {
+    response.cookies.set("user-session", sessionCookie, {
+      httpOnly: true,
+      secure: req.nextUrl.protocol === "https:",
+      sameSite: "lax",
+      path: "/",
+    });
   }
   return response;
 }
+
 export const config = {
   matcher: [
-    "/((?!backend|api|_next/static|_next/image|.*\\.png$|.*\\.jpg$|.*\\.svg$).*)",
+    "/((?!backend(?:/|$)|api(?:/|$)|_next(?:/|$)|.*\\.(?:png|jpe?g|svg|gif|webp|avif|ico|css|js|map|woff2?|ttf|mp4|webm|pdf|txt|xml)$).*)",
   ],
-};
-
-const navigate = (route: string, req: NextRequest) => {
-  return NextResponse.redirect(new URL(route, req.url));
 };
