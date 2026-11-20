@@ -1,4 +1,5 @@
 "use client";
+import { Switch } from "@/components/ui/switch";
 import type { Publication } from "@/types";
 export default function PublicationControls({
   value,
@@ -19,14 +20,14 @@ export default function PublicationControls({
       <legend className="px-2 text-sm font-semibold">Visibility</legend>
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="flex cursor-pointer items-start gap-3">
-          <input
-            type="checkbox"
-            className="mt-1 size-5 shrink-0 rounded-md accent-action"
+          <Switch
+            aria-label="Published"
             checked={published}
-            onChange={(e) =>
+            disabled={disabled}
+            onCheckedChange={(checked) =>
               onChange({
-                published: e.target.checked,
-                featured: e.target.checked ? featured : false,
+                published: checked,
+                featured: checked ? featured : false,
               })
             }
           />
@@ -40,13 +41,12 @@ export default function PublicationControls({
         <label
           className={`flex items-start gap-3 ${published ? "cursor-pointer" : "opacity-60"}`}
         >
-          <input
-            type="checkbox"
-            className="mt-1 size-5 shrink-0 rounded-md accent-action"
+          <Switch
+            aria-label="Featured on landing"
             checked={featured}
-            disabled={!published}
-            onChange={(e) =>
-              onChange({ published, featured: e.target.checked })
+            disabled={!published || disabled}
+            onCheckedChange={(checked) =>
+              onChange({ published, featured: checked })
             }
           />
           <span>

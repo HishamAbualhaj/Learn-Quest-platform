@@ -128,10 +128,6 @@
   }
 }
 @layer components {
-  .ql-editor {
-    min-height: 250px !important;
-  }
-
   .form-control,
   input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not(
       [type="file"]
@@ -180,24 +176,6 @@
   .border_platform.r {
     @apply border-r dark:border-borderDark border-borderLight;
   }
-
-  /* React Quill Dark Theme */
-
-  .ql-toolbar {
-    @apply bg-lightLayout;
-  }
-
-  .dark .ql-toolbar {
-    @apply border-borderDark bg-lightDark;
-  }
-
-  .dark .quill {
-    color: white;
-  }
-
-  .dark .ql-container {
-    @apply border-borderDark;
-  }
 }
 @layer utilities {
   .box-shadow {
@@ -213,56 +191,115 @@
   } */
 }
 
-/* Admin journal editor follows the shared form controls. */
-.admin-editor .ql-toolbar.ql-snow {
-  border: 0;
-  border-bottom: 1px solid var(--input);
-  display: flex;
-  flex-wrap: wrap;
-  padding: 8px;
-}
-.admin-editor .ql-container.ql-snow {
-  border: 0;
-  font: inherit;
-}
-.admin-editor .ql-editor {
-  min-height: 320px;
+/* Shared editor and published article typography. */
+.rich-content {
   font-size: 16px;
   line-height: 1.8;
+  overflow-wrap: anywhere;
 }
-.admin-editor .ql-toolbar.ql-snow button {
-  width: 44px;
-  height: 44px;
+.rich-content p {
+  margin: 1em 0;
+}
+.rich-content h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 1.5em 0 0.5em;
+}
+.rich-content h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 1.25em 0 0.5em;
+}
+.rich-content h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 1em 0 0.5em;
+}
+.rich-content ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+.rich-content ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+.rich-content blockquote {
+  border-left: 3px solid var(--color-action);
+  padding: 0.5rem 1.25rem;
+  margin: 1.5rem 0;
+}
+.rich-content a {
+  color: var(--ui-primary);
+  text-decoration: underline;
+}
+.rich-content pre {
+  background: var(--ui-accent);
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  white-space: pre;
+}
+.rich-content code {
+  font-size: 14px;
+}
+.rich-content img {
+  max-width: 100%;
+  height: auto;
   border-radius: 6px;
 }
-.admin-editor .ql-picker {
-  font-size: 14px;
+.rich-content table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
 }
-.admin-editor .ql-toolbar button:focus-visible,
-.admin-editor .ql-picker-label:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
+.rich-content td,
+.rich-content th {
+  border: 1px solid var(--control-border);
+  min-width: 60px;
+  padding: 0.75rem;
+  position: relative;
+  vertical-align: top;
 }
-.dark .admin-editor .ql-stroke {
-  stroke: #e4dff0;
+.rich-content th {
+  background: var(--ui-accent);
+  font-weight: 600;
 }
-.dark .admin-editor .ql-fill {
-  fill: #e4dff0;
+.rich-content .tableWrapper {
+  overflow-x: auto;
 }
-.dark .admin-editor .ql-picker {
-  color: #e4dff0;
+.rich-content .selectedCell {
+  background: var(--ui-accent);
 }
-.dark .admin-editor .ql-picker-options {
-  background: var(--background);
-  border-color: var(--input);
+.rich-content hr {
+  border-color: var(--control-border);
+  margin: 1.5rem 0;
 }
-
-.admin-editor .ql-editor.ql-blank::before {
-  color: var(--muted-foreground);
-  font-size: 14px;
+.rich-content mark {
+  background: #fef08a;
+  color: #422006;
 }
-.admin-editor .ql-picker.ql-header {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
+.rich-content ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+.rich-content ul[data-type="taskList"] li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+.rich-content ul[data-type="taskList"] li > div {
+  flex: 1;
+  min-width: 0;
+}
+.rich-content ul[data-type="taskList"] input {
+  accent-color: var(--color-action);
+}
+.rich-content .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--ui-muted);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }

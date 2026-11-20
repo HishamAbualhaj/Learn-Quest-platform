@@ -10,7 +10,18 @@ import {
   adminPanel,
 } from "@/components/admin/AdminPage";
 import { ArrowLeft, Save } from "lucide-react";
-import RichTextEditor from "@/components/admin/RichTextEditor";
+import dynamic from "next/dynamic";
+const RichTextEditor = dynamic(
+  () => import("@/components/editor/RichTextEditor"),
+  {
+    ssr: false,
+    loading: () => (
+      <p className="p-5 text-sm text-muted-foreground">
+        Preparing your writing space...
+      </p>
+    ),
+  },
+);
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import useFetch from "@/hooks/useFetch";
@@ -226,8 +237,9 @@ function BlogAction({
           <h2 id="post-content-label" className="mb-3 text-sm font-medium">
             Post content
           </h2>
-          <div className="admin-editor overflow-hidden rounded-md border border-input bg-control">
+          <div className="min-w-0">
             <RichTextEditor
+              disabled={isPending}
               value={blogData.content || ""}
               onChange={(content) =>
                 setBlogData((prev) => ({ ...prev, content }))

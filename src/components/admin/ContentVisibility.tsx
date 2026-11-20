@@ -1,6 +1,6 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import useFetch from "@/hooks/useFetch";
 import API_BASE_URL from "@/config/config";
 import type { Publication } from "@/types";
@@ -29,32 +29,32 @@ export default function ContentVisibility({
   });
   return (
     <div className="min-w-48">
-      <div className="flex flex-wrap gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          className="min-h-11"
-          disabled={save.isPending}
-          aria-pressed={published}
-          onClick={() =>
-            save.mutate({
-              published: !published,
-              featured: !published ? featured : false,
-            })
-          }
-        >
-          {published ? "Published" : "Draft"}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          className="min-h-11"
-          disabled={!published || save.isPending}
-          aria-pressed={featured}
-          onClick={() => save.mutate({ published, featured: !featured })}
-        >
-          {featured ? "Featured" : "Feature"}
-        </Button>
+      <div className="flex flex-col gap-1">
+        <label className="flex items-center gap-3 text-sm">
+          <Switch
+            aria-label="Published"
+            checked={published}
+            disabled={save.isPending}
+            onCheckedChange={(checked) =>
+              save.mutate({
+                published: checked,
+                featured: checked ? featured : false,
+              })
+            }
+          />
+          <span>{published ? "Published" : "Draft"}</span>
+        </label>
+        <label className="flex items-center gap-3 text-sm">
+          <Switch
+            aria-label="Featured on landing"
+            checked={featured}
+            disabled={!published || save.isPending}
+            onCheckedChange={(checked) =>
+              save.mutate({ published, featured: checked })
+            }
+          />
+          <span>Featured</span>
+        </label>
       </div>
       {save.error && (
         <p role="alert" className="mt-2 text-sm text-red-700 dark:text-red-300">
