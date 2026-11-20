@@ -1,4 +1,5 @@
 "use client";
+import PublicationControls from "./PublicationControls";
 import { Input } from "@/components/ui/form-input";
 
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,11 @@ function BlogAction({
   userData,
   blogDataResponse,
 }: BlogActionProps) {
-  const [blogData, setBlogData] = useState<Partial<BlogType>>(blogDataResponse);
+  const [blogData, setBlogData] = useState<Partial<BlogType>>({
+    published: false,
+    featured: false,
+    ...blogDataResponse,
+  });
 
   const [image, setImage] = useState<HTMLInputElement | null>(null);
 
@@ -64,6 +69,9 @@ function BlogAction({
     mutationFn: async () => {
       const updatedBlogData = {
         ...blogData,
+        ...(action === "edit" && !image?.files?.[0]
+          ? { image_url: undefined }
+          : {}),
         admin_id: userData.student_id,
         role: userData.role,
         email: userData.email,
@@ -169,6 +177,11 @@ function BlogAction({
             success={alert.status}
           />
         )}
+        <PublicationControls
+          value={blogData}
+          disabled={isPending}
+          onChange={(flags) => setBlogData((prev) => ({ ...prev, ...flags }))}
+        />
         {inputs.map((input) => (
           <div key={input.key}>
             <label

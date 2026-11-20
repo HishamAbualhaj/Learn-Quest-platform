@@ -1,3 +1,5 @@
+import { setVisibility } from "../../models/contentModel.js";
+import { publicationFlags } from "../../utils/publication.js";
 import handleResponse from "../../utils/handleResponse.js";
 import log from "../../api/system/logs.js";
 import {
@@ -14,6 +16,7 @@ const updateCourseController = (req, res) => {
   // Entire body has been received : no more data is coming
   req.on("end", async () => {
     try {
+      const visibility = publicationFlags(JSON.parse(body));
       const {
         course_id,
         student_id,
@@ -42,9 +45,10 @@ const updateCourseController = (req, res) => {
         tabs,
         description,
         lessons,
-        res
+        res,
       );
 
+      await setVisibility("courses", course_id, visibility);
       handleResponse(
         res,
         null,
@@ -52,7 +56,7 @@ const updateCourseController = (req, res) => {
         200,
         null,
         { id: course_id, msg: "Course updated successfully!" },
-        null
+        null,
       );
     } catch (error) {
       handleResponse(
@@ -62,7 +66,7 @@ const updateCourseController = (req, res) => {
         null,
         500,
         null,
-        "Error updating course"
+        "Error updating course",
       );
     }
   });
@@ -81,7 +85,7 @@ async function updateCourseDetails(
   tabs,
   description,
   lessons,
-  res
+  res,
 ) {
   await updateCourseModel(
     course_id,
@@ -92,7 +96,7 @@ async function updateCourseDetails(
     image,
     tabs,
     description,
-    lessons
+    lessons,
   );
   await log(res, student_id, `Admin: Updated course : ${title}`, email);
 }

@@ -40,7 +40,7 @@ const getCourseDataController = (req, res) => {
         materials = lessons[0];
         previews = allowed[0];
       }
-      if (!course) {
+      if (!course || (!canEdit && !course.published)) {
         res.writeHead(404, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ status: false, data: "Course not found." }));
         return;

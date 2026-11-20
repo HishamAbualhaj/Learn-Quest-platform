@@ -2,22 +2,23 @@ import connection from "../config/db.js";
 import deleteImage from "../utils/deleteImage.js";
 import generateId from "../utils/generateId.js";
 import getImageUrl from "../utils/getImageUrl.js";
-const getBlogModel = async ({ page, blog_id }) => {
-  const query =
-    "SELECT * from blog ORDER BY created_date DESC LIMIT ? OFFSET ?";
-  if (page) {
-    return await connection
+const getBlogModel = async ({ page, blog_id, admin = false }) => {
+  const where = admin ? "1=1" : "published=1";
+  if (page)
+    return connection
       .promise()
-      .query(query, [10, page === 1 ? 0 : (page - 1) * 10]);
-  } else {
-    const query = "SELECT * from blog WHERE blog_id = ?";
-    return await connection.promise().query(query, [blog_id]);
-  }
+      .query(
+        `SELECT * FROM blog WHERE ${where} ORDER BY created_date DESC LIMIT ? OFFSET ?`,
+        [10, (page - 1) * 10],
+      );
+  return connection
+    .promise()
+    .query(`SELECT * FROM blog WHERE ${where} AND blog_id=?`, [blog_id]);
 };
 const addBlogModel = async ({ title, subtitle, content, image_url }) => {
   const blog_id = generateId();
   const addBlogQuery =
-    "INSERT INTO blog (blog_id,title,subtitle,content,image_url) VALUES (?,?,?,?,?)";
+    "INSERT INTO blog (blog_id,title,subtitle,content,image_url,published,featured) VALUES (?,?,?,?,?,0,0)";
 
   await connection
     .promise()
@@ -46,7 +47,8 @@ const editBlogModel = async ({
       .promise()
       .query(editBlogQuery, [title, subtitle, content, image_url, blog_id]);
   } else {
-    editBlogQuery = "UPDATE blog set title = ? , subtitle = ? , content = ? WHERE blog_id = ?";
+    editBlogQuery =
+      "UPDATE blog set title = ? , subtitle = ? , content = ? WHERE blog_id = ?";
     return await connection
       .promise()
       .query(editBlogQuery, [title, subtitle, content, blog_id]);
@@ -71,7 +73,7 @@ const addCommentModel = async ({ student_id, comment_text, blog_id }) => {
 const getCommentsModel = async (page, blog_id) => {
   const getCommentQuery = `SELECT c.*,u.first_name,u.image_url FROM comments c 
     LEFT JOIN user u ON c.student_id = u.student_id 
-    WHERE blog_id = ? ORDER BY created_date DESC LIMIT ? OFFSET ?`;
+    WHERE blog_id = ? AND EXISTS (SELECT 1 FROM blog WHERE blog.blog_id=c.blog_id AND blog.published=1) ORDER BY created_date DESC LIMIT ? OFFSET ?`;
   return await connection
     .promise()
     .query(getCommentQuery, [blog_id, 5, page === 1 ? 0 : (page - 1) * 5]);

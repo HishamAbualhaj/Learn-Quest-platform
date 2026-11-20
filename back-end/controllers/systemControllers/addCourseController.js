@@ -1,3 +1,5 @@
+import { setVisibility } from "../../models/contentModel.js";
+import { publicationFlags } from "../../utils/publication.js";
 import log from "../../api/system/logs.js";
 import handleResponse from "../../utils/handleResponse.js";
 import {
@@ -18,9 +20,11 @@ const addCourseController = (req, res) => {
   // Entire body has been received : no more data is coming
   req.on("end", async () => {
     try {
+      const visibility = publicationFlags(JSON.parse(body));
       const course_id = generateId();
 
       await insertCourse(course_id, JSON.parse(body));
+      await setVisibility("courses", course_id, visibility);
       handleResponse(
         res,
         null,
@@ -28,7 +32,7 @@ const addCourseController = (req, res) => {
         200,
         null,
         { id: course_id, msg: "Course added successfully !" },
-        null
+        null,
       );
     } catch (error) {
       handleResponse(
@@ -38,7 +42,7 @@ const addCourseController = (req, res) => {
         null,
         500,
         null,
-        "Error adding course"
+        "Error adding course",
       );
     }
   });
@@ -56,7 +60,7 @@ async function insertCourse(
     tabs,
     description,
     materials,
-  }
+  },
 ) {
   await addCourseModel(
     course_id,
@@ -66,7 +70,7 @@ async function insertCourse(
     category,
     image_url,
     tabs,
-    description
+    description,
   );
 
   let lessons = await insertCourseMaterial(
@@ -74,7 +78,7 @@ async function insertCourse(
     course_id,
     student_id,
     title,
-    email
+    email,
   );
 
   await updateLessonModel(lessons, course_id);

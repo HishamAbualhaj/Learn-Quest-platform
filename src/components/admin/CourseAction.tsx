@@ -1,4 +1,5 @@
 "use client";
+import PublicationControls from "./PublicationControls";
 import { Textarea } from "@/components/ui/textarea";
 import { FormSelect } from "@/components/ui/form-select";
 import { Input } from "@/components/ui/form-input";
@@ -98,6 +99,8 @@ export default function CourseAction({
   const [courseData, setCourseData] = useState<
     Course & { materials: CourseMaterial[] }
   >({
+    published: Boolean(course?.published),
+    featured: Boolean(course?.featured),
     course_id: course?.course_id ?? 0,
     title: course?.title ?? "",
     description: course?.description ?? "",
@@ -126,6 +129,9 @@ export default function CourseAction({
     mutationFn: async () => {
       const updatedCourseData = {
         ...courseData,
+        ...(action === "edit" && !image?.files?.[0]
+          ? { image_url: undefined }
+          : {}),
         student_id: userData.student_id,
         role: userData.role,
         email: userData.email,
@@ -306,6 +312,13 @@ export default function CourseAction({
               success={alert.status}
             />
           )}
+          <PublicationControls
+            value={courseData}
+            disabled={isPending}
+            onChange={(flags) =>
+              setCourseData((prev) => ({ ...prev, ...flags }))
+            }
+          />
           <div className="grid gap-5 md:grid-cols-2">
             {inputs.map((input) => (
               <div
@@ -387,7 +400,12 @@ export default function CourseAction({
           <section className="border-t border-borderLight pt-6 dark:border-borderDark">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-semibold">Course curriculum</h2>
+                <h2
+                  id="course-curriculum-heading"
+                  className="text-xl font-semibold"
+                >
+                  Course curriculum
+                </h2>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {courseData.materials.length} lessons in this learning path
                 </p>
@@ -395,14 +413,19 @@ export default function CourseAction({
               <Button
                 type="button"
                 variant="outline"
-                className="min-h-11"
+                className="ml-auto min-h-11 shrink-0"
                 onClick={addLesson}
               >
                 <Plus aria-hidden="true" />
                 Add lesson
               </Button>
             </div>
-            <div className="space-y-5">
+            <div
+              role="region"
+              aria-labelledby="course-curriculum-heading"
+              tabIndex={0}
+              className="h-[500px] space-y-5 overflow-y-auto overscroll-contain rounded-md border border-input p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
               {!courseData.materials.length && (
                 <p className="rounded-md border border-dashed border-input p-6 text-sm text-muted-foreground">
                   Add your first lesson to start building the curriculum.

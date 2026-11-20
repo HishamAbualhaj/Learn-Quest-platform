@@ -1,4 +1,5 @@
 const publicRoutes = new Set([
+  "/getLandingContent",
   "/session",
   "/logout",
   "/login",
@@ -17,6 +18,10 @@ const publicRoutes = new Set([
   "/getImage",
 ]);
 const adminRoutes = new Set([
+  "/getContentAdmin",
+  "/saveManagedContent",
+  "/setContentVisibility",
+  "/deleteManagedContent",
   "/addCourse",
   "/deleteCourse",
   "/updateCourse",

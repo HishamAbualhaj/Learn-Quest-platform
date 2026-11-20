@@ -114,9 +114,9 @@ INSERT INTO reviews (review_id, student_id, course_id, first_name, stars, review
 (90000001, 90000002, 1, 'Demo', 5, 'Clear examples and a useful introduction.'),
 (90000002, 90000003, 2, 'Demo', 4, 'Helpful React lessons for beginners.');
 
-INSERT INTO blog (blog_id, title, subtitle, content, image_url) VALUES
-(90000001, 'Welcome to LearnQuest', 'Start your learning journey', '<p>Browse the courses and try the free preview lessons.</p>', NULL),
-(90000002, 'Build a learning habit', 'Small steps every day', '<p>Complete one lesson, take notes, and practice what you learned.</p>', NULL);
+INSERT INTO blog (blog_id, title, subtitle, content, image_url, published) VALUES
+(90000001, 'Welcome to LearnQuest', 'Start your learning journey', '<p>Browse the courses and try the free preview lessons.</p>', NULL, 1),
+(90000002, 'Build a learning habit', 'Small steps every day', '<p>Complete one lesson, take notes, and practice what you learned.</p>', NULL, 1);
 
 INSERT INTO comments (comment_id, student_id, blog_id, comment_text) VALUES
 (90000001, 90000002, 90000001, 'Looking forward to learning!');
@@ -140,4 +140,6 @@ UPDATE courses c SET
   stars = COALESCE((SELECT AVG(r.stars) FROM reviews r WHERE r.course_id = c.course_id), 0);
 
 -- Expired sessions and reset tokens from the original dump are intentionally excluded.
+UPDATE courses SET published=1;
+
 COMMIT;

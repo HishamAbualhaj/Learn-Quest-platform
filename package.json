@@ -10,7 +10,8 @@
     "format:check": "node scripts/format-changed.mjs --check",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:migrate:content": "node back-end/config/migrateContent.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",

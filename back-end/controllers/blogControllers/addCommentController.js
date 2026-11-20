@@ -1,3 +1,4 @@
+import { assertPublished } from "../../models/contentModel.js";
 import log from "../../api/system/logs.js";
 import { addCommentModel } from "../../models/blogModel.js";
 import handleResponse from "../../utils/handleResponse.js";
@@ -10,6 +11,7 @@ const addCommentController = (req, res) => {
 
   req.on("end", async () => {
     try {
+      await assertPublished("blogs", JSON.parse(body).blog_id);
       const {
         student_id,
         email,

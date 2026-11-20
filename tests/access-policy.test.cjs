@@ -155,7 +155,7 @@ test("public course data ignores forged identity and role; locked URLs require e
   let privateReads = 0;
   let checkedId;
   let enrolled = false;
-  const course = { course_id: 1, title: "A course" };
+  const course = { course_id: 1, title: "A course", published: 1 };
   const models = {
     checkCourseEnrollmentModel: async (id) => {
       checkedId = id;
@@ -177,6 +177,7 @@ test("public course data ignores forged identity and role; locked URLs require e
   const { default: controller } = load(
     "back-end/controllers/courseControllers/getCourseDataController.js",
     {
+      "../../models/contentModel.js": { assertPublished: async () => {} },
       "../../utils/handleResponse.js": { default: response },
       "../../models/courseModel.js": models,
     },
@@ -229,6 +230,7 @@ test("comments and enrollment use the authenticated actor rather than posted use
   const { default: comment } = load(
     "back-end/controllers/blogControllers/addCommentController.js",
     {
+      "../../models/contentModel.js": { assertPublished: async () => {} },
       "../../utils/handleResponse.js": { default: response },
       "../../api/system/logs.js": { default: async () => {} },
       "../../models/blogModel.js": {
@@ -258,6 +260,7 @@ test("comments and enrollment use the authenticated actor rather than posted use
   const { default: enroll } = load(
     "back-end/controllers/courseControllers/enrollCourseController.js",
     {
+      "../../models/contentModel.js": { assertPublished: async () => {} },
       "../../utils/handleResponse.js": { default: response },
       "../../api/system/logs.js": { default: async () => {} },
       "../courseControllers/getCourseDataController.js": {
@@ -285,6 +288,7 @@ test("admin reviews follow the same enrollment rule and store the session identi
   const { default: review } = load(
     "back-end/controllers/reviewControllers/addReviewController.js",
     {
+      "../../models/contentModel.js": { assertPublished: async () => {} },
       "../../utils/handleResponse.js": { default: response },
       "../../api/system/logs.js": { default: async () => {} },
       "../../controllers/courseControllers/getCourseDataController.js": {

@@ -1,4 +1,5 @@
 "use client";
+import ContentVisibility from "@/components/admin/ContentVisibility";
 import { Button } from "@/components/ui/button";
 import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -43,6 +44,17 @@ function Courses() {
             key: "created_date",
             label: "Created",
             render: (value) => value?.split("T")[0],
+          },
+          {
+            key: "published",
+            label: "Visibility",
+            render: (_, item) => (
+              <ContentVisibility
+                kind="courses"
+                id={item.course_id}
+                value={item}
+              />
+            ),
           },
           { key: "action", label: "Action" },
         ]}

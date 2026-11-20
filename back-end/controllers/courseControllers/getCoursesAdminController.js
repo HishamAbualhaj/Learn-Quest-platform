@@ -9,8 +9,8 @@ const getCoursesAdminController = async (req, res) => {
   req.on("end", async () => {
     try {
       const { page } = JSON.parse(body);
-      const result = await getCoursesSearchModel(null, null, page, 10);
-     return result[0].length === 0
+      const result = await getCoursesSearchModel(null, null, page, 10, true);
+      return result[0].length === 0
         ? handleResponse(res, null, null, 200, null, result[0], null, null)
         : handleResponse(res, null, null, 200, null, result[0], null, page + 1);
     } catch (error) {
@@ -21,7 +21,7 @@ const getCoursesAdminController = async (req, res) => {
         null,
         500,
         null,
-        "Error to fetch courses"
+        "Error to fetch courses",
       );
     }
   });

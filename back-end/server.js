@@ -1,3 +1,10 @@
+import {
+  getLandingContent,
+  getContentAdmin,
+  saveManagedContent,
+  setContentVisibility,
+  deleteManagedContent,
+} from "./controllers/contentController.js";
 import http from "http";
 import signup from "./api/auth/signup.js";
 import login from "./api/auth/login.js";
@@ -66,6 +73,10 @@ const server = http.createServer(async (req, res) => {
 
   const routes = {
     POST: {
+      "/getContentAdmin": getContentAdmin,
+      "/saveManagedContent": saveManagedContent,
+      "/setContentVisibility": setContentVisibility,
+      "/deleteManagedContent": deleteManagedContent,
       "/signup": signup,
       "/login": login,
       "/getUserData": getUserData,
@@ -95,6 +106,7 @@ const server = http.createServer(async (req, res) => {
       "/setMaintenance": setMaintenance,
     },
     GET: {
+      "/getLandingContent": getLandingContent,
       "/session": session,
       "/logout": logout,
       "/getAnalystic": getAnalystic,

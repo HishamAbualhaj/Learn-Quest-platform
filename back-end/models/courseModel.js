@@ -5,15 +5,16 @@ const getCoursesSearchModel = async (
   select_data,
   page,
   maxData = 5,
+  admin = false,
 ) => {
-  const getCoursesQuery = `SELECT * FROM courses 
-      WHERE (
-      ? IS NULL OR title LIKE CONCAT('%',?,'%') OR description LIKE CONCAT('%',?, '%')  
+  const getCoursesQuery = `SELECT * FROM courses
+      WHERE ${admin ? "1=1" : "published=1"} AND (
+      ? IS NULL OR title LIKE CONCAT('%',?,'%') OR description LIKE CONCAT('%',?, '%')
       )
       AND
       (
-       (? IS NULL OR price = 0) AND (? IS NULL OR price > 0) 
-       AND (? IS NULL OR discount > 0) AND (? IS NULL OR stars > 4) 
+       (? IS NULL OR price = 0) AND (? IS NULL OR price > 0)
+       AND (? IS NULL OR discount > 0) AND (? IS NULL OR stars > 4)
       )
       ORDER BY created_date DESC LIMIT ? OFFSET ?`;
 
@@ -32,7 +33,7 @@ const getCoursesSearchModel = async (
     ]);
 };
 const getCourseDataForReviewsModel = async () => {
-  const query = `SELECT course_id, title FROM courses ORDER BY created_date DESC`;
+  const query = `SELECT course_id, title FROM courses WHERE published=1 ORDER BY created_date DESC`;
   return await connection.promise().query(query);
 };
 const checkCourseEnrollmentModel = async (user_id, course_id) => {
@@ -42,11 +43,11 @@ const checkCourseEnrollmentModel = async (user_id, course_id) => {
 const getCoursesModel = async (course_id, student_id) => {
   const getCourseDataQuery = "SELECT * FROM courses WHERE course_id = ?";
 
-  const getCourseMaterialCompletionQuery = `SELECT     
+  const getCourseMaterialCompletionQuery = `SELECT
                                   m.*,
                                   coalesce(c.isCompleted,0) AS isCompleted
-                                  FROM      
-                                  coursematerials m LEFT JOIN      
+                                  FROM
+                                  coursematerials m LEFT JOIN
                                   completeionmaterial c ON m.material_id = c.material_id AND c.student_id = ? WHERE m.course_id = ? ORDER BY m.created_date ASC`;
 
   const courseData = await connection
@@ -106,19 +107,19 @@ const getEnrolledCoursesModel = async (
   page,
   student_id,
 ) => {
-  const getCountQuery = `SELECT COUNT(*) FROM enrollments e join courses c ON e.course_id = c.course_id WHERE student_id = ? 
+  const getCountQuery = `SELECT COUNT(*) FROM enrollments e join courses c ON e.course_id = c.course_id WHERE student_id = ? AND c.published=1
       AND (
-      ? IS NULL OR title LIKE CONCAT('%',?,'%') OR description LIKE CONCAT('%', ?, '%')  
-      ) 
+      ? IS NULL OR title LIKE CONCAT('%',?,'%') OR description LIKE CONCAT('%', ?, '%')
+      )
       AND
       (
        (? IS NULL OR e.progress = 100) AND (? IS NULL OR c.stars > 4)
       )`;
 
-  const getEnrolledQuery = `SELECT c.*,e.progress FROM enrollments e join courses c ON e.course_id = c.course_id 
-      WHERE student_id = ?
+  const getEnrolledQuery = `SELECT c.*,e.progress FROM enrollments e join courses c ON e.course_id = c.course_id
+      WHERE student_id = ? AND c.published=1
       AND (
-      ? IS NULL OR title LIKE CONCAT('%',?,'%') OR description LIKE CONCAT('%',?, '%')  
+      ? IS NULL OR title LIKE CONCAT('%',?,'%') OR description LIKE CONCAT('%',?, '%')
       )
       AND
       (

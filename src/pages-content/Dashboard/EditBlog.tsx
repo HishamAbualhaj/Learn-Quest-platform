@@ -7,7 +7,7 @@ async function EditBlog({ blog_id }: { blog_id: string }) {
   const { userDataServer } = await getSession();
   const res = await useFetchServer<BlogType>(
     `${API_SERVER_BASE_URL}/getBlogData`,
-    { blog_id: blog_id, ...userDataServer[0] },
+    { blog_id: blog_id, ...userDataServer[0], admin_view: true },
     "POST",
   );
   const blog = res.msg[0];

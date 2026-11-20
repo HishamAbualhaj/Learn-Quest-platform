@@ -14,7 +14,11 @@ export type User = {
 export type EnrolledCourse = Course & {
   progress: string;
 };
-export type Course = {
+export type Publication = {
+  published?: boolean | number;
+  featured?: boolean | number;
+};
+export type Course = Publication & {
   course_id: number;
   title: string;
   description: string;
@@ -28,7 +32,7 @@ export type Course = {
   created_date: string;
 };
 
-export type BlogType = {
+export type BlogType = Publication & {
   blog_id: string;
   title: string;
   subtitle: string;
@@ -96,4 +100,25 @@ export type AnalyticsType = {
   reviews: number;
   blogs: number;
   time: string;
+};
+
+export type Faq = Publication & {
+  content_id: string;
+  question: string;
+  answer: string;
+  sort_order: number;
+};
+export type Testimonial = Publication & {
+  content_id: string;
+  name: string;
+  role: string;
+  quote: string;
+  stars: number;
+  sort_order: number;
+};
+export type LandingContent = {
+  courses: Course[];
+  blogs: BlogType[];
+  faqs: Faq[];
+  testimonials: Testimonial[];
 };

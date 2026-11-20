@@ -1,5 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import FeaturedContent from "./FeaturedContent";
+import useFetchServer from "@/hooks/useFetchServer";
+import { API_SERVER_BASE_URL } from "@/config/config";
+import type { LandingContent } from "@/types";
 import getSession from "@/lib/getSession";
 import UserStatus from "./Header/UserStatus";
 function Arrow() {
@@ -48,91 +52,28 @@ const features = [
     "↗",
   ],
 ];
-const courses = [
-  {
-    title: "Web Development for Beginners",
-    category: "DEVELOPMENT",
-    image: "/web.jpg",
-    description:
-      "From your first line of HTML to a website you can call your own.",
-    tags: "HTML · CSS · JavaScript",
-    tone: "border-b-mainClr/50 dark:border-b-mainClrDark/60",
-  },
-  {
-    title: "UI/UX Design Essentials",
-    category: "DESIGN",
-    image: "/uiux.jpg",
-    description:
-      "Turn thoughtful ideas into intuitive experiences people love to use.",
-    tags: "Research · Wireframes · Prototypes",
-    tone: "border-b-mainClr/35 dark:border-b-mainClrDark/40",
-  },
-  {
-    title: "Cybersecurity Fundamentals",
-    category: "TECHNOLOGY",
-    image: "/cyber.jpg",
-    description:
-      "Understand digital threats and learn how to build a safer connected world.",
-    tags: "Networks · Security · Privacy",
-    tone: "border-b-mainClr/20 dark:border-b-mainClrDark/25",
-  },
-];
-const reviews = [
-  [
-    "Sarah L.",
-    "Marketing Specialist",
-    "SL",
-    "The courses are well-structured, and the instructors are extremely knowledgeable. I was able to apply what I learned immediately at work!",
-  ],
-  [
-    "James M.",
-    "Software Engineer",
-    "JM",
-    "I loved the hands-on projects and real-world examples. It made learning so much more enjoyable and relevant. I feel more confident in my skills now!",
-  ],
-  [
-    "Priya K.",
-    "Data Analyst",
-    "PK",
-    "The ability to learn at my own pace was essential for me. The courses are easy to follow, and I could fit them around my busy schedule.",
-  ],
-];
-const faqs = [
-  [
-    "How do I enroll in a course?",
-    "Create an account, explore the course catalog, and open a course to see its details and enrollment options. You can then continue learning from your student dashboard.",
-  ],
-  [
-    "Can I revisit course materials?",
-    "Return to your enrolled courses from My Courses in your student dashboard. Check the individual course details for information about access to its materials.",
-  ],
-  [
-    "Do I need any experience to get started?",
-    "Most beginner courses require no prior knowledge. If a course has prerequisites, you will find them in the course details before enrolling.",
-  ],
-  [
-    "What if a course is not right for me?",
-    "Review the course description and requirements before enrolling. For questions about a specific course or its policies, reach out to the course team through the platform.",
-  ],
-  [
-    "Will I receive a certificate?",
-    "Check the course details for its completion requirements and certificate availability.",
-  ],
-  [
-    "How can I ask an instructor a question?",
-    "Use the messaging feature in your student dashboard to connect with instructors and get support as you learn.",
-  ],
-  [
-    "Can I learn at my own pace?",
-    "Yes. Courses are self-paced, so you can work through the material around your own schedule and revisit topics when you need to.",
-  ],
-  [
-    "Does LearnQuest work on mobile?",
-    "Yes. Use LearnQuest in your browser on a smartphone, tablet, or computer, and keep learning wherever you are.",
-  ],
-];
 export default async function Landing() {
-  const { loggedIn, userDataServer } = await getSession();
+  const [{ loggedIn, userDataServer }, result] = await Promise.all([
+    getSession(),
+    useFetchServer<LandingContent>(
+      `${API_SERVER_BASE_URL}/getLandingContent`,
+      null,
+      "GET",
+    ),
+  ]);
+  const payload =
+    result.status && result.msg && typeof result.msg === "object"
+      ? result.msg
+      : null;
+  const content: LandingContent = {
+    courses: Array.isArray(payload?.courses) ? payload.courses : [],
+    blogs: Array.isArray(payload?.blogs) ? payload.blogs : [],
+    testimonials: Array.isArray(payload?.testimonials)
+      ? payload.testimonials
+      : [],
+    faqs: Array.isArray(payload?.faqs) ? payload.faqs : [],
+  };
+  const faqs = content.faqs.map((item) => [item.question, item.answer]);
   const user = userDataServer?.[0];
   const startUrl = loggedIn
     ? user?.role === "admin"
@@ -426,131 +367,16 @@ export default async function Landing() {
             </div>
           </div>
         </section>
-        <section
-          id="courses"
-          className="py-16 md:py-20 xl:py-[100px] mx-auto w-[calc(100%-40px)] max-w-7xl md:w-[calc(100%-56px)] xl:w-[calc(100%-96px)]"
-        >
-          <div className="mb-8 flex flex-col items-start justify-between gap-5 md:mb-11 md:flex-row md:items-end md:gap-12 [&>p]:max-w-sm [&>p]:text-sm [&>div+div]:max-w-sm [&>div+div]:text-sm">
-            <div>
-              <span className="block text-sm font-semibold tracking-[1.8px] leading-relaxed mb-6 text-mainClr dark:text-mainClrDark">
-                03 / FOLLOW YOUR CURIOSITY
-              </span>
-              <h2>
-                Fresh skills.
-                <br />
-                <span className="text-lightText/65 dark:text-textDark">
-                  A whole new perspective.
-                </span>
-              </h2>
-            </div>
-            <div>
-              <p>
-                Your next “I made that” moment starts here. Explore a few places
-                to begin.
-              </p>
-              <Link
-                href="/student/allcourses"
-                className="inline-flex min-h-11 items-center gap-4 border-b border-borderLight dark:border-borderDark text-sm font-semibold hover:border-mainClr dark:hover:border-mainClrDark"
-              >
-                View all courses <Arrow />
-              </Link>
-            </div>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3 md:gap-4 xl:gap-6">
-            {courses.map((course) => (
-              <Link
-                href="/student/allcourses"
-                className={`group overflow-hidden rounded-md border border-b-4 border-borderLight dark:border-borderDark bg-white dark:bg-lightDark transition duration-200 hover:-translate-y-1.5 hover:shadow-xl motion-reduce:transform-none ${course.tone}`}
-                key={course.title}
-              >
-                <div className="relative h-[220px] overflow-hidden min-[421px]:h-[250px] md:h-[170px] xl:h-[220px] [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-300 group-hover:[&_img]:scale-105 motion-reduce:[&_img]:transform-none">
-                  <Image
-                    src={course.image}
-                    alt={course.title}
-                    fill
-                    sizes="(max-width: 760px) 90vw, 30vw"
-                  />
-                  <span className="absolute top-4 left-4 rounded-md bg-white px-2.5 py-1 text-sm font-semibold text-lightText">
-                    Beginner friendly
-                  </span>
-                  <span
-                    className="absolute right-3 bottom-3 grid size-9 place-items-center rounded-md bg-white text-2xl text-mainClr"
-                    aria-hidden="true"
-                  >
-                    ↗
-                  </span>
-                </div>
-                <div className="p-6 md:p-4 xl:p-6 [&>.block]:text-sm [&>.block]:tracking-wider [&>.block]:text-mainClr dark:[&>.block]:text-mainClrDark [&_h3]:my-3 md:[&_h3]:text-lg xl:[&_h3]:text-2xl [&_p]:text-sm [&_p]:leading-[1.9]">
-                  <span className="block text-sm font-semibold tracking-[1.8px] leading-relaxed">
-                    {course.category}
-                  </span>
-                  <h3>{course.title}</h3>
-                  <p>{course.description}</p>
-                  <div className="mt-6 flex items-center justify-between gap-2 border-t border-borderLight dark:border-borderDark pt-4 text-sm text-lightText/65 dark:text-textDark [&>span:last-child]:text-xl">
-                    <span>{course.tags}</span>
-                    <Arrow />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-        <section
-          id="stories"
-          className="py-16 md:py-20 xl:py-[100px] bg-lightLayout dark:bg-lightDark/50"
-        >
-          <div className="mx-auto w-[calc(100%-40px)] max-w-7xl md:w-[calc(100%-56px)] xl:w-[calc(100%-96px)]">
-            <div className="mb-8 flex flex-col items-start justify-between gap-5 md:mb-11 md:flex-row md:items-end md:gap-12 [&>p]:max-w-sm [&>p]:text-sm [&>div+div]:max-w-sm [&>div+div]:text-sm">
-              <div>
-                <span className="block text-sm font-semibold tracking-[1.8px] leading-relaxed mb-6 text-mainClr dark:text-mainClrDark">
-                  04 / REAL PEOPLE. REAL PROGRESS.
-                </span>
-                <h2>
-                  A little learning.
-                  <br />A lasting difference.
-                </h2>
-              </div>
-              <p>
-                Different goals. Different starting points.
-                <br />A shared love of moving forward.
-              </p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-3 md:gap-4 xl:gap-6">
-              {reviews.map(([name, role, initials, quote]) => (
-                <figure
-                  className="m-0 flex flex-col rounded-md border border-borderLight dark:border-borderDark bg-white dark:bg-lightDark p-7 md:p-5 xl:p-7 [&_blockquote]:mt-5 [&_blockquote]:mb-7 [&_blockquote]:flex-1 [&_blockquote]:text-sm [&_blockquote]:leading-[1.95] [&_figcaption]:flex [&_figcaption]:items-center [&_figcaption]:gap-3 [&_figcaption_strong]:block [&_figcaption_strong]:text-sm [&_figcaption_div>span]:block [&_figcaption_div>span]:text-sm [&_figcaption_div>span]:text-lightText/65 dark:[&_figcaption_div>span]:text-textDark"
-                  key={name}
-                >
-                  <span
-                    className="text-sm tracking-[3px] text-mainClr dark:text-mainClrDark"
-                    aria-label="5 out of 5 stars"
-                  >
-                    ★★★★★
-                  </span>
-                  <blockquote>“{quote}”</blockquote>
-                  <figcaption>
-                    <span
-                      className="grid size-10 shrink-0 place-items-center rounded-md bg-mainClr/10 text-sm font-semibold text-mainClr dark:bg-mainClrDark/20 dark:text-mainClrDark"
-                      aria-hidden="true"
-                    >
-                      {initials}
-                    </span>
-                    <div>
-                      <strong>{name}</strong>
-                      <span>{role}</span>
-                    </div>
-                    <span
-                      className="ml-auto h-10 font-editorial text-[50px] text-lightText/65 dark:text-textDark"
-                      aria-hidden="true"
-                    >
-                      ”
-                    </span>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </div>
-        </section>
+        {!result.status && (
+          <p
+            role="alert"
+            className="mx-auto max-w-7xl px-5 text-sm text-muted-foreground"
+          >
+            Featured content is temporarily unavailable. Please try again
+            shortly.
+          </p>
+        )}
+        <FeaturedContent content={content} />
         <section
           id="faq"
           className="py-16 md:py-20 xl:py-[100px] mx-auto w-[calc(100%-40px)] max-w-7xl md:w-[calc(100%-56px)] xl:w-[calc(100%-96px)] grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:gap-14 xl:gap-[100px] [&>div:first-child>p]:mt-6 [&>div:first-child>p]:mb-5 [&>div:first-child>p]:max-w-[300px] [&>div:first-child>p]:text-sm"
@@ -575,6 +401,11 @@ export default async function Landing() {
             </a>
           </div>
           <div className="[&_details]:border-b [&_details]:border-borderLight dark:[&_details]:border-borderDark [&_details:first-child]:border-t [&_summary]:flex [&_summary]:min-h-[76px] [&_summary]:cursor-pointer [&_summary]:list-none [&_summary]:items-center [&_summary]:gap-3 [&_summary]:px-1 [&_summary]:py-4 [&_summary]:text-sm [&_summary]:font-medium [&_summary::-webkit-details-marker]:hidden [&_details[open]_summary]:text-mainClr dark:[&_details[open]_summary]:text-mainClrDark [&_p]:px-7 [&_p]:pb-6 [&_p]:text-sm [&_p]:leading-[1.9]">
+            {!faqs.length && (
+              <p className="text-sm">
+                Answers are on the way. Check back soon.
+              </p>
+            )}
             {faqs.map(([question, answer], index) => (
               <details key={question}>
                 <summary>

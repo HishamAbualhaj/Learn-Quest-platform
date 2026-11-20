@@ -1,3 +1,4 @@
+import { assertPublished } from "../../models/contentModel.js";
 import handleResponse from "../../utils/handleResponse.js";
 import log from "../../api/system/logs.js";
 import {
@@ -25,6 +26,7 @@ const completeCourseController = (req, res) => {
 
 async function completeCourseQ(data, res) {
   try {
+    await assertPublished("courses", data.course_id);
     const isFound = await findMaterialModel(data.id, data.user_id);
     if (!isFound[0].length) {
       await addMaterialCompleteionModel(data);

@@ -1,3 +1,4 @@
+import { assertPublished } from "../../models/contentModel.js";
 import log from "../../api/system/logs.js";
 import handleResponse from "../../utils/handleResponse.js";
 import { checkCourseEnrollment } from "../../controllers/courseControllers/getCourseDataController.js";
@@ -20,6 +21,7 @@ const addReviewController = (req, res) => {
   // Entire body has been received : no more data is coming
   req.on("end", async () => {
     try {
+      await assertPublished("courses", JSON.parse(body).course_id);
       const {
         student_id,
         email,

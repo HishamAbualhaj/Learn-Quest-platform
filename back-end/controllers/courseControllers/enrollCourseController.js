@@ -1,3 +1,4 @@
+import { assertPublished } from "../../models/contentModel.js";
 import { enrollCourseModel } from "../../models/courseModel.js";
 import log from "../../api/system/logs.js";
 import handleResponse from "../../utils/handleResponse.js";
@@ -18,6 +19,7 @@ async function enrollCourseQ(
   res,
 ) {
   try {
+    await assertPublished("courses", course_id);
     if (await checkCourseEnrollment(student_id, course_id)) {
       handleResponse(
         res,

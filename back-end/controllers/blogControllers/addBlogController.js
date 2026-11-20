@@ -1,3 +1,5 @@
+import { setVisibility } from "../../models/contentModel.js";
+import { publicationFlags } from "../../utils/publication.js";
 import log from "../../api/system/logs.js";
 import { addBlogModel } from "../../models/blogModel.js";
 import handleResponse from "../../utils/handleResponse.js";
@@ -10,10 +12,12 @@ const addBlogController = (req, res) => {
 
   req.on("end", async () => {
     try {
+      const visibility = publicationFlags(JSON.parse(body));
       const { admin_id, title, email } = JSON.parse(body);
       const blog_id = await addBlogModel(JSON.parse(body));
       await log(res, admin_id, `Admin: added new blog ${title}`, email);
 
+      await setVisibility("blogs", blog_id, visibility);
       handleResponse(
         res,
         null,
@@ -21,7 +25,7 @@ const addBlogController = (req, res) => {
         200,
         null,
         { id: blog_id, msg: "Blog added successfully !" },
-        null
+        null,
       );
     } catch (error) {
       handleResponse(
@@ -31,7 +35,7 @@ const addBlogController = (req, res) => {
         null,
         500,
         null,
-        "Error adding blog"
+        "Error adding blog",
       );
     }
   });

@@ -13,6 +13,7 @@ import {
   adminPanel,
 } from "@/components/admin/AdminPage";
 interface TableScrollProps<T extends Record<string, any> = any> {
+  requestData?: Record<string, unknown>;
   title: string;
   subtitle: string;
   data_key: string;
@@ -35,6 +36,7 @@ export default function TableScroll<T extends Record<string, any>>({
   columns,
   customActions,
   Component,
+  requestData = {},
 }: TableScrollProps<T>) {
   const [search, setSearch] = useState("");
   const dataContainer = useRef<HTMLDivElement | null>(null);
@@ -43,7 +45,7 @@ export default function TableScroll<T extends Record<string, any>>({
       fetchFn: async (page) => {
         const res = await useFetch(
           `${API_BASE_URL}/${endpoint}`,
-          { page },
+          { page, ...requestData },
           "POST",
         );
         if (!res.status) throw new Error(String(res.msg));

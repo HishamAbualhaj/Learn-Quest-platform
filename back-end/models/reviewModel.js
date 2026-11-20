@@ -6,7 +6,7 @@ const addReviewModel = async (
   image_url,
   review_text,
   stars,
-  first_name
+  first_name,
 ) => {
   const addReviewQuery =
     "INSERT INTO reviews (review_id , student_id ,first_name, course_id , image_url ,review_text ,stars) VALUES (?,?,?,?,?,?,?)";
@@ -31,7 +31,7 @@ const checkHasReviewModel = async (student_id, course_id) => {
 };
 
 const getReviewsModel = async (page, course_id) => {
-  const query = `SELECT * FROM reviews WHERE course_id = ? ORDER BY  review_date DESC LIMIT ? OFFSET ? `;
+  const query = `SELECT * FROM reviews WHERE course_id = ? AND EXISTS (SELECT 1 FROM courses WHERE courses.course_id=reviews.course_id AND courses.published=1) ORDER BY  review_date DESC LIMIT ? OFFSET ? `;
   return await connection
     .promise()
     .query(query, [course_id, 5, page === 1 ? 0 : (page - 1) * 5]);

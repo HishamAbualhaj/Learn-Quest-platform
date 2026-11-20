@@ -10,7 +10,7 @@ const addUserModel = async (
   email,
   password,
   gender,
-  birthdate
+  birthdate,
 ) => {
   const query = `INSERT INTO user (student_id,first_name, last_name, status_user, email, password, gender, birthdate)
   VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
@@ -36,14 +36,14 @@ const addCourseModel = async (
   category,
   image_url,
   tabs,
-  description
+  description,
 ) => {
   tabs = tabs.toString();
 
   image_url = `${course_id}-${image_url}`;
   image_url = image_url.trim().replace(/\s+/g, "-");
-  const addCourseQuery = `INSERT INTO courses (course_id,title, description, price, discount, category, tabs, image_url)
-        VALUES (?, ?, ?, ?, ?, ?,?,?)`;
+  const addCourseQuery = `INSERT INTO courses (course_id,title, description, price, discount, category, tabs, image_url,published,featured)
+        VALUES (?, ?, ?, ?, ?, ?,?,?,0,0)`;
 
   return await connection
     .promise()
@@ -162,7 +162,7 @@ const updateCourseModel = async (
   image,
   tabs,
   description,
-  lessons
+  lessons,
 ) => {
   tabs = tabs.toString();
   let query = "";
@@ -219,7 +219,7 @@ const addArchiveLogModel = async (
   data_id,
   type = "LOG",
   log_message,
-  email
+  email,
 ) => {
   const query = `INSERT INTO archivesystemlogs (archive_id,data_id,type,message,email) VALUES (?,?,?,?,?)`;
   const log_id = generateId();

@@ -1,0 +1,56 @@
+{
+  "reviews": [
+    [
+      "Sarah L.",
+      "Marketing Specialist",
+      "SL",
+      "The courses are well-structured, and the instructors are extremely knowledgeable. I was able to apply what I learned immediately at work!"
+    ],
+    [
+      "James M.",
+      "Software Engineer",
+      "JM",
+      "I loved the hands-on projects and real-world examples. It made learning so much more enjoyable and relevant. I feel more confident in my skills now!"
+    ],
+    [
+      "Priya K.",
+      "Data Analyst",
+      "PK",
+      "The ability to learn at my own pace was essential for me. The courses are easy to follow, and I could fit them around my busy schedule."
+    ]
+  ],
+  "faqs": [
+    [
+      "How do I enroll in a course?",
+      "Create an account, explore the course catalog, and open a course to see its details and enrollment options. You can then continue learning from your student dashboard."
+    ],
+    [
+      "Can I revisit course materials?",
+      "Return to your enrolled courses from My Courses in your student dashboard. Check the individual course details for information about access to its materials."
+    ],
+    [
+      "Do I need any experience to get started?",
+      "Most beginner courses require no prior knowledge. If a course has prerequisites, you will find them in the course details before enrolling."
+    ],
+    [
+      "What if a course is not right for me?",
+      "Review the course description and requirements before enrolling. For questions about a specific course or its policies, reach out to the course team through the platform."
+    ],
+    [
+      "Will I receive a certificate?",
+      "Check the course details for its completion requirements and certificate availability."
+    ],
+    [
+      "How can I ask an instructor a question?",
+      "Use the messaging feature in your student dashboard to connect with instructors and get support as you learn."
+    ],
+    [
+      "Can I learn at my own pace?",
+      "Yes. Courses are self-paced, so you can work through the material around your own schedule and revisit topics when you need to."
+    ],
+    [
+      "Does LearnQuest work on mobile?",
+      "Yes. Use LearnQuest in your browser on a smartphone, tablet, or computer, and keep learning wherever you are."
+    ]
+  ]
+}

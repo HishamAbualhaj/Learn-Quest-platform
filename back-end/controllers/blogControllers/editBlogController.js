@@ -1,3 +1,5 @@
+import { setVisibility } from "../../models/contentModel.js";
+import { publicationFlags } from "../../utils/publication.js";
 import log from "../../api/system/logs.js";
 import { editBlogModel } from "../../models/blogModel.js";
 import handleResponse from "../../utils/handleResponse.js";
@@ -10,10 +12,12 @@ const editBlogController = (req, res) => {
 
   req.on("end", async () => {
     try {
-      const { admin_id, title, email } = JSON.parse(body);
+      const visibility = publicationFlags(JSON.parse(body));
+      const { admin_id, title, email, blog_id } = JSON.parse(body);
       await editBlogModel(JSON.parse(body));
       await log(res, admin_id, `Admin: updated blog ${title}`, email);
 
+      await setVisibility("blogs", blog_id, visibility);
       handleResponse(
         res,
         null,
@@ -21,7 +25,7 @@ const editBlogController = (req, res) => {
         200,
         null,
         { msg: "Blog updated successfully !" },
-        null
+        null,
       );
     } catch (error) {
       handleResponse(
@@ -31,7 +35,7 @@ const editBlogController = (req, res) => {
         null,
         500,
         null,
-        "Error editing blog"
+        "Error editing blog",
       );
     }
   });

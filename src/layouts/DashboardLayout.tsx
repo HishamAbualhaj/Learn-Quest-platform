@@ -45,6 +45,13 @@ const sections = [
     ],
   },
   {
+    title: "Landing content",
+    links: [
+      { title: "FAQs", href: "/dashboard/faqs", icon: LifeBuoy },
+      { title: "Testimonials", href: "/dashboard/testimonials", icon: Star },
+    ],
+  },
+  {
     title: "Platform",
     links: [
       { title: "Analytics", href: "/dashboard/analytics", icon: Settings2 },

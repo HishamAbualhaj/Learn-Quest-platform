@@ -1,4 +1,5 @@
 "use client";
+import ContentVisibility from "@/components/admin/ContentVisibility";
 import { Button } from "@/components/ui/button";
 import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import TableScroll from "@/components/admin/TableScroll";
@@ -33,9 +34,17 @@ function Blogs() {
         data_key="blogs"
         data_id="blog_id"
         endpoint="getBlogData"
+        requestData={{ admin_view: true }}
         columns={[
           { key: "title", label: "Title" },
           { key: "subtitle", label: "Subtitle" },
+          {
+            key: "published",
+            label: "Visibility",
+            render: (_, item) => (
+              <ContentVisibility kind="blogs" id={item.blog_id} value={item} />
+            ),
+          },
           { key: "action", label: "Action" },
         ]}
         customActions={(blog, refetch) => (

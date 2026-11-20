@@ -30,9 +30,9 @@ SOURCE C:/Users/hisha/Desktop/Learn-Quest-platform/back-end/sql/seed.sql;
 
 The seed contains 3 demo users, the original 10 courses, 80 unique materials (8 per course), 2 enrollments, 2 completion records, 2 reviews, 2 blogs, a comment, 2 chat messages, sample logs, and a running maintenance status. Sessions and password-reset tokens are not seeded. Lesson totals, ratings, and progress match the sample records. Material URLs retained from the dump are `learnquest.example.com` placeholders; replace them with your real lesson URLs. Demo mail addresses cannot receive password-reset emails.
 
-| Role | Email | Password |
-| --- | --- | --- |
-| Admin | admin@learnquest.example | DemoAdmin123! |
+| Role    | Email                      | Password        |
+| ------- | -------------------------- | --------------- |
+| Admin   | admin@learnquest.example   | DemoAdmin123!   |
 | Student | student@learnquest.example | DemoStudent123! |
 | Student | learner@learnquest.example | DemoLearner123! |
 
@@ -66,18 +66,18 @@ The initializer is optional if you already ran `schema.sql`. It uses that same f
 
 ## SQL findings and changes
 
-| Finding | Result |
-| --- | --- |
-| Both blog UPDATE branches omitted WHERE and could overwrite every blog | Fixed: both statements filter by blog_id and bind that ID |
-| Existing completion updates referenced an undefined student_id | Fixed: the model binds the request's user_id |
-| Adding course materials returned undefined instead of lessons, subsequently passed to a SQL UPDATE | Fixed: return the inserted lesson count |
-| Several listings fetched 10 rows but advanced only 5; course listing ignored maxData when computing the offset | Fixed: offsets match page size |
-| Raw dump begins with CREATE DATABASE "learnquest" | New setup uses backticks; double quotes fail unless ANSI_QUOTES is enabled |
-| Dump sets SQL_LOG_BIN and GLOBAL.GTID_PURGED and uses LOCK TABLES | New schema/seed omit these replication/privileged operations |
-| Dump uses DROP TABLE, disables FK checks, contains old sessions and personal demo accounts | New schema is non-dropping; new seed uses synthetic accounts, no sessions, and keeps FK checks enabled |
-| Dump has 240 lesson rows: the same 80 lessons repeated three times, with inconsistent lesson counts/ratings | New seed retains the first 80 rows and recomputes course totals; existing data is untouched |
-| db.js could not request verified TLS | Added optional DB_SSL and DB_SSL_CA configuration |
-| JavaScript initializer duplicated the schema | It now reads schema.sql, retaining the dump's named foreign keys, engine and collation |
+| Finding                                                                                                        | Result                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Both blog UPDATE branches omitted WHERE and could overwrite every blog                                         | Fixed: both statements filter by blog_id and bind that ID                                              |
+| Existing completion updates referenced an undefined student_id                                                 | Fixed: the model binds the request's user_id                                                           |
+| Adding course materials returned undefined instead of lessons, subsequently passed to a SQL UPDATE             | Fixed: return the inserted lesson count                                                                |
+| Several listings fetched 10 rows but advanced only 5; course listing ignored maxData when computing the offset | Fixed: offsets match page size                                                                         |
+| Raw dump begins with CREATE DATABASE "learnquest"                                                              | New setup uses backticks; double quotes fail unless ANSI_QUOTES is enabled                             |
+| Dump sets SQL_LOG_BIN and GLOBAL.GTID_PURGED and uses LOCK TABLES                                              | New schema/seed omit these replication/privileged operations                                           |
+| Dump uses DROP TABLE, disables FK checks, contains old sessions and personal demo accounts                     | New schema is non-dropping; new seed uses synthetic accounts, no sessions, and keeps FK checks enabled |
+| Dump has 240 lesson rows: the same 80 lessons repeated three times, with inconsistent lesson counts/ratings    | New seed retains the first 80 rows and recomputes course totals; existing data is untouched            |
+| db.js could not request verified TLS                                                                           | Added optional DB_SSL and DB_SSL_CA configuration                                                      |
+| JavaScript initializer duplicated the schema                                                                   | It now reads schema.sql, retaining the dump's named foreign keys, engine and collation                 |
 
 The dump's tables and columns otherwise match the backend's current SQL references. The misspelled `completeionmaterial` and `completeion_id` names are retained because the backend depends on them.
 
@@ -110,3 +110,9 @@ This is a SQL/model review and integration check, not an end-to-end test of emai
 - [Aiven's retirement notice](https://aiven.io/docs/products/mysql/howto/mysql-free-tier-migration-options) says new free MySQL services stopped November 6, 2026, and remaining free MySQL services and backups will be deleted December 21, 2026. Your dump names an Aiven host; if that service is on the free plan, export/migrate before that date.
 
 For a free MySQL demo, Filess.io is an option within its small quota. For a strict requirement of guaranteed continuous availability, these free offers do not provide that assurance.
+
+## Published and featured content
+
+Run `npm run db:migrate:content` before deploying the publication changes. This idempotent migration adds published/featured flags and CHECK constraints to existing courses/blogs, preserving their published status. New records default to unpublished and unfeatured. It also creates FAQ/testimonial tables and seeds the exact FAQ answers and learner quotes previously shown on the landing page. Existing seeded records are never overwritten on reruns. Courses/blogs must be explicitly featured by an admin to appear on the landing page.
+
+For a new database, run schema.sql, seed.sql, then `npm run db:migrate:content` to seed the landing records. The existing migration uses the configured database and preserves its data. Deploy the backend and frontend together after migrating.

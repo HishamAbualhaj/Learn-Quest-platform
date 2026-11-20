@@ -10,7 +10,12 @@ const getBlogDataController = (req, res) => {
   req.on("end", async () => {
     try {
       const { page = null } = JSON.parse(body);
-      const result = await getBlogModel(JSON.parse(body));
+      const result = await getBlogModel({
+        ...JSON.parse(body),
+        admin:
+          req.authUser?.role === "admin" &&
+          JSON.parse(body).admin_view === true,
+      });
       result[0].length === 0
         ? handleResponse(res, null, null, 200, null, result[0], null, null)
         : handleResponse(res, null, null, 200, null, result[0], null, page + 1);
@@ -22,7 +27,7 @@ const getBlogDataController = (req, res) => {
         null,
         500,
         null,
-        "Error fetching blog"
+        "Error fetching blog",
       );
     }
   });
