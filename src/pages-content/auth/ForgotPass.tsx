@@ -6,8 +6,8 @@ import { useMutation } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import API_BASE_URL from "@/config/config";
-import Button from "@/components/Button";
-import Alert from "@/components/Alert";
+import Button from "@/components/shared/Button";
+import Alert from "@/components/feedback/Alert";
 import { useRouter } from "next/navigation";
 function ForgotPass() {
   const [email, setEmail] = useState<string | null>(null);

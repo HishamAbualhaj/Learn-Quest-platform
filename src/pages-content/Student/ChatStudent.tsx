@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/form-input";
-import PageIntro from "@/components/PageIntro";
+import PageIntro from "@/components/layout/PageIntro";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";

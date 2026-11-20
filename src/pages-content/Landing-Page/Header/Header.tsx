@@ -1,7 +1,7 @@
 import UserStatus from "./UserStatus";
 import Navs from "./Navs";
 import useSession from "@/lib/getSession";
-import Logo from "@/components/Logo";
+import Logo from "@/components/brand/Logo";
 export default async function Header({ isStudent = false }) {
   const { loggedIn, userDataServer } = await useSession();
 

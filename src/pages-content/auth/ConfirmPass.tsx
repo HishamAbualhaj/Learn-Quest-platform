@@ -3,10 +3,10 @@ import { Input } from "@/components/ui/form-input";
 import Link from "next/link";
 import AuthShell from "./AuthShell";
 import { ChangeEvent, useEffect, useState } from "react";
-import Alert from "../../components/Alert";
+import Alert from "@/components/feedback/Alert";
 import { useMutation } from "@tanstack/react-query";
 import API_BASE_URL from "../../config/config";
-import Button from "../../components/Button";
+import Button from "@/components/shared/Button";
 import useFetch from "../../hooks/useFetch";
 import { useRouter, useSearchParams } from "next/navigation";
 function ConfirmPass() {

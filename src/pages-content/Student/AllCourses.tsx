@@ -2,12 +2,12 @@
 import { FormSelect } from "@/components/ui/form-select";
 import { Input } from "@/components/ui/form-input";
 import { imageUrl } from "@/lib/imageUrl";
-import PageIntro from "@/components/PageIntro";
+import PageIntro from "@/components/layout/PageIntro";
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faStar } from "@fortawesome/free-solid-svg-icons";
-import Button from "@/components/Button";
-import Loader from "@/components/Loader";
+import Button from "@/components/shared/Button";
+import Loader from "@/components/feedback/Loader";
 import useFetch from "@/hooks/useFetch";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import API_BASE_URL from "@/config/config";

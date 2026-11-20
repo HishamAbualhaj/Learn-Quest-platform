@@ -1,9 +1,9 @@
-import Logo from "../../components/Logo";
+import Logo from "@/components/brand/Logo";
 function Footer() {
   return (
     <div className="section">
       <div className="max-container">
-          <Logo />
+        <Logo />
       </div>
     </div>
   );

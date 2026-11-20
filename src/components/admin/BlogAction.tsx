@@ -11,8 +11,8 @@ import { ArrowLeft, Save } from "lucide-react";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import useFetch from "../hooks/useFetch";
-import API_BASE_URL from "../config/config";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
 
 import Link from "next/link";
 import { BlogType, User } from "@/types";

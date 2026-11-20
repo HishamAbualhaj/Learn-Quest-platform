@@ -1,4 +1,4 @@
-import ServiceUnavailable from "@/components/ServiceUnavailable";
+import ServiceUnavailable from "@/components/feedback/ServiceUnavailable";
 export default function Page() {
   return <ServiceUnavailable />;
 }

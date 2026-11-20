@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
-import TableScroll from "@/components/TableScroll";
+import TableScroll from "@/components/admin/TableScroll";
 
-import DeletePopUp from "@/components/DeletePopUp";
+import DeletePopUp from "@/components/admin/DeletePopUp";
 import { useState } from "react";
 import Link from "next/link";
 import { BlogType } from "@/types";

@@ -11,9 +11,9 @@ import {
   adminPanel,
 } from "@/components/admin/AdminPage";
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
-import useFetch from "../hooks/useFetch";
+import useFetch from "@/hooks/useFetch";
 
-import API_BASE_URL from "../config/config";
+import API_BASE_URL from "@/config/config";
 import { useMutation } from "@tanstack/react-query";
 import { Course, CourseDataResponse, CourseMaterial, User } from "@/types";
 import Link from "next/link";

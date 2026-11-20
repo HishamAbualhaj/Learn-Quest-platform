@@ -3,7 +3,7 @@ import React from "react";
 
 const InfiniteScroll = () => {
   const [items, setItems] = useState<number[]>(
-    Array.from({ length: 20 }, (_, index) => (index = index + 1))
+    Array.from({ length: 20 }, (_, index) => (index = index + 1)),
   );
   const [page, setPage] = useState<number>(1);
 
@@ -45,14 +45,13 @@ const InfiniteScroll = () => {
       setTimeout(() => {
         const arr = Array.from(
           { length: 10 },
-          (_, index) => index + (items.at(-1)! + 1)
+          (_, index) => index + (items.at(-1)! + 1),
         );
 
         setItems((prev) => [...prev, ...arr]);
         setLoading(false);
       }, 1000);
     }
-
   }, [page]);
 
   return (

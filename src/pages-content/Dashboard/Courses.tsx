@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 
-import TableScroll from "../../components/TableScroll";
-import DeletePopUp from "../../components/DeletePopUp";
+import TableScroll from "@/components/admin/TableScroll";
+import DeletePopUp from "@/components/admin/DeletePopUp";
 import { Course } from "@/types";
 import Link from "next/link";
 function Courses() {

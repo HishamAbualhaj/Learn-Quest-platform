@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import useFetch, { FetchResponse } from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
-import Avatar from "../../components/Avatar";
+import Avatar from "@/components/shared/Avatar";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminFeedback } from "@/components/admin/AdminPage";
 import { MessageType } from "@/types";

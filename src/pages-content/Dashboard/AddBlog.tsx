@@ -1,4 +1,4 @@
-import BlogAction from "@/components/BlogAction";
+import BlogAction from "@/components/admin/BlogAction";
 import getSession from "@/lib/getSession";
 async function AddBlog() {
   const { userDataServer } = await getSession();

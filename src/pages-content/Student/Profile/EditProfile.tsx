@@ -1,9 +1,9 @@
 "use client";
 import { FormSelect } from "@/components/ui/form-select";
 import { Input } from "@/components/ui/form-input";
-import PageIntro from "@/components/PageIntro";
-import Alert from "@/components/Alert";
-import Avatar from "@/components/Avatar";
+import PageIntro from "@/components/layout/PageIntro";
+import Alert from "@/components/feedback/Alert";
+import Avatar from "@/components/shared/Avatar";
 import API_BASE_URL from "@/config/config";
 import useFetch from "@/hooks/useFetch";
 

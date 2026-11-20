@@ -1,10 +1,10 @@
 "use client";
 import { Input } from "@/components/ui/form-input";
 import AuthShell from "./AuthShell";
-import Button from "@/components/Button";
+import Button from "@/components/shared/Button";
 import { ChangeEvent, useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
-import Alert from "@/components/Alert";
+import Alert from "@/components/feedback/Alert";
 import { useMutation } from "@tanstack/react-query";
 import API_BASE_URL from "@/config/config";
 

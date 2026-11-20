@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowUpRight, LoaderCircle, MessageSquare } from "lucide-react";
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/shared/Avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { StarRating, RatingDisplay } from "@/components/ui/star-rating";

@@ -2,7 +2,7 @@
 import { FormSelect } from "@/components/ui/form-select";
 import { Input } from "@/components/ui/form-input";
 import { imageUrl } from "@/lib/imageUrl";
-import PageIntro from "@/components/PageIntro";
+import PageIntro from "@/components/layout/PageIntro";
 import { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,11 +11,11 @@ import {
   faMagnifyingGlass,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
-import Button from "@/components/Button";
+import Button from "@/components/shared/Button";
 import { useQuery } from "@tanstack/react-query";
 import useFetch from "@/hooks/useFetch";
 import API_BASE_URL from "@/config/config";
-import Loader from "@/components/Loader";
+import Loader from "@/components/feedback/Loader";
 import { useRouter, useSearchParams } from "next/navigation";
 import { EnrolledCourse, User } from "@/types";
 import Link from "next/link";

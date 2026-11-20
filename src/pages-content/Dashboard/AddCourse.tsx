@@ -1,4 +1,4 @@
-import CourseAction from "@/components/CourseAction";
+import CourseAction from "@/components/admin/CourseAction";
 import getSession from "@/lib/getSession";
 
 export default async function AddCourse() {

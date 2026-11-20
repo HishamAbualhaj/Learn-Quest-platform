@@ -1,5 +1,5 @@
-import PageIntro from "@/components/PageIntro";
-import Avatar from "@/components/Avatar";
+import PageIntro from "@/components/layout/PageIntro";
+import Avatar from "@/components/shared/Avatar";
 import { faGear, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";

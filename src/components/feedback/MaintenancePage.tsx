@@ -1,6 +1,6 @@
 import { faHammer } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PlatformBrand from "./PlatformBrand";
+import PlatformBrand from "@/components/brand/PlatformBrand";
 import DarkModeToggle from "@/pages-content/Landing-Page/Header/DarkModeToggle";
 
 function MaintenancePage() {

@@ -21,7 +21,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import PlatformBrand from "@/components/PlatformBrand";
+import PlatformBrand from "@/components/brand/PlatformBrand";
 import UserStatus from "@/pages-content/Landing-Page/Header/UserStatus";
 
 const sections = [

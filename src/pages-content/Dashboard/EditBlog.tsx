@@ -1,4 +1,4 @@
-import BlogAction from "@/components/BlogAction";
+import BlogAction from "@/components/admin/BlogAction";
 import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";

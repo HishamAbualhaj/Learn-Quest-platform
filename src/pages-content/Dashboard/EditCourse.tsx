@@ -1,4 +1,4 @@
-import CourseAction from "@/components/CourseAction";
+import CourseAction from "@/components/admin/CourseAction";
 import { API_SERVER_BASE_URL } from "@/config/config";
 import useFetchServer from "@/hooks/useFetchServer";
 import getSession from "@/lib/getSession";

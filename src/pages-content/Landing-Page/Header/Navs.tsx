@@ -6,7 +6,7 @@ import Button from "../Button";
 import ReactDOM from "react-dom";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Logo from "@/components/Logo";
+import Logo from "@/components/brand/Logo";
 
 const Navs = ({ isStudent, isLoggedIn }) => {
   const [active, setActive] = useState(false);
@@ -103,7 +103,7 @@ function ModalBg({ setActive }) {
       }}
       className="absolute inset-0 bg-transparent z-10"
     ></div>,
-    document.querySelector("body")!
+    document.querySelector("body")!,
   );
 }
 

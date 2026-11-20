@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import PlatformBrand from "@/components/PlatformBrand";
+import PlatformBrand from "@/components/brand/PlatformBrand";
 import DarkModeToggle from "@/pages-content/Landing-Page/Header/DarkModeToggle";
 
 export default function AuthShell({

@@ -2,9 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
-import Avatar from "@/components/Avatar";
-import TableScroll from "@/components/TableScroll";
-import DeletePopUp from "@/components/DeletePopUp";
+import Avatar from "@/components/shared/Avatar";
+import TableScroll from "@/components/admin/TableScroll";
+import DeletePopUp from "@/components/admin/DeletePopUp";
 import { User } from "@/types";
 function Users() {
   const [deleteUserPopup, setdeleteUserPopup] = useState<boolean>(false);

@@ -12,7 +12,7 @@ import {
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 import useFetch from "@/hooks/useFetch";
 import API_BASE_URL, { API_WEB_SOCKET } from "@/config/config";
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/shared/Avatar";
 import Messages from "./Messages";
 import type { User } from "@/types";
 export default function Chat({ userData }: { userData: User }) {

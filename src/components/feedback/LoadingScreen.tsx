@@ -1,4 +1,4 @@
-import PlatformBrand from "./PlatformBrand";
+import PlatformBrand from "@/components/brand/PlatformBrand";
 
 export default function LoadingScreen() {
   return (

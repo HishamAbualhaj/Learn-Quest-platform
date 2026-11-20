@@ -1,5 +1,5 @@
 "use client";
-import PageIntro from "@/components/PageIntro";
+import PageIntro from "@/components/layout/PageIntro";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {

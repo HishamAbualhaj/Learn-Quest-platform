@@ -1,5 +1,5 @@
-import PlatformBrand from "@/components/PlatformBrand";
-import StudentNav from "@/components/StudentNav";
+import PlatformBrand from "@/components/brand/PlatformBrand";
+import StudentNav from "@/components/layout/StudentNav";
 import UserStatus from "@/pages-content/Landing-Page/Header/UserStatus";
 import getSession from "@/lib/getSession";
 interface StudentProps {

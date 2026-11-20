@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { Star, BookOpen } from "lucide-react";
 import { FormSelect } from "@/components/ui/form-select";
 import { Button } from "@/components/ui/button";
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/shared/Avatar";
 import {
   AdminHeading,
   AdminEmpty,

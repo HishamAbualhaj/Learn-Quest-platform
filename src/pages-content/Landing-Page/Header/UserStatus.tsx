@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Button from "../Button";
-import Avatar from "@/components/Avatar";
+import Avatar from "@/components/shared/Avatar";
 import { ChevronDown } from "lucide-react";
 import { DropdownMenu } from "radix-ui";
 import DropDown from "./DropDown";

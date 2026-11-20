@@ -1,5 +1,5 @@
 "use client";
-import PlatformBrand from "./PlatformBrand";
+import PlatformBrand from "@/components/brand/PlatformBrand";
 import DarkModeToggle from "@/pages-content/Landing-Page/Header/DarkModeToggle";
 import { WifiOff } from "lucide-react";
 

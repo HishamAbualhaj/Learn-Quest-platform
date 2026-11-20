@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext } from "react";
-import Avatar from "./Avatar";
+import Avatar from "@/components/shared/Avatar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { ReviewType } from "@/types";
