@@ -1,3 +1,4 @@
+import { backendFetch } from "@/lib/backendStatus";
 import { apiResponse } from "@/lib/apiResponse";
 export type FetchResponse<T> = {
   status: boolean;
@@ -12,7 +13,7 @@ async function useFetch<T = any>(
   method: string,
 ): Promise<FetchResponse<T>> {
   try {
-    const res = await fetch(url, {
+    const res = await backendFetch(url, {
       method: method,
       headers: {
         "Content-Type": "application/json",

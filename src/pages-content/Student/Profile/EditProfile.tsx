@@ -1,4 +1,5 @@
 "use client";
+import { backendFetch } from "@/lib/backendStatus";
 import { FormSelect } from "@/components/ui/form-select";
 import { Input } from "@/components/ui/form-input";
 import PageIntro from "@/components/layout/PageIntro";
@@ -36,7 +37,7 @@ function EditProfile({ data_profile, userId }: EditProfileProps) {
 
   async function uploadImage() {
     //Specific case for uploading image, (No need to manually set Content-Type)
-    const response = await fetch(`${API_BASE_URL}/handleUploads`, {
+    const response = await backendFetch(`${API_BASE_URL}/handleUploads`, {
       method: "POST",
       body: file,
     });

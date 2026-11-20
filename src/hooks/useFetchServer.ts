@@ -28,17 +28,14 @@ async function useFetchServer<T = any>(
           ? JSON.stringify(data)
           : undefined,
       credentials: "include",
+      signal: AbortSignal.timeout(15000),
     });
 
-    return await apiResponse<T>(res);
-  } catch (error) {
-    console.error("Error connecting to server:", error);
-    return {
-      status: false,
-      msg: "Error connecting to server",
-      redirect: false,
-    };
+    if (res.status === 403 || res.status >= 500)
+      throw new Error("BACKEND_UNAVAILABLE");
+    else return await apiResponse<T>(res);
+  } catch {
+    throw new Error("BACKEND_UNAVAILABLE");
   }
 }
-
 export default useFetchServer;

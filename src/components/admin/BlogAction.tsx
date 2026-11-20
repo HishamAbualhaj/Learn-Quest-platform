@@ -1,4 +1,5 @@
 "use client";
+import { backendFetch } from "@/lib/backendStatus";
 import PublicationControls from "./PublicationControls";
 import { Input } from "@/components/ui/form-input";
 
@@ -107,7 +108,7 @@ function BlogAction({
   });
   async function uploadImage(file) {
     //Specific case for uploading image, (No need to manually set Content-Type)
-    const response = await fetch(`${API_BASE_URL}/handleUploads`, {
+    const response = await backendFetch(`${API_BASE_URL}/handleUploads`, {
       method: "POST",
       body: file,
       credentials: "include",

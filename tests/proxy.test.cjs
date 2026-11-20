@@ -204,10 +204,9 @@ test("failed HTTP responses and invalid JSON cannot authorize a request", async 
       url.endsWith("/session")
         ? failure()
         : Response.json({ status: true, data: [{ status: 1 }] });
-    assert.equal(
-      redirectPath(await proxy(request("/dashboard", "session_id=bad"))),
-      "/login",
-    );
+    const response = await proxy(request("/dashboard", "session_id=bad"));
+    if (failure().status >= 500) assert.equal(response.status, 503);
+    else assert.equal(redirectPath(response), "/login");
   }
 });
 

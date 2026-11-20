@@ -27,6 +27,8 @@ async function fetchCheck(path: string, sessionId?: string): Promise<unknown> {
       cache: "no-store",
       signal: AbortSignal.timeout(CHECK_TIMEOUT_MS),
     });
+    if (response.status === 403 || response.status >= 500)
+      return { unavailable: true };
     if (!response.ok) return null;
     const result = await response.json();
     return result?.status === true ? result.data : null;
@@ -103,6 +105,18 @@ export async function proxy(req: NextRequest) {
     sessionId ? fetchCheck("/session", sessionId) : Promise.resolve(null),
     fetchCheck("/getMaintenace"),
   ]);
+  if (
+    sessionData &&
+    typeof sessionData === "object" &&
+    "unavailable" in sessionData
+  ) {
+    const response = NextResponse.rewrite(new URL("/unavailable", req.url), {
+      status: 503,
+    });
+    response.headers.set("Cache-Control", "no-store");
+    response.headers.set("Retry-After", "10");
+    return response;
+  }
   const session = parseSession(sessionData);
   const role = session.userData[0]?.role;
   const isAdminRoute = matchesRoute(pathname, "/dashboard");

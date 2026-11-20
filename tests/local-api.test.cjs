@@ -80,3 +80,38 @@ test("API successes and validation errors preserve response data", async () => {
   assert.equal(failure.msg, "Invalid password");
   assert.equal(failure.redirect, false);
 });
+const { backendFetch, getBackendStatus, subscribeBackendStatus } = load(
+  "../src/lib/backendStatus.ts",
+);
+test("backend transport reports 403, server failures and connection loss to the shared screen", async () => {
+  const previousFetch = global.fetch;
+  const previousWindow = global.window;
+  global.window = {};
+  let notifications = 0;
+  const unsubscribe = subscribeBackendStatus(() => notifications++);
+  try {
+    for (const code of [403, 500, 503]) {
+      global.fetch = async () => new Response("Failure", { status: code });
+      await assert.rejects(
+        backendFetch("/backend/test"),
+        /temporarily unavailable/,
+      );
+    }
+    global.fetch = async () => {
+      throw new TypeError("fetch failed");
+    };
+    await assert.rejects(backendFetch("/backend/test"));
+    assert.equal(getBackendStatus(), true);
+    assert.equal(notifications, 4);
+    global.fetch = async () =>
+      Response.json({ status: false, data: "Invalid field" }, { status: 400 });
+    const validation = await backendFetch("/backend/test");
+    assert.equal(validation.status, 400);
+    assert.equal(notifications, 4);
+  } finally {
+    unsubscribe();
+    global.fetch = previousFetch;
+    if (previousWindow === undefined) delete global.window;
+    else global.window = previousWindow;
+  }
+});

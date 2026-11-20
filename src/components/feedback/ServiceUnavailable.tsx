@@ -16,21 +16,19 @@ export default function ServiceUnavailable() {
           className="mb-8 size-16 rounded-md bg-mainClr/10 p-4 text-mainClr dark:text-mainClrDark"
         />
         <span className="text-sm font-semibold tracking-[2px] text-mainClr dark:text-mainClrDark">
-          LET’S TRY THAT CONNECTION AGAIN
+          WE WILL BE BACK SOON
         </span>
         <h1 className="mt-5 text-4xl font-semibold tracking-tight md:text-5xl">
-          We couldn’t reach
-          <br />
-          the learning platform.
+          We are temporarily down.
         </h1>
         <p className="mt-6 text-sm leading-7 text-lightText/65 dark:text-textDark">
-          The service is temporarily unavailable. Please try again in a moment
-          to continue your journey.
+          We are sorry for the interruption. We will work to get things running
+          again as soon as possible. Please try again shortly.
         </p>
         <button
           type="button"
           onClick={() => window.location.reload()}
-          className="mt-8 min-h-12 cursor-pointer rounded-md bg-mainClr px-6 text-sm font-semibold text-white hover:bg-mainClr/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-mainClr dark:bg-mainClr dark:text-white"
+          className="mt-8 min-h-12 cursor-pointer rounded-md bg-action px-6 text-sm font-semibold text-action-foreground hover:bg-action-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-mainClr"
         >
           Try again
         </button>

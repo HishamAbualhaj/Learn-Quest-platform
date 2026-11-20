@@ -1,4 +1,5 @@
 "use client";
+import { backendFetch } from "@/lib/backendStatus";
 import PublicationControls from "./PublicationControls";
 import { Textarea } from "@/components/ui/textarea";
 import { FormSelect } from "@/components/ui/form-select";
@@ -170,7 +171,7 @@ export default function CourseAction({
 
   async function uploadImage(file: FormData) {
     //Specific case for uploading image, (No need to manually set Content-Type)
-    const response = await fetch(`${API_BASE_URL}/handleUploads`, {
+    const response = await backendFetch(`${API_BASE_URL}/handleUploads`, {
       method: "POST",
       body: file,
       credentials: "include",
