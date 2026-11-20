@@ -107,6 +107,9 @@ export async function proxy(req: NextRequest) {
   const role = session.userData[0]?.role;
   const isAdminRoute = matchesRoute(pathname, "/dashboard");
   const isAuthRoute = AUTH_ROUTES.has(pathname);
+  const isPublicRoute = [...PUBLIC_ROUTES].some((route) =>
+    matchesRoute(pathname, route),
+  );
   const maintenanceStatus = Array.isArray(maintenanceData)
     ? maintenanceData[0]?.status
     : undefined;
@@ -130,16 +133,10 @@ export async function proxy(req: NextRequest) {
     destination = "/";
   } else if (pathname !== "/") {
     if (!session.loggedIn) {
-      if (!isAuthRoute && !PUBLIC_ROUTES.has(pathname)) destination = "/login";
+      if (!isAuthRoute && !isPublicRoute) destination = "/login";
     } else if (isAuthRoute) {
       destination = "/";
-    } else if (
-      !PUBLIC_ROUTES.has(pathname) &&
-      !matchesRoute(pathname, "/student/allcourses") &&
-      !matchesRoute(pathname, "/student/blog") &&
-      ((isAdminRoute && role !== "admin") ||
-        (!isAdminRoute && role === "admin"))
-    ) {
+    } else if (isAdminRoute && role !== "admin") {
       destination = "/";
     }
   }

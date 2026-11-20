@@ -14,7 +14,11 @@ const completeCourseController = (req, res) => {
     body += chunks;
   });
   req.on("end", () => {
-    const data = JSON.parse(body);
+    const data = {
+      ...JSON.parse(body),
+      ...req.authUser,
+      user_id: req.authUser.student_id,
+    };
     completeCourseQ(data, res);
   });
 };
@@ -40,7 +44,7 @@ async function completeCourseQ(data, res) {
       null,
       500,
       null,
-      "Failed to check course video"
+      "Failed to check course video",
     );
   }
 
@@ -56,7 +60,7 @@ async function completeCourseQ(data, res) {
     lessons = lessons || 1;
     const countResult = await countCourseMaterialCompletedModel(
       user_id,
-      course_id
+      course_id,
     );
     let courseMaterialsCount = countResult[0][0]["COUNT(*)"] || 0;
     const progress = Math.round((courseMaterialsCount / lessons) * 100);
@@ -67,7 +71,7 @@ async function completeCourseQ(data, res) {
         res,
         user_id,
         `User: ${first_name} completed course video : ${title} `,
-        email
+        email,
       ));
     handleResponse(res, null, null, 200, null, "UPDATED SUCCESSFULLY", null);
   }

@@ -64,14 +64,23 @@ function redirectPath(response) {
   return location ? new URL(location).pathname : null;
 }
 
-test("guests skip session lookup and protected details require login", async () => {
+test("guests can read course and blog details but private pages require login", async () => {
   const calls = mockBackend();
   assert.equal(redirectPath(await proxy(request("/student/allcourses"))), null);
   assert.equal(
     redirectPath(await proxy(request("/student/allcourses/1"))),
-    "/login",
+    null,
   );
-  assert.equal(redirectPath(await proxy(request("/student/blog/1"))), "/login");
+  assert.equal(redirectPath(await proxy(request("/student/blog/1"))), null);
+  for (const route of [
+    "/student/profile",
+    "/student/editprofile",
+    "/student/mycourses",
+    "/student/chat",
+    "/dashboard",
+    "/student/allcourses-private",
+  ])
+    assert.equal(redirectPath(await proxy(request(route))), "/login", route);
   assert.equal(redirectPath(await proxy(request("/login/"))), null);
   assert.ok(calls.every(({ url }) => url.endsWith("/getMaintenace")));
 });
@@ -110,6 +119,10 @@ test("role checks protect dashboard segments and allow real course details", asy
     "/dashboard/users",
     "/student/allcourses/1",
     "/student/blog/1",
+    "/student/profile",
+    "/student/editprofile",
+    "/student/mycourses",
+    "/student/chat",
   ]) {
     assert.equal(
       redirectPath(await proxy(request(route, "session_id=valid"))),
@@ -118,7 +131,7 @@ test("role checks protect dashboard segments and allow real course details", asy
   }
   assert.equal(
     redirectPath(await proxy(request("/dashboard-other", "session_id=valid"))),
-    "/",
+    null,
   );
   assert.equal(
     redirectPath(await proxy(request("/login", "session_id=valid"))),

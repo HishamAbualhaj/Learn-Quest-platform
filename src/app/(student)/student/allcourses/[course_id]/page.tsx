@@ -10,7 +10,7 @@ const page = async ({ params }: { params: Promise<{ course_id: string }> }) => {
 
   const data = await useFetchServer(
     `${API_SERVER_BASE_URL}/getCourseData`,
-    { course_id, ...user[0] },
+    { course_id, student_id: user[0]?.student_id },
     "POST",
   );
   let resObj = data.msg as unknown as {
@@ -37,8 +37,8 @@ const page = async ({ params }: { params: Promise<{ course_id: string }> }) => {
 
   return (
     <CoursePage
-      user_data={user[0]}
-      isEnrolled={resObj.enrolled}
+      user_data={user[0] ?? {}}
+      isEnrolled={Boolean(user[0]?.student_id && resObj.enrolled)}
       courseVideos={mergedMaterials}
       courseData={{ ...courseVideos, course_id }}
     />

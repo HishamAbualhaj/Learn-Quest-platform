@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowUpRight, LoaderCircle, MessageSquare } from "lucide-react";
@@ -12,7 +13,7 @@ import API_BASE_URL from "@/config/config";
 import { ReviewType, User } from "@/types";
 
 export default function Review(
-  user: User & { course_id: string; course_title: string },
+  user: Partial<User> & { course_id: string; course_title: string },
 ) {
   const queryClient = useQueryClient();
   const [text, setText] = useState("");
@@ -48,12 +49,14 @@ export default function Review(
     data_id: "review_id",
   });
   const submit = useMutation({
-    mutationFn: () =>
-      useFetch(
+    mutationFn: () => {
+      if (!user.student_id) throw new Error("Sign in to post a review.");
+      return useFetch(
         `${API_BASE_URL}/addReview`,
         { ...user, review_text: text.trim(), stars: rating },
         "POST",
-      ),
+      );
+    },
     onSuccess: (result) => {
       if (result.status) {
         setFeedback({
@@ -124,105 +127,127 @@ export default function Review(
       </div>
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] xl:gap-10">
         <div className="min-w-0 rounded-md border border-borderLight bg-lightLayout/60 p-5 dark:border-borderDark dark:bg-lightDark/50 sm:p-6">
-          <div className="mb-6 flex items-center gap-3">
-            <Avatar img={user.image_url} className="size-11 shrink-0" />
-            <div>
-              <h3 className="text-lg font-semibold tracking-tight">
-                Share your experience
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {user.first_name
-                  ? `Reviewing as ${user.first_name}`
-                  : "Your perspective matters."}
-              </p>
-            </div>
-          </div>
-          <form
-            aria-label="Write a course review"
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (submit.isPending) return;
-              if (!rating) {
-                setFeedback({
-                  success: false,
-                  message: "Choose a star rating before posting your review.",
-                });
-                return;
-              }
-              if (!text.trim()) {
-                setFeedback({
-                  success: false,
-                  message:
-                    "Write a little about your experience before posting.",
-                });
-                textarea.current?.focus();
-                return;
-              }
-              setFeedback(null);
-              submit.mutate();
-            }}
-          >
-            <StarRating
-              value={rating}
-              onChange={(value) => {
-                setRating(value);
-                setFeedback(null);
-              }}
-              disabled={submit.isPending}
-            />
-            <label
-              htmlFor="course-review-text"
-              className="mt-6 mb-3 block text-sm font-medium"
-            >
-              Your review{" "}
-              <span className="text-muted-foreground">(required)</span>
-            </label>
-            <Textarea
-              ref={textarea}
-              id="course-review-text"
-              required
-              disabled={submit.isPending}
-              value={text}
-              onChange={(event) => {
-                setText(event.target.value);
-                setFeedback(null);
-              }}
-              placeholder="What did you enjoy? What should the next learner know?"
-              className="min-h-36 resize-y leading-6"
-            />
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              A few thoughtful words can help someone find their next chapter.
-            </p>
-            {feedback && (
-              <p
-                role={feedback.success ? "status" : "alert"}
-                className={`mt-4 rounded-md border px-3 py-3 text-sm leading-6 ${feedback.success ? "border-mainClr/20 bg-mainClr/5 text-mainClr dark:border-mainClrDark/30 dark:text-mainClrDark" : "border-red-500/25 bg-red-500/5 text-red-700 dark:text-red-300"}`}
+          {user.student_id ? (
+            <>
+              <div className="mb-6 flex items-center gap-3">
+                <Avatar img={user.image_url} className="size-11 shrink-0" />
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight">
+                    Share your experience
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {user.first_name
+                      ? `Reviewing as ${user.first_name}`
+                      : "Your perspective matters."}
+                  </p>
+                </div>
+              </div>
+              <form
+                aria-label="Write a course review"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (submit.isPending) return;
+                  if (!rating) {
+                    setFeedback({
+                      success: false,
+                      message:
+                        "Choose a star rating before posting your review.",
+                    });
+                    return;
+                  }
+                  if (!text.trim()) {
+                    setFeedback({
+                      success: false,
+                      message:
+                        "Write a little about your experience before posting.",
+                    });
+                    textarea.current?.focus();
+                    return;
+                  }
+                  setFeedback(null);
+                  submit.mutate();
+                }}
               >
-                {feedback.message}
+                <StarRating
+                  value={rating}
+                  onChange={(value) => {
+                    setRating(value);
+                    setFeedback(null);
+                  }}
+                  disabled={submit.isPending}
+                />
+                <label
+                  htmlFor="course-review-text"
+                  className="mt-6 mb-3 block text-sm font-medium"
+                >
+                  Your review{" "}
+                  <span className="text-muted-foreground">(required)</span>
+                </label>
+                <Textarea
+                  ref={textarea}
+                  id="course-review-text"
+                  required
+                  disabled={submit.isPending}
+                  value={text}
+                  onChange={(event) => {
+                    setText(event.target.value);
+                    setFeedback(null);
+                  }}
+                  placeholder="What did you enjoy? What should the next learner know?"
+                  className="min-h-36 resize-y leading-6"
+                />
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  A few thoughtful words can help someone find their next
+                  chapter.
+                </p>
+                {feedback && (
+                  <p
+                    role={feedback.success ? "status" : "alert"}
+                    className={`mt-4 rounded-md border px-3 py-3 text-sm leading-6 ${feedback.success ? "border-mainClr/20 bg-mainClr/5 text-mainClr dark:border-mainClrDark/30 dark:text-mainClrDark" : "border-red-500/25 bg-red-500/5 text-red-700 dark:text-red-300"}`}
+                  >
+                    {feedback.message}
+                  </p>
+                )}
+                <Button
+                  type="submit"
+                  disabled={submit.isPending}
+                  aria-busy={submit.isPending}
+                  className="mt-5 min-h-12 w-full"
+                >
+                  {submit.isPending ? (
+                    <>
+                      <LoaderCircle
+                        aria-hidden="true"
+                        className="size-4 animate-spin motion-reduce:animate-none"
+                      />
+                      Posting your review...
+                    </>
+                  ) : (
+                    <>
+                      Post review
+                      <ArrowUpRight aria-hidden="true" className="size-4" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            </>
+          ) : (
+            <>
+              <h3 className="text-lg font-semibold">
+                Have an experience to share?
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                Log in to review this course. You can read learner reviews
+                below.
               </p>
-            )}
-            <Button
-              type="submit"
-              disabled={submit.isPending}
-              aria-busy={submit.isPending}
-              className="mt-5 min-h-12 w-full"
-            >
-              {submit.isPending ? (
-                <>
-                  <LoaderCircle
-                    aria-hidden="true"
-                    className="size-4 animate-spin motion-reduce:animate-none"
-                  />
-                  Posting your review...
-                </>
-              ) : (
-                <>
-                  Post review
+              <Button asChild className="mt-5 min-h-11">
+                <Link href="/login">
+                  Log in to review
                   <ArrowUpRight aria-hidden="true" className="size-4" />
-                </>
-              )}
-            </Button>
-          </form>
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
         <div
           ref={reviewContainer}

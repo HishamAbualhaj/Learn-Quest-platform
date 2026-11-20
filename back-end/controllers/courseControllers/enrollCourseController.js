@@ -9,13 +9,13 @@ const enrollCourseController = (req, res) => {
     body += chunks;
   });
   req.on("end", async () => {
-    enrollCourseQ(JSON.parse(body), res);
+    enrollCourseQ({ ...JSON.parse(body), ...req.authUser }, res);
   });
 };
 
 async function enrollCourseQ(
   { student_id, course_id, course_title, first_name, email },
-  res
+  res,
 ) {
   try {
     if (await checkCourseEnrollment(student_id, course_id)) {
@@ -26,7 +26,7 @@ async function enrollCourseQ(
         200,
         null,
         "YOU ARE ENROLLED ALREADY",
-        null
+        null,
       );
       return;
     }
@@ -38,7 +38,7 @@ async function enrollCourseQ(
       res,
       student_id,
       `User: ${first_name} enrolled course : ${course_title} `,
-      email
+      email,
     );
     handleResponse(res, null, null, 200, null, "ENROLLED SUCCESSFULLY", null);
   } catch (error) {
@@ -49,7 +49,7 @@ async function enrollCourseQ(
       null,
       500,
       null,
-      "Failed to enroll course"
+      "Failed to enroll course",
     );
   }
 }

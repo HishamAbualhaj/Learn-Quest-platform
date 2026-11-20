@@ -17,7 +17,7 @@ const addCommentController = (req, res) => {
         blog_title,
         comment_text,
         blog_id,
-      } = JSON.parse(body);
+      } = { ...JSON.parse(body), ...req.authUser };
       if (!comment_text) {
         handleResponse(
           res,
@@ -28,7 +28,7 @@ const addCommentController = (req, res) => {
           "Comment can't be empty",
           null,
           null,
-          false
+          false,
         );
         return;
       }
@@ -37,7 +37,7 @@ const addCommentController = (req, res) => {
         res,
         student_id,
         `User: ${first_name} added comment to blog ${blog_title}`,
-        email
+        email,
       );
 
       handleResponse(res, null, null, 200, null, "You added comment", null);
@@ -49,7 +49,7 @@ const addCommentController = (req, res) => {
         null,
         500,
         null,
-        "Error adding comment"
+        "Error adding comment",
       );
     }
   });

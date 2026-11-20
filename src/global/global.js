@@ -53,12 +53,7 @@ const adminTabs = [
     icon: faDashboard,
     link: "/dashboard",
   },
-  {
-    key: 2,
-    name: "Log out",
-    icon: faRightFromBracket,
-    link: "/logout",
-  },
+  ...tabs.map((tab) => ({ ...tab, key: tab.key + 1 })),
 ];
 const navs = [
   {

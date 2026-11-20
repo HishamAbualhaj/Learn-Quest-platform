@@ -6,7 +6,7 @@ import { BlogType, User } from "@/types";
 import Comments from "./Comments";
 interface BlogPostProps {
   blogData: BlogType | null;
-  userData: User & { blog_id: string };
+  userData: Partial<User> & { blog_id: string };
 }
 
 export default function BlogPost({ blogData, userData }: BlogPostProps) {

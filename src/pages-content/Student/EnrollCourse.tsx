@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import API_BASE_URL from "@/config/config";
 import useFetch from "@/hooks/useFetch";
 import { Course, User } from "@/types";
@@ -10,13 +11,15 @@ export default function EnrollCourse({
   user_data,
   courseData,
 }: {
-  user_data: User;
+  user_data: Partial<User>;
   courseData: Course;
 }) {
   const router = useRouter();
   const { mutate, isPending, data } = useMutation({
-    mutationFn: () =>
-      useFetch(
+    mutationFn: () => {
+      if (!user_data?.student_id)
+        throw new Error("Sign in to enroll in this course.");
+      return useFetch(
         `${API_BASE_URL}/enrollCourse`,
         {
           student_id: user_data?.student_id,
@@ -26,11 +29,27 @@ export default function EnrollCourse({
           email: user_data?.email,
         },
         "PUT",
-      ),
+      );
+    },
     onSuccess: (result) => {
       if (result.status) router.refresh();
     },
   });
+  if (!user_data?.student_id)
+    return (
+      <div className="mt-6">
+        <Link
+          href="/login"
+          className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-md bg-action px-5 py-3 text-sm font-semibold text-action-foreground hover:bg-action-hover"
+        >
+          Log in to enroll
+          <ArrowUpRight aria-hidden="true" className="size-4" />
+        </Link>
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          Create an account or sign in to start learning.
+        </p>
+      </div>
+    );
   return (
     <div className="mt-6">
       <button
@@ -38,7 +57,7 @@ export default function EnrollCourse({
         disabled={isPending}
         aria-busy={isPending}
         onClick={() => mutate()}
-        className="inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-3 rounded-md bg-mainClr px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-mainClr/90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-mainClr disabled:cursor-wait disabled:opacity-70 dark:bg-mainClr dark:text-white dark:hover:bg-mainClr/90"
+        className="inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-3 rounded-md bg-action px-5 py-3 text-sm font-semibold text-action-foreground shadow-sm transition hover:bg-action-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-mainClr disabled:cursor-wait disabled:opacity-70"
       >
         {isPending ? (
           <>

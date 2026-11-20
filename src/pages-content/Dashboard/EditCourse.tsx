@@ -7,7 +7,7 @@ async function EditCourse({ course_id }: { course_id: string }) {
   const { userDataServer } = await getSession();
   const res = await useFetchServer(
     `${API_SERVER_BASE_URL}/getCourseData`,
-    { course_id: course_id, ...userDataServer[0] },
+    { course_id: course_id, ...userDataServer[0], admin_edit: true },
     "POST",
   );
   let resObj = res.msg as unknown as CourseDataResponse;

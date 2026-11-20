@@ -13,7 +13,7 @@ import API_BASE_URL from "@/config/config";
 import { CommentType, User } from "@/types";
 
 export default function Comments(
-  user: User & { blog_id: string; blog_title?: string },
+  user: Partial<User> & { blog_id: string; blog_title?: string },
 ) {
   const [text, setText] = useState("");
   const [feedback, setFeedback] = useState<{
@@ -50,12 +50,14 @@ export default function Comments(
     retry: 1,
   });
   const submit = useMutation({
-    mutationFn: () =>
-      useFetch(
+    mutationFn: () => {
+      if (!user.student_id) throw new Error("Sign in to post a comment.");
+      return useFetch(
         `${API_BASE_URL}/addComment`,
         { ...user, comment_text: text.trim() },
         "POST",
-      ),
+      );
+    },
     onSuccess: (result) => {
       if (result.status) {
         setText("");

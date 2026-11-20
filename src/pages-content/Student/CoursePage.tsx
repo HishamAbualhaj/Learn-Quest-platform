@@ -16,7 +16,7 @@ import { Course, CourseMaterial, User } from "@/types";
 import EnrollCourse from "./EnrollCourse";
 
 interface CoursePageProps {
-  user_data: User;
+  user_data: Partial<User>;
   courseData: Course;
   courseVideos: CourseMaterial[];
   isEnrolled: boolean;
@@ -168,6 +168,9 @@ export default function CoursePage({
                     {...courseData}
                     {...user_data}
                     {...video}
+                    student_id={user_data.student_id}
+                    email={user_data.email}
+                    first_name={user_data.first_name}
                     key={video.material_id}
                     number={index + 1}
                     lessons={courseData.lessons}

@@ -28,7 +28,7 @@ async function Student({ children }: StudentProps) {
               image_url={user?.image_url ?? ""}
             />
           </div>
-          <StudentNav />
+          <StudentNav isLoggedIn={loggedIn ?? false} />
         </div>
       </header>
       <main

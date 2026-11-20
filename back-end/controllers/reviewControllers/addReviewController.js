@@ -27,7 +27,7 @@ const addReviewController = (req, res) => {
         course_title,
         review_text,
         course_id,
-      } = JSON.parse(body);
+      } = { ...JSON.parse(body), ...req.authUser };
 
       if (review_text.length == 0) {
         handleResponse(
@@ -39,7 +39,7 @@ const addReviewController = (req, res) => {
           "Review can't be empty",
           null,
           null,
-          false
+          false,
         );
         return;
       }
@@ -54,7 +54,7 @@ const addReviewController = (req, res) => {
           "You should enroll this course to add review ...",
           null,
           null,
-          false
+          false,
         );
         return;
       }
@@ -68,13 +68,13 @@ const addReviewController = (req, res) => {
           "You have already submited a review for this course",
           null,
           null,
-          false
+          false,
         );
         return;
       }
       const review_id = generateId();
 
-      await insertReview(review_id, JSON.parse(body));
+      await insertReview(review_id, { ...JSON.parse(body), ...req.authUser });
       const result = await getCourseStarsModel(course_id);
       const [{ avg }] = result[0];
 
@@ -84,7 +84,7 @@ const addReviewController = (req, res) => {
         res,
         student_id,
         `User: ${first_name} added review to course ${course_title}`,
-        email
+        email,
       );
       handleResponse(
         res,
@@ -93,7 +93,7 @@ const addReviewController = (req, res) => {
         200,
         null,
         "Review added successfully !",
-        null
+        null,
       );
     } catch (error) {
       handleResponse(
@@ -103,14 +103,14 @@ const addReviewController = (req, res) => {
         null,
         500,
         null,
-        "Error adding review"
+        "Error adding review",
       );
     }
   });
 };
 async function insertReview(
   review_id,
-  { student_id, course_id, image_url, review_text, stars, first_name }
+  { student_id, course_id, image_url, review_text, stars, first_name },
 ) {
   await addReviewModel(
     review_id,
@@ -119,7 +119,7 @@ async function insertReview(
     image_url,
     review_text,
     stars,
-    first_name
+    first_name,
   );
 }
 

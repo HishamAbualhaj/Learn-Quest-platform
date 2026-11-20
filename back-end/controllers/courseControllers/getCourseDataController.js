@@ -4,154 +4,72 @@ import {
   getCourseNotEnrolledModel,
   getCoursesModel,
 } from "../../models/courseModel.js";
-let response = null;
 const getCourseDataController = (req, res) => {
-  response = res;
   let body = "";
-  req.on("data", (chunks) => {
-    body += chunks;
+  req.on("data", (chunk) => {
+    body += chunk;
   });
   req.on("end", async () => {
-    const { course_id, student_id, role } = JSON.parse(body);
-
-    if (role === "admin") {
-      await getCourseQ(course_id, student_id, role);
+    let payload;
+    try {
+      payload = JSON.parse(body);
+    } catch {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ status: false, data: "Invalid request." }));
       return;
     }
-    if (await checkCourseEnrollment(student_id, course_id)) {
-      await getCourseQ(course_id, student_id, role);
-    } else {
-      await getCourseQNotEnrolled(course_id);
+    try {
+      const { course_id, admin_edit } = payload;
+      const user = req.authUser;
+      const enrolled = await checkCourseEnrollment(user?.student_id, course_id);
+      const canEdit = user?.role === "admin" && admin_edit === true;
+      let course,
+        materials,
+        previews = [];
+      if (enrolled || canEdit) {
+        const [rows, lessons] = await getCoursesModel(
+          course_id,
+          user.student_id,
+        );
+        course = rows[0][0];
+        materials = lessons[0];
+      } else {
+        const [rows, lessons, allowed] =
+          await getCourseNotEnrolledModel(course_id);
+        course = rows[0][0];
+        materials = lessons[0];
+        previews = allowed[0];
+      }
+      if (!course) {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ status: false, data: "Course not found." }));
+        return;
+      }
+      handleResponse(
+        res,
+        null,
+        null,
+        200,
+        null,
+        { msg: [course, materials, previews], enrolled },
+        null,
+      );
+    } catch (error) {
+      handleResponse(
+        res,
+        error,
+        "Error loading course details",
+        null,
+        500,
+        null,
+        "Unable to load this course.",
+      );
     }
   });
 };
-
-async function getCourseQ(course_id, student_id) {
-  try {
-    const [courseData, courseDataMaterialCompletion] = await getCoursesModel(
-      course_id,
-      student_id
-    );
-    const [
-      {
-        title,
-        description,
-        price,
-        discount,
-        duration,
-        category,
-        tabs,
-        image_url,
-        lessons,
-        created_date,
-      },
-    ] = courseData[0];
-
-    const objData = {
-      title,
-      description,
-      price,
-      discount,
-      duration,
-      category,
-      tabs,
-      image_url,
-      lessons,
-      created_date,
-    };
-
-    return handleResponse(
-      response,
-      null,
-      null,
-      200,
-      null,
-      {
-        msg: [objData, courseDataMaterialCompletion[0]],
-        enrolled: true,
-      },
-      null
-    );
-  } catch (error) {
-    handleResponse(
-      response,
-      error,
-      "Error SELECT course data at getCourseDataController : ",
-      null,
-      500,
-      null,
-      "Error to SELECT Course Data"
-    );
-  }
-}
-async function getCourseQNotEnrolled(course_id) {
-  try {
-    const [courseData, courseMaterial, allowedCourseMaterial] =
-      await getCourseNotEnrolledModel(course_id);
-    const [
-      {
-        title,
-        description,
-        price,
-        discount,
-        duration,
-        category,
-        tabs,
-        image_url,
-        created_date,
-      },
-    ] = courseData[0];
-
-    const objData = {
-      title,
-      description,
-      price,
-      discount,
-      duration,
-      category,
-      tabs,
-      image_url,
-      created_date,
-    };
-    return handleResponse(
-      response,
-      null,
-      null,
-      200,
-      null,
-      {
-        msg: [objData, courseMaterial[0], allowedCourseMaterial[0]],
-        enrolled: false,
-      },
-      null
-    );
-  } catch (error) {
-    handleResponse(
-      response,
-      error,
-      "Error SELECT course data: ",
-      null,
-      500,
-      null,
-      "Error to SELECT Course Data"
-    );
-  }
-}
 export async function checkCourseEnrollment(user_id, course_id) {
-  try {
-    const result = await checkCourseEnrollmentModel(user_id, course_id);
-    return Boolean(result[0].length);
-  } catch (error) {
-    handleResponse(
-      response,
-      error,
-      "Error SELECT enrollment data: ",
-      null,
-      500,
-      null,
-      "Error to SELECT enrollments"
-    );
-  }
+  if (!user_id) return false;
+  const [rows] = await checkCourseEnrollmentModel(user_id, course_id);
+  return rows.length > 0;
 }
-
 export default getCourseDataController;
