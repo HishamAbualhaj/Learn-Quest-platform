@@ -212,3 +212,57 @@
     height: calc(100vh - 83px);
   } */
 }
+
+/* Admin journal editor follows the shared form controls. */
+.admin-editor .ql-toolbar.ql-snow {
+  border: 0;
+  border-bottom: 1px solid var(--input);
+  display: flex;
+  flex-wrap: wrap;
+  padding: 8px;
+}
+.admin-editor .ql-container.ql-snow {
+  border: 0;
+  font: inherit;
+}
+.admin-editor .ql-editor {
+  min-height: 320px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.admin-editor .ql-toolbar.ql-snow button {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+}
+.admin-editor .ql-picker {
+  font-size: 14px;
+}
+.admin-editor .ql-toolbar button:focus-visible,
+.admin-editor .ql-picker-label:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.dark .admin-editor .ql-stroke {
+  stroke: #e4dff0;
+}
+.dark .admin-editor .ql-fill {
+  fill: #e4dff0;
+}
+.dark .admin-editor .ql-picker {
+  color: #e4dff0;
+}
+.dark .admin-editor .ql-picker-options {
+  background: var(--background);
+  border-color: var(--input);
+}
+
+.admin-editor .ql-editor.ql-blank::before {
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+.admin-editor .ql-picker.ql-header {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}

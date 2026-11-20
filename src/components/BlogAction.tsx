@@ -1,15 +1,19 @@
 "use client";
 import { Input } from "@/components/ui/form-input";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ButtonAdmin from "../pages-content/Dashboard/ButtonAdmin";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+
+import { Button } from "@/components/ui/button";
+import {
+  AdminHeading,
+  AdminNotice,
+  adminPanel,
+} from "@/components/admin/AdminPage";
+import { ArrowLeft, Save } from "lucide-react";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import useFetch from "../hooks/useFetch";
 import API_BASE_URL from "../config/config";
-import Alert from "./Alert";
+
 import Link from "next/link";
 import { BlogType, User } from "@/types";
 interface BlogActionProps {
@@ -30,7 +34,7 @@ function BlogAction({
   userData,
   blogDataResponse,
 }: BlogActionProps) {
-  const [blogData, setBlogData] = useState<BlogType | {}>(blogDataResponse);
+  const [blogData, setBlogData] = useState<Partial<BlogType>>(blogDataResponse);
 
   const [image, setImage] = useState<HTMLInputElement | null>(null);
 
@@ -74,7 +78,7 @@ function BlogAction({
 
       const currentId = action === "add" ? id : blog_id;
 
-      if (image) {
+      if (data.status && image?.files?.[0]) {
         const formData = new FormData();
         formData.append("image", image.files![0]);
         formData.append("id", String(currentId));
@@ -86,7 +90,11 @@ function BlogAction({
       setAlert(data);
     },
     onError: (error) => {
-      console.log("Error", error);
+      setAlert({
+        status: false,
+        redirect: false,
+        msg: error.message || "Unable to save this post. Please try again.",
+      });
     },
   });
   async function uploadImage(file) {
@@ -130,85 +138,107 @@ function BlogAction({
   }
   return (
     <>
-      <div className="rounded-md  w-full overflow-auto h-[800px]">
-        <div className="text-center dark:text-white text-black text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
-          {title}
-          <Link href="/dashboard/blogs">
-            <FontAwesomeIcon
-              className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-md"
-              icon={faXmark}
-            />
-          </Link>
+      <AdminHeading
+        title={action === "add" ? "Write a journal post" : "Edit journal post"}
+        description="Share useful ideas, practical guidance, and stories with your learners."
+        actions={
+          <Button asChild variant="outline" className="min-h-11">
+            <Link href="/dashboard/blogs">
+              <ArrowLeft aria-hidden="true" />
+              Back to journal
+            </Link>
+          </Button>
+        }
+      />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          mutate();
+        }}
+        className={`${adminPanel} space-y-6 p-5 md:p-8`}
+      >
+        <div>
+          <h2 className="text-xl font-semibold">A story worth sharing</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Start with a clear title, then make every paragraph count.
+          </p>
         </div>
-
-        <div className="p-3">
-          {alert &&
-            (alert.status ? (
-              <Alert
-                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
-                type="success"
-              />
-            ) : (
-              <Alert
-                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
-              />
-            ))}
-          {inputs.map((input) => (
-            <div
-              key={input.key}
-              className="flex flex-col mt-2 dark:text-white text-lightText"
+        {alert && (
+          <AdminNotice
+            message={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
+            success={alert.status}
+          />
+        )}
+        {inputs.map((input) => (
+          <div key={input.key}>
+            <label
+              className="mb-2 block text-sm font-medium"
+              htmlFor={input.id}
             >
-              <label htmlFor={input.id}>{input.title}</label>
-              <Input
-                onChange={handleChange}
-                placeholder={input.placeholder}
-                id={input.id}
-                className="mt-2"
-                type={input.inType}
-                value={blogData[input.id]}
-              />
-            </div>
-          ))}
-
-          <div className="flex flex-col mt-2 dark:text-white text-lightText ">
-            <label htmlFor="image">Image : </label>
-
-            <div className="image-handle relative cursor-pointer mt-2">
-              <div className="border_platform all rounded-md flex justify-center py-10">
-                <div className="text-xl "> Upload image</div>
-                <Input
-                  id="image"
-                  onChange={handleChange}
-                  type="file"
-                  className="rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
-                />
-              </div>
-            </div>
+              {input.id === "title" ? "Post title" : "Subtitle"}
+            </label>
+            <Input
+              onChange={handleChange}
+              placeholder={input.placeholder}
+              id={input.id}
+              className="min-h-11 w-full"
+              type="text"
+              required={input.id === "title"}
+              value={blogData[input.id] ?? ""}
+            />
           </div>
-
-          {/* <ReactQuill
-            theme="snow"
-            value={blogData.content || ""}
+        ))}
+        <div className="rounded-md border border-dashed border-input bg-lightLayout/50 p-5 dark:bg-dark/40">
+          <label htmlFor="image" className="block text-sm font-medium">
+            Cover image
+          </label>
+          <p className="mt-2 mb-4 text-sm text-muted-foreground">
+            Choose a cover that sets the tone for your story.
+          </p>
+          <Input
+            id="image"
             onChange={handleChange}
-            className="quill-wrapper mt-5"
-          /> */}
-          {isPending ? (
-            <div>
-              <ButtonAdmin text="LOADING ... " />
-            </div>
-          ) : (
-            <div
-              onClick={() => {
-                mutate();
-              }}
-            >
-              <ButtonAdmin text={String(action).toUpperCase()} />
-            </div>
+            type="file"
+            accept="image/*"
+            className="min-h-11 w-full"
+          />
+          {blogData.image_url && (
+            <p className="mt-3 text-sm break-all text-muted-foreground">
+              Selected: {blogData.image_url}
+            </p>
           )}
         </div>
-      </div>
+        <section aria-labelledby="post-content-label">
+          <h2 id="post-content-label" className="mb-3 text-sm font-medium">
+            Post content
+          </h2>
+          <div className="admin-editor overflow-hidden rounded-md border border-input bg-control">
+            <RichTextEditor
+              value={blogData.content || ""}
+              onChange={(content) =>
+                setBlogData((prev) => ({ ...prev, content }))
+              }
+            />
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Use headings and short paragraphs to keep your story easy to read.
+          </p>
+        </section>
+        <div className="flex flex-wrap justify-end gap-3 border-t border-borderLight pt-6 dark:border-borderDark">
+          <Button asChild variant="outline" className="min-h-11">
+            <Link href="/dashboard/blogs">Cancel</Link>
+          </Button>
+          <Button className="min-h-11" type="submit" disabled={isPending}>
+            <Save aria-hidden="true" />
+            {isPending
+              ? "Saving post..."
+              : action === "add"
+                ? "Publish post"
+                : "Save changes"}
+          </Button>
+        </div>
+      </form>
     </>
   );
 }
-
 export default BlogAction;

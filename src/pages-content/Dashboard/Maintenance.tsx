@@ -1,133 +1,180 @@
 "use client";
-import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { ShieldCheck, Wrench, Radio, LoaderCircle } from "lucide-react";
+import { Dialog } from "radix-ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useFetch from "@/hooks/useFetch";
 import API_BASE_URL from "@/config/config";
-import Alert from "@/components/Alert";
-import { User } from "@/types";
+import { Button } from "@/components/ui/button";
+import {
+  AdminHeading,
+  AdminFeedback,
+  adminPanel,
+} from "@/components/admin/AdminPage";
+import type { User } from "@/types";
 export default function Maintenance({ userData }: { userData: User }) {
-  const [status, setStatus] = useState(true);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  const { data, refetch } = useQuery({
+  const [confirm, setConfirm] = useState(false);
+  const [notice, setNotice] = useState("");
+  const { data, isFetching, error, refetch } = useQuery({
     queryKey: ["maintenance"],
     queryFn: async () => {
-      return await useFetch(`${API_BASE_URL}/getMaintenace`, null, "GET");
+      const res = await useFetch(`${API_BASE_URL}/getMaintenace`, null, "GET");
+      const value = res.msg?.[0]?.status;
+      if (!res.status || ![0, 1, true, false].includes(value))
+        throw new Error("Status unavailable");
+      return Boolean(value);
     },
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
-  const { mutate, isPending } = useMutation({
+  const {
+    mutate,
+    isPending,
+    error: saveError,
+  } = useMutation({
     mutationFn: async () => {
-      if (!userData.student_id) return;
-      return await useFetch(
+      if (data === undefined) throw new Error("Refresh platform status first.");
+      const res = await useFetch(
         `${API_BASE_URL}/setMaintenance`,
-        { ...userData, status },
+        { ...userData, status: data },
         "POST",
       );
+      if (!res.status) throw new Error(String(res.msg));
     },
     onSuccess: () => {
-      refetch();
+      setConfirm(false);
+      setNotice("Platform status updated successfully.");
+      void refetch();
     },
   });
-  useEffect(() => {
-    if (data && userData?.student_id) {
-      const status = data?.msg?.[0]?.status ?? true;
-      setAction(false);
-      setMsg(
-        `${status ? "System is running now" : "System is down for maintenance"}`,
-      );
-      setStatus(status);
-    }
-  }, [data, userData]);
-
-  const [count, setCount] = useState<number>(5);
-  const [action, setAction] = useState(false);
-  useEffect(() => {
-    let countTimer;
-    if (action && userData?.student_id) {
-      setCount(5);
-      countTimer = setInterval(() => {
-        setCount((prev) => {
-          if (prev === 0) {
-            clearInterval(countTimer);
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(countTimer);
-  }, [action, userData]);
-
   return (
-    <div>
-      {msg === null ? (
-        <></>
-      ) : (
-        <Alert
-          type={`${action ? "fail" : "success"}`}
-          msg={`${action ? `${msg} ${count} sec` : msg}`}
-        />
-      )}
-      <div className="items-center sm:flex block justify-between">
-        <div className="title">
-          <div className="dark:text-white text-lightText font-semibold text-4xl">
-            Maintenance
+    <>
+      <AdminHeading
+        title="Maintenance"
+        description="Control learner access while you make changes to the platform."
+      />
+      <section className={`${adminPanel} overflow-hidden`}>
+        <div className="flex flex-wrap items-center justify-between gap-5 border-b border-borderLight p-6 dark:border-borderDark">
+          <div className="flex items-center gap-4">
+            <span className="flex size-12 items-center justify-center rounded-md bg-mainClr/10 text-mainClr dark:text-mainClrDark">
+              <Radio aria-hidden="true" className="size-6" />
+            </span>
+            <div>
+              <h2 className="text-xl font-semibold">Platform availability</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Current access for your learning community
+              </p>
+            </div>
           </div>
-          <div className="dark:text-gray-400 text-lightText mt-2 ">
-            Shut down the server for maintenance purposes
-          </div>
+          <span
+            className={`rounded-md border px-3 py-2 text-sm font-medium ${data === undefined ? "border-input text-muted-foreground" : data ? "border-green-500/20 bg-green-500/10 text-green-800 dark:text-green-300" : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"}`}
+          >
+            {data === undefined
+              ? "Status unavailable"
+              : data
+                ? "Platform online"
+                : "Maintenance enabled"}
+          </span>
         </div>
-        {status === null ? (
-          <div
-            className={`py-2 px-6 rounded-md text-center text-4xl sm:mt-0 mt-5 sm:w-fit w-fulldark:text-red-300  text-red-400 bg-red-400/20"`}
-          >
-            ...
+        <div className="grid gap-8 p-6 md:grid-cols-[1fr_auto] md:p-8">
+          <div>
+            <h3 className="text-lg font-semibold">
+              {data === false
+                ? "Ready to welcome learners back?"
+                : "Give your next update the space it needs."}
+            </h3>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+              Enabling maintenance redirects learners to the maintenance screen.
+              Administrators retain access to this workspace so you can finish
+              your work and restore access.
+            </p>
+            <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
+              <ShieldCheck
+                aria-hidden="true"
+                className="size-5 text-mainClr dark:text-mainClrDark"
+              />
+              Your admin workspace stays available.
+            </div>
           </div>
-        ) : (
-          <div
-            className={`py-2 px-6 rounded-md text-center text-2xl sm:mt-0 mt-5 sm:w-fit w-full ${
-              status
-                ? "dark:text-green-300 text-green-400 bg-green-400/20"
-                : "dark:text-red-300  text-red-400 bg-red-400/20"
-            }`}
+          <Button
+            className="min-h-11 self-start"
+            disabled={data === undefined || isFetching || isPending}
+            onClick={() => {
+              setNotice("");
+              setConfirm(true);
+            }}
           >
-            {status ? "Active" : "Inactive"}
-          </div>
+            <Wrench aria-hidden="true" />
+            {data === false ? "Restore platform access" : "Enable maintenance"}
+          </Button>
+        </div>
+        <AdminFeedback
+          loading={isFetching}
+          error={error}
+          retry={() => void refetch()}
+          label="Checking platform status"
+        />
+        {notice && (
+          <p
+            role="status"
+            className="px-8 pb-6 text-sm text-green-800 dark:text-green-300"
+          >
+            {notice}
+          </p>
         )}
-      </div>
-      <div className="flex  justify-center items-center min-h-[500px] dark:bg-black/20 bg-black/10 mt-5">
-        {status === null ? (
-          <></>
-        ) : (
-          !isPending && (
-            <FontAwesomeIcon
-              onClick={() => {
-                setAction(true);
-                setMsg(
-                  `${
-                    status
-                      ? "System will shut down after"
-                      : "System will run after"
-                  }`,
-                );
-                mutate();
-              }}
-              className={`cursor-pointer  text-[200px] ${
-                status
-                  ? "dark:text-red-400/40 text-red-300 dark:hover:text-red-500 hover:text-red-500"
-                  : "dark:text-green-400/40 text-green-300 dark:hover:text-green-500 hover:text-green-500"
-              }  transition`}
-              icon={faPowerOff}
-            />
-          )
-        )}
-      </div>
-    </div>
+      </section>
+      <Dialog.Root
+        open={confirm}
+        onOpenChange={(open) => {
+          if (!isPending) setConfirm(open);
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 z-[70] bg-black/60" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 z-[71] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-md border border-input bg-white p-6 text-lightText outline-none dark:bg-dark dark:text-white">
+            <Dialog.Title className="text-xl font-semibold">
+              {data ? "Enable maintenance mode?" : "Restore learner access?"}
+            </Dialog.Title>
+            <Dialog.Description className="mt-3 text-sm leading-7 text-muted-foreground">
+              {data
+                ? "Learners will see the maintenance page until you restore access. This update takes a few seconds."
+                : "Learners will be able to access the platform again. This update takes a few seconds."}
+            </Dialog.Description>
+            {saveError && (
+              <p
+                role="alert"
+                className="mt-4 text-sm text-red-700 dark:text-red-300"
+              >
+                {saveError.message}
+              </p>
+            )}
+            <div className="mt-6 flex justify-end gap-3">
+              <Dialog.Close asChild>
+                <Button
+                  variant="outline"
+                  className="min-h-11"
+                  disabled={isPending}
+                >
+                  Cancel
+                </Button>
+              </Dialog.Close>
+              <Button
+                className="min-h-11"
+                disabled={isPending}
+                onClick={() => mutate()}
+              >
+                {isPending && (
+                  <LoaderCircle
+                    aria-hidden="true"
+                    className="animate-spin motion-reduce:animate-none"
+                  />
+                )}
+                {isPending ? "Updating..." : "Confirm change"}
+              </Button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
+    </>
   );
 }
-
-/*
-
-
-*/

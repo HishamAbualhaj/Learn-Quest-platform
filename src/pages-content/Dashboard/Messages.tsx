@@ -4,6 +4,7 @@ import useFetch, { FetchResponse } from "../../hooks/useFetch";
 import API_BASE_URL from "../../config/config";
 import Avatar from "../../components/Avatar";
 import { useQueryClient } from "@tanstack/react-query";
+import { AdminFeedback } from "@/components/admin/AdminPage";
 import { MessageType } from "@/types";
 interface MessageProps {
   msg_id: string;
@@ -39,21 +40,23 @@ function Messages({
     "messages",
     [sender, receiver].sort().join("_"),
   ];
-  const { dataFetched, isFetching, refetch, isFetchingNextPage } =
+  const { dataFetched, isFetching, refetch, error, isFetchingNextPage } =
     useInfiniteScroll<MessageType>({
       fetchFn: async (pagePara) => {
-        if (!sender_id && !receiver_id)
+        if (!sender_id || !receiver_id)
           return {
             status: false,
             redirect: false,
             msg: "",
             nextPage: undefined,
           };
-        return await useFetch(
+        const response = await useFetch(
           `${API_BASE_URL}/getMsg`,
           { page: pagePara, ...{ sender_id, receiver_id } },
-          "POST"
+          "POST",
         );
+        if (!response.status) throw new Error(String(response.msg));
+        return response;
       },
       queryKey: getChatkey(Number(sender_id), Number(receiver_id)),
       scrollContainer: msgContainer,
@@ -97,7 +100,6 @@ function Messages({
         pages: FetchResponse<MessageType[]>[];
         pageParams: number[];
       }) => {
-        console.log(oldMsg);
         if (!oldMsg) return;
 
         const oldMsgPage = oldMsg?.pages?.at(0);
@@ -122,7 +124,7 @@ function Messages({
             ...oldMsg?.pages?.slice(1),
           ],
         };
-      }
+      },
     );
   }, [msg_id]);
 
@@ -169,7 +171,16 @@ function Messages({
     return date.toLocaleString("en-US", options);
   }
   return (
-    <div ref={msgContainer} className="flex flex-col p-5 gap-5 overflow-auto">
+    <div
+      ref={msgContainer}
+      className="flex min-w-0 flex-col p-5 gap-5 overflow-auto"
+    >
+      <AdminFeedback
+        loading={isFetching && !isFetchingNextPage}
+        error={error}
+        retry={refetch}
+        label="Loading conversation"
+      />
       {isFetchingNextPage && (
         <>
           <div className="flex flex-col">
@@ -189,16 +200,17 @@ function Messages({
 
       {receiver_id ? (
         !isFetching &&
+        !error &&
         (messages.length === 0 ? (
-          <div className="text-xl flex justify-center dark:text-white text-lightDark">
-            No Chat data for this user
+          <div className="text-sm text-center leading-7 flex justify-center dark:text-white text-lightDark">
+            No messages yet. Say hello to start the conversation.
           </div>
         ) : (
           <></>
         ))
       ) : (
-        <div className="text-2xl flex justify-center dark:text-white text-lightDark">
-          Select Chat
+        <div className="text-sm flex justify-center dark:text-white text-lightDark">
+          Choose a conversation
         </div>
       )}
       {receiver_id &&
@@ -218,7 +230,7 @@ function Messages({
                 : receiver_name}
             </div>
             <div
-              className={`flex mt-2 items-center gap-2 ${
+              className={`flex max-w-full mt-2 items-center gap-2 ${
                 String(message?.sender_id) === currentUserId
                   ? ""
                   : "flex-row-reverse"
@@ -233,16 +245,20 @@ function Messages({
                 className={`h-10 w-10`}
               />
               <div
-                className={`flex flex-1 lg:w-1/2 w-fit ${
+                className={`flex min-w-0 max-w-full flex-1 w-fit ${
                   String(message?.sender_id) === currentUserId
-                    ? "dark:bg-blue-400/40 bg-blue-500/90"
-                    : "bg-gray-700"
+                    ? "bg-action"
+                    : "bg-lightLayout dark:bg-hoverDark"
                 }  p-2 rounded-md mt-1`}
               >
-                <div className="text-white text-start">{message?.msg_text}</div>
+                <div
+                  className={`text-sm leading-7 whitespace-pre-wrap break-words ${String(message?.sender_id) === currentUserId ? "text-action-foreground" : "text-lightText dark:text-white"}`}
+                >
+                  {message?.msg_text}
+                </div>
               </div>
             </div>
-            <div className="mt-2 text-sm text-gray-400">
+            <div className="mt-2 text-sm text-muted-foreground">
               {formatDateForUX(message?.created_date)}
             </div>
           </div>

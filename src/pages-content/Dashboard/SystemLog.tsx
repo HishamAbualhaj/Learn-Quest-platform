@@ -1,114 +1,147 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import useFetch from "@/hooks/useFetch";
+import { useRef, useState } from "react";
+import { Search, RefreshCw, Terminal } from "lucide-react";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import useFetch from "@/hooks/useFetch";
 import API_BASE_URL from "@/config/config";
-import { forwardRef } from "react";
-import { LogMessage } from "@/types";
-
-function SystemLog() {
-  const [logs, setLogs] = useState<LogMessage[]>([]);
-  const [lastNode, setLastNode] = useState<HTMLDivElement | null>(null);
-
-  const logsContainer = useRef<HTMLDivElement | null>(null);
-
-  const { dataFetched, isFetching, hasNextPage } =
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  AdminHeading,
+  AdminEmpty,
+  AdminFeedback,
+  adminPanel,
+} from "@/components/admin/AdminPage";
+import type { LogMessage } from "@/types";
+export default function SystemLog() {
+  const container = useRef<HTMLDivElement | null>(null);
+  const [search, setSearch] = useState("");
+  const { dataFetched, isFetching, hasNextPage, loadMore, refetch, error } =
     useInfiniteScroll<LogMessage>({
-      fetchFn: (pageParam) => {
-        return useFetch(
+      fetchFn: async (page) => {
+        const res = await useFetch(
           `${API_BASE_URL}/getSystemLog`,
-          { page: pageParam },
-          "POST"
+          { page },
+          "POST",
         );
+        if (!res.status) throw new Error(String(res.msg));
+        return res;
       },
       queryKey: ["systemlogs"],
-      scrollContainer: logsContainer,
-      observedEle: lastNode,
+      scrollContainer: container,
+      observedEle: null,
       data_id: "log_id",
+      retry: 1,
     });
-  useEffect(() => {
-    setLogs(dataFetched);
-  }, [dataFetched]);
-
-  const observeEle = (node) => {
-    setLastNode(node);
-  };
+  const logs = dataFetched.filter((log) =>
+    `${log.message} ${log.email} ${log.student_id}`
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
   return (
-    <div className="font-terminal">
-      <div className="dark:text-white text-lightText text-4xl font-semibold">
-        System Log
-      </div>
-      <div
-        ref={logsContainer}
-        className="dark:bg-black/70 bg-lightLayout w-full max-h-[650px] overflow-auto rounded-md mt-5"
-      >
-        <div className="dark:text-green-500 text-green-700">
-          {logs.map((log) => (
-            <Log
-              ref={logs.at(-1) === log ? observeEle : null}
-              key={log.log_id}
-              id={log.log_id}
-              logState={log.message}
-              email={log.email}
-              time={log.time}
-              userId={log.student_id}
-              date={log.created_date}
+    <>
+      <AdminHeading
+        title="System log"
+        description="Follow platform activity and inspect the details behind each event."
+        actions={
+          <Button
+            variant="outline"
+            className="min-h-11"
+            disabled={isFetching}
+            onClick={refetch}
+          >
+            <RefreshCw aria-hidden="true" />
+            Refresh activity
+          </Button>
+        }
+      />
+      <section ref={container} className={adminPanel}>
+        <div className="border-b border-borderLight p-5 dark:border-borderDark">
+          <label
+            htmlFor="log-search"
+            className="mb-2 block text-sm font-medium"
+          >
+            Search loaded activity
+          </label>
+          <div className="relative max-w-lg">
+            <Search
+              aria-hidden="true"
+              className="absolute top-3.5 left-3 size-4 text-muted-foreground"
             />
+            <Input
+              id="log-search"
+              type="search"
+              className="min-h-11 pl-10"
+              placeholder="Search event, email, or user ID"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {dataFetched.length} events loaded. Expand an event to inspect its
+            details.
+          </p>
+        </div>
+        <div className="divide-y divide-borderLight dark:divide-borderDark">
+          {logs.map((log) => (
+            <details key={log.log_id} className="group p-5">
+              <summary className="flex cursor-pointer list-none flex-wrap items-center gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-ring">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-mainClr/10 text-mainClr dark:text-mainClrDark">
+                  <Terminal aria-hidden="true" className="size-4" />
+                </span>
+                <span className="min-w-0 flex-1 text-sm font-medium break-words leading-7">
+                  {log.message}
+                </span>
+                <time className="text-sm text-muted-foreground">
+                  {log.time}
+                </time>
+                <span className="text-sm text-mainClr group-open:hidden dark:text-mainClrDark">
+                  Details
+                </span>
+              </summary>
+              <dl className="mt-5 grid gap-5 rounded-md bg-lightLayout p-5 text-sm dark:bg-dark sm:grid-cols-2">
+                {[
+                  ["Event ID", log.log_id],
+                  ["User ID", log.student_id],
+                  ["Email", log.email],
+                  ["Recorded", String(log.created_date).replace(/[TZ]/g, " ")],
+                ].map(([key, value]) => (
+                  <div key={key}>
+                    <dt className="text-muted-foreground">{key}</dt>
+                    <dd className="mt-1 break-all font-medium">
+                      {value || "Unavailable"}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </details>
           ))}
         </div>
-        {isFetching ? (
-          <div className="dark:text-red-300 text-red-600 flex justify-center py-5 animate-syncPuls">
-            Loading ...
-          </div>
-        ) : (
-          !hasNextPage && (
-            <div className="dark:text-red-300 text-red-600 flex justify-center py-5">
-              No more logs
-            </div>
-          )
+        {!logs.length && !isFetching && !error && (
+          <AdminEmpty
+            title={search ? "No matching events" : "No activity yet"}
+            description="Platform events will appear here as they are recorded."
+          />
         )}
-      </div>
-    </div>
+        <AdminFeedback
+          loading={isFetching}
+          error={error}
+          retry={refetch}
+          label="Loading activity"
+        />
+        {hasNextPage && (
+          <div className="border-t border-borderLight p-5 text-center dark:border-borderDark">
+            <Button
+              variant="outline"
+              className="min-h-11"
+              onClick={loadMore}
+              disabled={isFetching}
+            >
+              Load more events
+            </Button>
+          </div>
+        )}
+      </section>
+    </>
   );
 }
-
-type LogDataProps = {
-  id: string;
-  logState: string;
-  userId: string;
-  email: string;
-  time: string;
-  date: string;
-};
-const Log = forwardRef<HTMLDivElement, LogDataProps>(function Log(
-  { id, logState, userId, email, time, date },
-  ref
-) {
-  const [active, setActive] = useState(false);
-  return (
-    <div
-      id={id}
-      onClick={() => {
-        setActive(!active);
-      }}
-      ref={ref}
-      className="border-b  border-green-300/40 md:p-6 p-4 hover:bg-gray-500/20 cursor-pointer"
-    >
-      <div className="flex md:flex-row flex-col md:gap-0 gap-2 items-center justify-between">
-        <div>{logState}</div>
-        <div className="">{time}</div>
-      </div>
-
-      {active && (
-        <div className="ml-5 mt-5 dropMenu">
-          <div>Log-id: {id}</div>
-          <div className="mt-2">user-id: {userId}</div>
-          <div className="mt-2">Email: {email}</div>
-          <div className="mt-2">date: {date.replace(/[TZ]/g, " ")}</div>
-        </div>
-      )}
-    </div>
-  );
-});
-
-export default SystemLog;

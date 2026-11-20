@@ -1,6 +1,8 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import ButtonAdmin from "./ButtonAdmin";
+
 import TableScroll from "../../components/TableScroll";
 import DeletePopUp from "../../components/DeletePopUp";
 import { Course } from "@/types";
@@ -27,8 +29,8 @@ function Courses() {
         />
       )}
       <TableScroll<Course>
-        title="Course Panel"
-        subtitle="Track courses and manage them"
+        title="Courses"
+        subtitle="Shape your catalog, refine lessons, and create your next course."
         data_key="courses"
         data_id="course_id"
         endpoint="getCoursesAdmin"
@@ -39,42 +41,52 @@ function Courses() {
           { key: "lessons", label: "Lessons", render: (value) => value || "0" },
           {
             key: "created_date",
-            label: "Date Created",
+            label: "Created",
             render: (value) => value?.split("T")[0],
           },
           { key: "action", label: "Action" },
         ]}
         customActions={(course, refetch) => (
           <>
-            <Link
-              href={`/student/allcourses/${course.course_id}`}
-              className="cursor-pointer border rounded-md py-2 px-2 text-center hover:bg-gray-800 hover:text-white transition"
-            >
-              View
-            </Link>
-            <Link href={`/dashboard/courses/edit/${course?.course_id}`}>
-              <div className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition">
+            <Button asChild variant="outline" className="min-h-11">
+              <Link
+                href={`/student/allcourses/${course.course_id}`}
+                aria-label={`View ${course.title}`}
+              >
+                <Eye aria-hidden="true" />
+                View
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="min-h-11">
+              <Link
+                href={`/dashboard/courses/edit/${course.course_id}`}
+                aria-label={`Edit ${course.title}`}
+              >
+                <Pencil aria-hidden="true" />
                 Edit
-              </div>
-            </Link>
-            <div
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className="min-h-11 text-red-700 hover:bg-red-500/10 hover:text-red-700 dark:text-red-300"
+              aria-label={`Delete ${course.title}`}
               onClick={() => {
-                setdeleteCoursePopup(!deleteCoursePopup);
-                setCourseData({
-                  ...course,
-                  refetch,
-                });
+                setCourseData({ ...course, refetch });
+                setdeleteCoursePopup(true);
               }}
-              className="cursor-pointer border dark:border-red-500/70 border-red-300/70 dark:text-white text-lightText py-2 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition lg:px-0"
             >
-              Delete
-            </div>
+              <Trash2 aria-hidden="true" />
+              <span className="sr-only">Delete</span>
+            </Button>
           </>
         )}
         Component={
-          <Link href="/dashboard/courses/add">
-            <ButtonAdmin text="Add Course" props={""} />
-          </Link>
+          <Button asChild className="min-h-11">
+            <Link href="/dashboard/courses/add">
+              <Plus aria-hidden="true" />
+              Create course
+            </Link>
+          </Button>
         }
       />
     </>

@@ -1,6 +1,8 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import TableScroll from "@/components/TableScroll";
-import ButtonAdmin from "./ButtonAdmin";
+
 import DeletePopUp from "@/components/DeletePopUp";
 import { useState } from "react";
 import Link from "next/link";
@@ -26,8 +28,8 @@ function Blogs() {
         />
       )}
       <TableScroll<BlogType>
-        title="Blog"
-        subtitle="Track blog here"
+        title="Journal"
+        subtitle="Create and manage stories that keep your community inspired."
         data_key="blogs"
         data_id="blog_id"
         endpoint="getBlogData"
@@ -38,35 +40,45 @@ function Blogs() {
         ]}
         customActions={(blog, refetch) => (
           <>
-            <Link
-              href={`/student/blog/${blog.blog_id}`}
-              className="cursor-pointer border rounded-md py-2 px-2 text-center hover:bg-gray-800 hover:text-white transition"
-            >
-              View
-            </Link>
-            <Link href={`/dashboard/blogs/edit/${blog?.blog_id}`}>
-              <div className="cursor-pointer dark:bg-gray-500/70 bg-none dark:border-none border  py-2 px-2 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 hover:text-white transition">
+            <Button asChild variant="outline" className="min-h-11">
+              <Link
+                href={`/student/blog/${blog.blog_id}`}
+                aria-label={`View ${blog.title}`}
+              >
+                <Eye aria-hidden="true" />
+                View
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="min-h-11">
+              <Link
+                href={`/dashboard/blogs/edit/${blog.blog_id}`}
+                aria-label={`Edit ${blog.title}`}
+              >
+                <Pencil aria-hidden="true" />
                 Edit
-              </div>
-            </Link>
-            <div
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className="min-h-11 text-red-700 hover:bg-red-500/10 hover:text-red-700 dark:text-red-300"
+              aria-label={`Delete ${blog.title}`}
               onClick={() => {
-                setdeleteBloPopup(!deleteBlogPopup);
-                setBlogData({
-                  ...blog,
-                  refetch,
-                });
+                setBlogData({ ...blog, refetch });
+                setdeleteBloPopup(true);
               }}
-              className="cursor-pointer border dark:border-red-500/70 border-red-300/70 dark:text-white text-lightText py-2 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition lg:px-0"
             >
-              Delete
-            </div>
+              <Trash2 aria-hidden="true" />
+              <span className="sr-only">Delete</span>
+            </Button>
           </>
         )}
         Component={
-          <Link href="/dashboard/blogs/add">
-            <ButtonAdmin text="Add Blog" />
-          </Link>
+          <Button asChild className="min-h-11">
+            <Link href="/dashboard/blogs/add">
+              <Plus aria-hidden="true" />
+              Write post
+            </Link>
+          </Button>
         }
       />
     </>

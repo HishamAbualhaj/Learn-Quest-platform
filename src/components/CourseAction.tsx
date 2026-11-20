@@ -3,11 +3,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormSelect } from "@/components/ui/form-select";
 import { Input } from "@/components/ui/form-input";
 import { ChangeEvent, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faXmark } from "@fortawesome/free-solid-svg-icons";
-import ButtonAdmin from "../pages-content/Dashboard/ButtonAdmin";
+
+import { Button } from "@/components/ui/button";
+import {
+  AdminHeading,
+  AdminNotice,
+  adminPanel,
+} from "@/components/admin/AdminPage";
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react";
 import useFetch from "../hooks/useFetch";
-import Alert from "./Alert";
+
 import API_BASE_URL from "../config/config";
 import { useMutation } from "@tanstack/react-query";
 import { Course, CourseDataResponse, CourseMaterial, User } from "@/types";
@@ -84,11 +89,11 @@ export default function CourseAction({
 
   const course =
     typeof courseDataResponse?.msg !== "string"
-      ? courseDataResponse?.msg[0]
+      ? courseDataResponse?.msg?.[0]
       : ({} as Course);
   const courseMaterial =
     typeof courseDataResponse?.msg !== "string"
-      ? courseDataResponse?.msg[1]
+      ? courseDataResponse?.msg?.[1]
       : [];
   const [courseData, setCourseData] = useState<
     Course & { materials: CourseMaterial[] }
@@ -109,7 +114,7 @@ export default function CourseAction({
 
   useEffect(() => {
     if (typeof courseDataResponse?.msg !== "string")
-      addLessonForEdit(courseDataResponse?.msg[1] ?? []);
+      addLessonForEdit(courseDataResponse?.msg?.[1] ?? []);
 
     setCourseData((pre) => ({
       ...pre,
@@ -136,7 +141,7 @@ export default function CourseAction({
 
       const currentId = action === "add" ? id : course_id;
 
-      if (image) {
+      if (data.status && image?.files?.[0]) {
         const formData = new FormData();
         formData.append("image", image.files![0]);
         formData.append("id", String(currentId));
@@ -149,7 +154,11 @@ export default function CourseAction({
       setAlert(data);
     },
     onError: (error) => {
-      console.log("Error", error);
+      setAlert({
+        status: false,
+        redirect: false,
+        msg: error.message || "Unable to save this course. Please try again.",
+      });
     },
   });
 
@@ -176,6 +185,7 @@ export default function CourseAction({
     ) {
       const file = e.target.files[0];
 
+      if (!file) return;
       value = file.name;
       setImage(e.target);
 
@@ -199,11 +209,7 @@ export default function CourseAction({
   }
 
   // handle lesson change
-  function handleLessonChange(
-    e: ChangeEvent<HTMLInputElement>,
-    lesson_id: number,
-  ) {
-    const { id, value } = e.target;
+  function handleLessonChange(id: string, value: string, lesson_id: number) {
     const updateMaterial = [...courseData.materials];
     // update prev value for each lesson
     updateMaterial[lesson_id - 1] = {
@@ -266,193 +272,229 @@ export default function CourseAction({
   }
   return (
     <div>
-      <div className="rounded-md  w-full overflow-auto h-[800px]">
-        <div className="text-center dark:text-white text-black text-xl py-5 border-b dark:border-borderDark border-borderLight flex justify-between px-4">
-          {title}
-          <Link href="/dashboard/courses">
-            <FontAwesomeIcon
-              className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-md"
-              icon={faXmark}
+      <AdminHeading
+        title={action === "add" ? "Create a course" : "Edit course"}
+        description="Build a focused learning experience, from the first lesson to the final takeaway."
+        actions={
+          <Button asChild variant="outline" className="min-h-11">
+            <Link href="/dashboard/courses">
+              <ArrowLeft aria-hidden="true" />
+              Back to courses
+            </Link>
+          </Button>
+        }
+      />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          mutate();
+        }}
+        className={`${adminPanel} w-full p-5 md:p-8`}
+      >
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold">Course essentials</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Give learners a clear picture of what they will learn.
+            </p>
+          </div>
+          {alert && (
+            <AdminNotice
+              message={
+                typeof alert.msg === "string" ? alert.msg : alert.msg.msg
+              }
+              success={alert.status}
             />
-          </Link>
-        </div>
-
-        <div className="p-3">
-          {alert &&
-            (alert.status ? (
-              <Alert
-                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
-                type="success"
-              />
-            ) : (
-              <Alert
-                msg={typeof alert.msg === "string" ? alert.msg : alert.msg.msg}
-              />
+          )}
+          <div className="grid gap-5 md:grid-cols-2">
+            {inputs.map((input) => (
+              <div
+                key={input.key}
+                className={input.id === "title" ? "md:col-span-2" : ""}
+              >
+                <label
+                  htmlFor={input.id}
+                  className="mb-2 block text-sm font-medium"
+                >
+                  {input.title.replace(" : ", "")}
+                </label>
+                <Input
+                  onChange={handleChange}
+                  placeholder={input.placeholder}
+                  id={input.id}
+                  className="min-h-11 w-full"
+                  type={input.inType}
+                  min={input.inType === "number" ? 0 : undefined}
+                  required={input.id === "title"}
+                  value={
+                    Array.isArray(courseData[input.id])
+                      ? courseData[input.id].join(" ")
+                      : (courseData[input.id] ?? "")
+                  }
+                />
+                {input.id === "tabs" && (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Separate course tags with spaces.
+                  </p>
+                )}
+              </div>
             ))}
-
-          {inputs.map((input) => (
-            <div
-              key={input.key}
-              className="flex flex-col mt-2 dark:text-white text-lightText"
+          </div>
+          <div>
+            <label
+              htmlFor="category"
+              className="mb-2 block text-sm font-medium"
             >
-              <label htmlFor={input.id}>{input.title}</label>
-              <Input
-                onChange={handleChange}
-                placeholder={input.placeholder}
-                id={input.id}
-                className="mt-2"
-                type={input.inType}
-                value={courseData[input.id] || ""}
-              />
-            </div>
-          ))}
-
-          <div className="flex flex-col mt-2 dark:text-white text-lightText gap-2">
-            <label htmlFor="category">Category : </label>
-
+              Category
+            </label>
             <FormSelect
               onChange={handleChange}
-              className="bg-transparent border dark:border-[#888] border-borderLight rounded-md dark:text-white text-lightText focus:outline-none p-2 text-lg appearance-none w-full mt-2"
-              name="courses"
+              className="w-full"
               id="category"
-              value={courseData?.category || ""}
+              value={courseData.category || ""}
+              required
             >
-              {category.map((category) => (
-                <option
-                  className="text-black"
-                  key={category.id}
-                  id={String(category.id)}
-                  value={`${category.name}`}
-                >
-                  {category.name}
+              <option value="" disabled>
+                Choose a course category
+              </option>
+              {category.map((item) => (
+                <option key={item.id} value={item.name}>
+                  {item.name}
                 </option>
               ))}
             </FormSelect>
           </div>
-
-          <div className="flex flex-col mt-2 dark:text-white text-lightText ">
-            <label htmlFor="image">Image : </label>
-
-            <div className="image-handle relative cursor-pointer mt-2">
-              <div className="border_platform all rounded-md flex justify-center py-10">
-                <div className="text-xl ">Upload image</div>
-                <Input
-                  id="image"
-                  onChange={handleChange}
-                  type="file"
-                  className="rounded-md w-full h-full opacity-0 absolute top-0 left-0 cursor-pointer"
-                />
-              </div>
-            </div>
+          <div className="rounded-md border border-dashed border-input bg-lightLayout/50 p-5 dark:bg-dark/40">
+            <label htmlFor="image" className="block text-sm font-medium">
+              Course cover
+            </label>
+            <p className="mt-2 mb-4 text-sm text-muted-foreground">
+              Choose an image that brings this course to life.
+            </p>
+            <Input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={handleChange}
+              className="w-full min-h-11"
+            />
+            {courseData.image_url && (
+              <p className="mt-3 text-sm break-all text-muted-foreground">
+                Selected: {courseData.image_url}
+              </p>
+            )}
           </div>
-
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between mt-2 dark:text-white text-lightText ">
-              <label htmlFor="">Videos : </label>
-
-              <div
-                onClick={() => {
-                  addLesson();
-                }}
-              >
-                <ButtonAdmin text="Add Lesson" />
+          <section className="border-t border-borderLight pt-6 dark:border-borderDark">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold">Course curriculum</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {courseData.materials.length} lessons in this learning path
+                </p>
               </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-11"
+                onClick={addLesson}
+              >
+                <Plus aria-hidden="true" />
+                Add lesson
+              </Button>
             </div>
-            <div className="h-[450px] overflow-auto border-2 dark:border-borderDark rounded-md p-4 mt-2">
+            <div className="space-y-5">
+              {!courseData.materials.length && (
+                <p className="rounded-md border border-dashed border-input p-6 text-sm text-muted-foreground">
+                  Add your first lesson to start building the curriculum.
+                </p>
+              )}
               {courseData.materials.map((obj) => (
-                <div
+                <fieldset
                   key={obj.material_id}
-                  className="mt-5 border dark:border-borderDark rounded-md p-3 relative dark:text-white"
+                  className="rounded-md border border-input bg-lightLayout/40 p-5 dark:bg-dark/30"
                 >
-                  <div className="flex justify-end">
-                    <div
-                      onClick={() => {
-                        deleteLesson(obj.material_id);
-                      }}
-                      className=" dark:bg-borderDark bg-borderLight w-fit p-2 rounded-md cursor-pointer text-red-300 hover:text-red-500"
-                    >
-                      <FontAwesomeIcon className="transition" icon={faTrash} />
-                    </div>
-                  </div>
-                  <div className="absolute top-0 -translate-y-1/2 left-3 text-lg font-semibold">
+                  <legend className="px-2 text-sm font-semibold">
                     Lesson {obj.lesson_count}
+                  </legend>
+                  <div className="mb-4 flex justify-end">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="min-h-11 text-red-700 dark:text-red-300"
+                      aria-label={`Delete lesson ${obj.lesson_count}`}
+                      onClick={() => deleteLesson(obj.material_id)}
+                    >
+                      <Trash2 aria-hidden="true" />
+                      Remove lesson
+                    </Button>
                   </div>
-                  <div className="flex flex-col gap-3 mt-3">
-                    <div>
-                      <div className="flex flex-col gap-2">
-                        <div>Title: </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {[
+                      { key: "title", label: "Lesson title" },
+                      { key: "subtitle", label: "Lesson summary" },
+                      { key: "url", label: "Video URL" },
+                    ].map((field) => (
+                      <div
+                        key={field.key}
+                        className={field.key === "url" ? "md:col-span-2" : ""}
+                      >
+                        <label
+                          htmlFor={`lesson-${obj.material_id}-${field.key}`}
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          {field.label}
+                        </label>
                         <Input
-                          onChange={(e) => {
-                            handleLessonChange(e, obj.lesson_count);
-                          }}
-                          id="title"
-                          className="w-full"
-                          type="text"
-                          placeholder="Lessson title"
-                          value={obj.title}
+                          id={`lesson-${obj.material_id}-${field.key}`}
+                          onChange={(e) =>
+                            handleLessonChange(
+                              field.key,
+                              e.target.value,
+                              obj.lesson_count,
+                            )
+                          }
+                          type={field.key === "url" ? "url" : "text"}
+                          value={obj[field.key] ?? ""}
+                          placeholder={field.label}
+                          className="min-h-11 w-full"
                         />
                       </div>
-                    </div>
-                    <div>
-                      <div className="flex flex-col gap-2">
-                        <div>Sub Title: </div>
-                        <Input
-                          onChange={(e) => {
-                            handleLessonChange(e, obj.lesson_count);
-                          }}
-                          id="subtitle"
-                          className="w-full"
-                          type="text"
-                          placeholder="Lessson sub title"
-                          value={obj.subtitle}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex flex-col gap-2">
-                        <div>Lesson Url: </div>
-                        <Input
-                          onChange={(e) => {
-                            handleLessonChange(e, obj.lesson_count);
-                          }}
-                          id="url"
-                          className="w-full"
-                          type="text"
-                          placeholder="Lessson url"
-                          value={obj.url}
-                        />
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                </div>
+                </fieldset>
               ))}
             </div>
-          </div>
-
-          <div className="flex flex-col mt-2 dark:text-white text-lightText">
-            <label htmlFor="description">Description : </label>
+          </section>
+          <div className="border-t border-borderLight pt-6 dark:border-borderDark">
+            <label
+              htmlFor="description"
+              className="mb-2 block text-sm font-medium"
+            >
+              Course description
+            </label>
             <Textarea
               id="description"
               onChange={handleChange}
-              className="mt-2"
+              className="min-h-40"
               value={courseData.description || ""}
+              placeholder="What will learners take away from this course?"
             />
           </div>
-          {isPending ? (
-            <div>
-              <ButtonAdmin text="LOADING ... " />
-            </div>
-          ) : (
-            <div
-              onClick={() => {
-                mutate();
-              }}
-            >
-              <ButtonAdmin text={String(action).toUpperCase()} />
-            </div>
-          )}
+          <div className="flex flex-wrap items-center justify-end gap-3 border-t border-borderLight pt-6 dark:border-borderDark">
+            <Button asChild variant="outline" className="min-h-11">
+              <Link href="/dashboard/courses">Cancel</Link>
+            </Button>
+            <Button className="min-h-11" type="submit" disabled={isPending}>
+              <Save aria-hidden="true" />
+              {isPending
+                ? "Saving course..."
+                : action === "add"
+                  ? "Create course"
+                  : "Save changes"}
+            </Button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

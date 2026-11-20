@@ -1,143 +1,161 @@
 "use client";
+import { useRef, useState } from "react";
+import { Star, BookOpen } from "lucide-react";
 import { FormSelect } from "@/components/ui/form-select";
-import { forwardRef, useEffect, useRef, useState } from "react";
-import useFetch from "../../hooks/useFetch";
-import API_BASE_URL from "../../config/config";
-import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import ReviewCard from "../../components/ReviewCard";
-import { Course, ReviewType } from "@/types";
-import { FetchResponse } from "@/hooks/useFetchServer";
-function Reviews({ courses }: { courses: Course[] }) {
-  const [reviews, setReviews] = useState<ReviewType[]>([]);
-  const [course_id, setCourseId] = useState<string | null>(null);
-
-  const reviewContainer = useRef<HTMLDivElement | null>(null);
-  const [lastNode, setLastNode] = useState(null);
-
-  const { dataFetched } = useInfiniteScroll<ReviewType>({
-    fetchFn: (pageParam) => {
-      if (!course_id) return {} as Promise<FetchResponse<ReviewType>>;
-      return useFetch(
-        `${API_BASE_URL}/getReviews`,
-        { page: pageParam, course_id: course_id },
-        "POST",
-      );
-    },
-    queryKey: ["admin_reviews", course_id],
-    scrollContainer: reviewContainer,
-    observedEle: lastNode,
-    data_id: "review_id",
-  });
-
-  useEffect(() => {
-    if (dataFetched) {
-      setReviews(dataFetched);
-    }
-  }, [dataFetched]);
-
-  const observeEle = (node) => {
-    setLastNode(node);
-  };
+import { Button } from "@/components/ui/button";
+import Avatar from "@/components/Avatar";
+import {
+  AdminHeading,
+  AdminEmpty,
+  AdminFeedback,
+  adminPanel,
+} from "@/components/admin/AdminPage";
+import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
+import type { Course, ReviewType } from "@/types";
+export default function Reviews({ courses }: { courses: Course[] }) {
+  const [courseId, setCourseId] = useState("");
+  const container = useRef<HTMLDivElement | null>(null);
+  const available = Array.isArray(courses) ? courses : [];
+  const { dataFetched, isFetching, hasNextPage, loadMore, refetch, error } =
+    useInfiniteScroll<ReviewType>({
+      fetchFn: async (page) => {
+        if (!courseId) return { status: true, redirect: false, msg: [] };
+        const res = await useFetch(
+          `${API_BASE_URL}/getReviews`,
+          { page, course_id: courseId },
+          "POST",
+        );
+        if (!res.status) throw new Error(String(res.msg));
+        return res;
+      },
+      queryKey: ["admin_reviews", courseId],
+      scrollContainer: container,
+      observedEle: null,
+      data_id: "review_id",
+      retry: 1,
+    });
   return (
     <>
-      <div className="flex items-center md:flex-row flex-col justify-between">
-        <div className="text">
-          <div className="dark:text-white text-lightText font-semibold text-4xl ">
-            Reviews
-          </div>
-          <div className="dark:text-gray-400 text-lightText mt-2 ">
-            See all reviews for courses
+      <AdminHeading
+        title="Learner reviews"
+        description="Listen to your learners and understand how each course is being received."
+      />
+      <section
+        className={`${adminPanel} mb-6 flex flex-wrap items-center justify-between gap-5 p-5`}
+      >
+        <div className="flex items-center gap-3">
+          <BookOpen
+            aria-hidden="true"
+            className="size-5 text-mainClr dark:text-mainClrDark"
+          />
+          <div>
+            <h2 className="font-semibold">Explore course feedback</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Select a course to read its learner reviews.
+            </p>
           </div>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <div className="dark:text-white text-lightText text-xl">
-            Select Course
-          </div>
-          <FormSelect
-            onChange={(e) => {
-              setReviews([]);
-              setCourseId(e.target.value);
-            }}
-            className="md:w-[500px] w-full text-lg"
-            name="courses"
-            id=""
+        <div className="w-full sm:max-w-sm">
+          <label
+            htmlFor="review-course"
+            className="mb-2 block text-sm font-medium"
           >
-            <option className="text-black" value={""}>
-              Select Course
-            </option>
-            {courses.map((course) => (
-              <option
-                className="text-black"
-                key={course.course_id}
-                value={course.course_id}
-              >
+            Course
+          </label>
+          <FormSelect
+            id="review-course"
+            className="w-full"
+            value={courseId}
+            onChange={(e) => setCourseId(e.target.value)}
+          >
+            <option value="">Choose a course</option>
+            {available.map((course) => (
+              <option key={course.course_id} value={String(course.course_id)}>
                 {course.title}
               </option>
             ))}
           </FormSelect>
         </div>
-      </div>
-
-      <div
-        ref={reviewContainer}
-        className="grid md:grid-cols-2 grid-cols-1 p-3 xl:max-h-[700px] max-h-[600px] overflow-auto gap-5 mt-5"
-      >
-        {reviews.length ? (
-          reviews.map((review) => (
-            <Review
-              ref={reviews.at(-1) === review ? observeEle : null}
-              key={review.review_id}
-              name={review.first_name}
-              image={review.image_url}
-              text={review.review_text}
-              stars={review.stars}
-              date={review.review_date}
+      </section>
+      <div ref={container}>
+        {!courseId ? (
+          <div className={adminPanel}>
+            <AdminEmpty
+              title="A little listening goes a long way."
+              description={
+                available.length
+                  ? "Choose a course above to explore ratings and written feedback."
+                  : "No courses are available to review yet."
+              }
             />
-          ))
-        ) : course_id ? (
-          <div className="text-xl dark:text-white">No Reviews Found</div>
+          </div>
         ) : (
-          <div className="text-xl dark:text-white">Select course </div>
+          <>
+            <p className="mb-4 text-sm text-muted-foreground">
+              {dataFetched.length} reviews loaded for this course
+            </p>
+            <div className="grid gap-5 xl:grid-cols-2">
+              {dataFetched.map((review) => (
+                <article key={review.review_id} className={`${adminPanel} p-6`}>
+                  <div className="flex items-center gap-3">
+                    <Avatar
+                      img={review.image_url}
+                      className="size-11 shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <h2 className="font-semibold break-words">
+                        {review.first_name}
+                      </h2>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {String(review.review_date ?? "").split("T")[0]}
+                      </p>
+                    </div>
+                    <span className="flex items-center gap-1 rounded-md bg-mainClr/10 px-2.5 py-2 text-sm font-medium text-mainClr dark:text-mainClrDark">
+                      <Star
+                        aria-hidden="true"
+                        className="size-4 fill-current"
+                      />
+                      {review.stars}
+                      <span className="sr-only">out of 5 stars</span>
+                    </span>
+                  </div>
+                  <p className="mt-5 text-sm leading-7 whitespace-pre-wrap break-words text-lightText dark:text-textDark">
+                    {review.review_text}
+                  </p>
+                </article>
+              ))}
+            </div>
+            {!dataFetched.length && !isFetching && !error && (
+              <div className={adminPanel}>
+                <AdminEmpty
+                  title="The first review is still to come."
+                  description="Feedback will appear here when learners review this course."
+                />
+              </div>
+            )}
+            <AdminFeedback
+              loading={isFetching}
+              error={error}
+              retry={refetch}
+              label="Loading reviews"
+            />
+            {hasNextPage && (
+              <div className="mt-6 text-center">
+                <Button
+                  variant="outline"
+                  className="min-h-11"
+                  disabled={isFetching}
+                  onClick={loadMore}
+                >
+                  Load more reviews
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </>
   );
 }
-type ReviewDataProps = {
-  name: string;
-  image: string;
-  text: string;
-  date: string;
-  stars: number;
-};
-const Review = forwardRef<HTMLDivElement, ReviewDataProps>(function Review(
-  { image, stars, text, name, date },
-  ref,
-) {
-  return (
-    <div
-      ref={ref}
-      className="flex gap-5 dark:bg-lightDark bg-white dark:shadow-none box-shadow p-5 rounded-md xl:flex-row flex-col dark:border-none border "
-    >
-      <ReviewCard review={{ image, stars, text, name, date }}>
-        <ReviewCard.Avatar />
-        <div className="flex-1">
-          <div className="flex flex-col gap-3">
-            <ReviewCard.username />
-            <ReviewCard.Stars />
-          </div>
-          <div className="flex flex-col">
-            <div className="wrap-break-word max-w-[600px]">
-              <ReviewCard.Text />
-            </div>
-            <ReviewCard.Date />
-          </div>
-        </div>
-      </ReviewCard>
-    </div>
-  );
-});
-{
-}
-export default Reviews;

@@ -1,12 +1,11 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFetch from "../hooks/useFetch";
-import {
-  faTriangleExclamation,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+"use client";
+import { Dialog } from "radix-ui";
+import { Trash2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import API_BASE_URL from "../config/config";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
+import { Button } from "@/components/ui/button";
+import useFetch from "@/hooks/useFetch";
+import API_BASE_URL from "@/config/config";
 interface DeletePopUpProps {
   setDeletePopup: Dispatch<SetStateAction<boolean>>;
   id: string;
@@ -15,7 +14,7 @@ interface DeletePopUpProps {
   endpoint: string;
   data_id: string;
 }
-function DeletePopUp({
+export default function DeletePopUp({
   setDeletePopup,
   id,
   data_name,
@@ -23,74 +22,82 @@ function DeletePopUp({
   endpoint,
   data_id,
 }: DeletePopUpProps) {
-  const { isPending, mutate, data } = useMutation({
+  const [error, setError] = useState("");
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      return await useFetch(
+      const res = await useFetch(
         `${API_BASE_URL}/${endpoint}`,
         { [data_id]: id },
         "POST",
       );
+      if (!res.status)
+        throw new Error(
+          typeof res.msg === "string"
+            ? res.msg
+            : "Unable to delete this record.",
+        );
+      return res;
     },
     onSuccess: () => {
       setDeletePopup(false);
       refetch();
     },
-    onError: (err) => {
-      console.log(err);
-    },
+    onError: (e) => setError(e.message),
   });
-
   return (
-    <div>
-      <div
-        onClick={() => {
-          setDeletePopup(false);
-        }}
-        className="dark:bg-black/50 bg-black/20 w-full h-full absolute top-0 left-0"
-      ></div>
-      <div className="dark:bg-lightDark bg-white rounded-md md:w-[650px] w-full h-fit  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
-        <div className="text-center dark:text-white text-lightDark text-xl py-5 border-b dark:border-borderDark border-lightDark/20 flex justify-between px-4">
-          WARNING !
-          <FontAwesomeIcon
-            onClick={() => {
-              setDeletePopup(false);
-            }}
-            className="cursor-pointer hover:bg-gray-500/20 transition py-1 px-2 rounded-md"
-            icon={faXmark}
-          />
-        </div>
-        <div className="flex items-center p-3 flex-col">
-          <FontAwesomeIcon
-            className="text-4xl text-red-500/90"
-            icon={faTriangleExclamation}
-          />
-          <div className="dark:text-gray-400 text-lightDark text-center mt-5 text-xl leading-10 max-w-[500px] max-sm:flex max-sm:flex-col">
-            Warning: You are about to permanently delete the selected data.
-            <span className="bg-red-800 mx-2 text-white p-1">{data_name}</span>
-            This action cannot be undone. Please confirm if you wish to proceed.
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open && !isPending) setDeletePopup(false);
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-[70] bg-black/60" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 z-[71] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-md border border-borderLight bg-white p-6 text-lightText shadow-xl outline-none dark:border-borderDark dark:bg-dark dark:text-white">
+          <div className="mb-5 flex size-12 items-center justify-center rounded-md bg-red-500/10 text-red-700 dark:text-red-300">
+            <Trash2 aria-hidden="true" className="size-6" />
           </div>
-        </div>
-        <div className="flex gap-2">
-          <div
-            onClick={() => {
-              mutate();
-            }}
-            className="mt-3 bg-red-500/80 text-center px-4 w-1/2 py-2 text-white text-xl hover:bg-red-600/70 cursor-pointer"
-          >
-            {isPending ? "Loading ... " : "YES !"}
+          <Dialog.Title className="text-xl font-semibold">
+            Delete this record?
+          </Dialog.Title>
+          <Dialog.Description className="mt-3 text-sm leading-7 text-muted-foreground">
+            Permanently delete{" "}
+            <span className="font-semibold break-words text-lightText dark:text-white">
+              {data_name}
+            </span>
+            ? This action cannot be undone.
+          </Dialog.Description>
+          {error && (
+            <p
+              role="alert"
+              className="mt-4 text-sm text-red-700 dark:text-red-300"
+            >
+              {error}
+            </p>
+          )}
+          <div className="mt-7 flex justify-end gap-3">
+            <Dialog.Close asChild>
+              <Button
+                variant="outline"
+                className="min-h-11"
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+            </Dialog.Close>
+            <Button
+              className="min-h-11 bg-red-700 text-white hover:bg-red-800"
+              disabled={isPending}
+              onClick={() => {
+                setError("");
+                mutate();
+              }}
+            >
+              {isPending ? "Deleting..." : "Delete record"}
+            </Button>
           </div>
-
-          <div
-            onClick={() => {
-              setDeletePopup(false);
-            }}
-            className="mt-3 bg-gray-500/80 text-center px-4 w-1/2 py-2 text-white text-xl hover:bg-gray-600/70 cursor-pointer"
-          >
-            Cancel
-          </div>
-        </div>
-      </div>
-    </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
-export default DeletePopUp;

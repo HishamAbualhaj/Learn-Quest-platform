@@ -1,5 +1,8 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
+import Avatar from "@/components/Avatar";
 import TableScroll from "@/components/TableScroll";
 import DeletePopUp from "@/components/DeletePopUp";
 import { User } from "@/types";
@@ -25,8 +28,8 @@ function Users() {
         />
       )}
       <TableScroll<User>
-        title="Hello Admin"
-        subtitle="Track users here ..."
+        title="Users"
+        subtitle="Manage the people learning on your platform."
         data_key="users"
         data_id="student_id"
         endpoint="getUsers"
@@ -34,8 +37,16 @@ function Users() {
           {
             key: "first_name",
             label: "User",
+            render: (_, user) => (
+              <div className="flex min-w-44 items-center gap-3">
+                <Avatar img={user.image_url} className="size-10 shrink-0" />
+                <span className="font-semibold">
+                  {user.first_name} {user.last_name}
+                </span>
+              </div>
+            ),
           },
-          { key: "email", label: "email" },
+          { key: "email", label: "Email" },
           {
             key: "joined_at",
             label: "Date joined",
@@ -48,8 +59,8 @@ function Users() {
               <div
                 className={`py-2 px-3 rounded-md w-fit ${
                   value
-                    ? "dark:text-green-300 text-green-400 bg-green-400/20"
-                    : "dark:text-red-300 text-red-400 bg-red-400/20"
+                    ? "dark:text-green-300 text-green-700 bg-green-400/10"
+                    : "dark:text-red-300 text-red-700 bg-red-400/10"
                 }`}
               >
                 {value ? "Active" : "Inactive"}
@@ -58,24 +69,24 @@ function Users() {
           },
           {
             key: "course_joined",
-            label: "Course Joined",
+            label: "Enrolled courses",
             render: (value) => value || 0,
           },
           { key: "action", label: "Action" },
         ]}
         customActions={(user, refetch) => (
-          <div
+          <Button
+            variant="ghost"
+            className="min-h-11 text-red-700 hover:bg-red-500/10 hover:text-red-700 dark:text-red-300"
+            aria-label={`Delete ${user.email}`}
             onClick={() => {
-              setUserData({
-                ...user,
-                refetch,
-              });
+              setUserData({ ...user, refetch });
               setdeleteUserPopup(true);
             }}
-            className="cursor-pointer border dark:border-red-500/70 border-red-300/70 dark:text-white text-lightText py-2 px-2 text-center rounded-md hover:bg-red-500/70 hover:text-white transition"
           >
+            <Trash2 aria-hidden="true" />
             Delete
-          </div>
+          </Button>
         )}
         Component={undefined}
       />

@@ -1,184 +1,314 @@
 "use client";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUsers,
-  faPersonChalkboard,
-  faChartLine,
-  faMessage,
-  faTerminal,
-  faCircleExclamation,
-  faHeadset,
-  faChevronDown,
-  faBars,
-  faRightFromBracket,
-  faBlog,
-} from "@fortawesome/free-solid-svg-icons";
-
-import { useState, useEffect } from "react";
-
-import Logo from "../components/Logo";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-function Dashboard({ children }: { children: React.ReactNode }) {
-  const tabs = [
-    {
-      key: 1,
-      name: "users",
-      icon: faUsers,
-      link: "/users",
-    },
-    {
-      key: 2,
-      name: "courses",
-      icon: faPersonChalkboard,
-      link: "/courses",
-    },
-    {
-      key: 3,
-      name: "blogs",
-      icon: faBlog,
-      link: "/blogs",
-    },
-    {
-      key: 4,
-      name: "analytics",
-      icon: faChartLine,
-      link: "/analytics",
-    },
-    {
-      key: 5,
-      name: "reviews",
-      icon: faMessage,
-      link: "/reviews",
-    },
-    {
-      key: 6,
-      name: "chat",
-      icon: faHeadset,
-      link: "/chat",
-    },
-    {
-      key: 7,
-      name: "system log",
-      icon: faTerminal,
-      link: "/systemlog",
-    },
-    {
-      key: 8,
-      name: "maintenance",
-      icon: faCircleExclamation,
-      link: "/maintenance",
-    },
-  ];
+import { Dialog } from "radix-ui";
+import {
+  ArrowUpRight,
+  BookOpen,
+  ChevronRight,
+  FileText,
+  LayoutDashboard,
+  LifeBuoy,
+  Menu,
+  MessageSquare,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Settings2,
+  ShieldCheck,
+  Star,
+  Terminal,
+  Users,
+  X,
+} from "lucide-react";
+import PlatformBrand from "@/components/PlatformBrand";
+import UserStatus from "@/pages-content/Landing-Page/Header/UserStatus";
 
-  const [activeStatus, setActiveStatus] = useState<string>("");
-
-  // by default its not resized
-  const [resize, setResize] = useState(false);
-
-  const [isTranslate, setIsTranslate] = useState(false);
-
-  const link = usePathname();
-
-  // change sidebar (active or not) status based on URL
-  useEffect(() => {
-    const currentLink = link?.split("/")[2] ?? "";
-    setActiveStatus(currentLink);
-    setIsTranslate(false);
-  }, [link]);
-
-  function setActive(e) {
-    const currentTab = e.currentTarget.id;
-    setActiveStatus(currentTab);
-  }
-
-  let active = `after:absolute after:content[''] after:w-1 after:h-full after:bg-purple-500 after:left-0 dark:bg-hoverDark bg-hoverLight`;
+const sections = [
+  {
+    title: "Workspace",
+    links: [{ title: "Overview", href: "/dashboard", icon: LayoutDashboard }],
+  },
+  {
+    title: "Manage",
+    links: [
+      { title: "Users", href: "/dashboard/users", icon: Users },
+      { title: "Courses", href: "/dashboard/courses", icon: BookOpen },
+      { title: "Journal", href: "/dashboard/blogs", icon: FileText },
+    ],
+  },
+  {
+    title: "Community",
+    links: [
+      { title: "Reviews", href: "/dashboard/reviews", icon: Star },
+      { title: "Messages", href: "/dashboard/chat", icon: MessageSquare },
+    ],
+  },
+  {
+    title: "Platform",
+    links: [
+      { title: "Analytics", href: "/dashboard/analytics", icon: Settings2 },
+      { title: "System log", href: "/dashboard/systemlog", icon: Terminal },
+      { title: "Maintenance", href: "/dashboard/maintenance", icon: LifeBuoy },
+    ],
+  },
+];
+function isCurrent(path: string | null, href: string) {
   return (
-    <div className="flex h-screen">
-      <div
-        className={`border-r dark:border-borderDark border-borderLight dark:bg-lightDark bg-white w-fit xl:h-full h-fit xl:relative absolute xl:top-0 top-[69px] transition z-10 max-xl:-translate-x-full dark:shadow-none shadow-custom ${
-          isTranslate ? "translate-x-0! " : ""
-        }`}
-      >
-        <div
-          className={`xl:flex items-center justify-center hidden ${
-            resize ? "" : "px-4 gap-2"
-          }`}
-        >
-          {resize ? "" : <Logo />}
-          <FontAwesomeIcon
-            onClick={() => {
-              setResize(!resize);
-            }}
-            className="cursor-pointer dark:text-white text-lightText px-2 py-[26px] rounded-md transition hover:bg-gray-400/20"
-            rotation={resize ? 270 : 90}
-            icon={faChevronDown}
-          />
-        </div>
-        <div className="tabs-container flex flex-col gap-4">
-          {tabs.map((tab) => (
-            <Link key={tab.key} href={`/dashboard${tab.link}`}>
-              <div
-                id={tab.name.replace(/\s+/g, "")}
-                key={tab.key}
-                className={
-                  "flex flex-col gap-5 cursor-pointer dark:hover:bg-hoverDark  hover:bg-hoverLight transition"
-                }
-                onClick={(e) => {
-                  setActive(e);
-                }}
-              >
-                <div
-                  className={`flex py-2 px-5 text-lg relative items-center gap-3 ${
-                    activeStatus == tab.name.replace(/\s+/g, "") ? active : ""
-                  } ${resize ? "justify-center" : ""}`}
-                >
-                  <FontAwesomeIcon
-                    className="dark:text-gray-300 text-lightText"
-                    icon={tab.icon}
-                  />
-                  {resize ? (
-                    ""
-                  ) : (
-                    <div className="dark:text-gray-300 text-lightText data capitalize">
-                      {tab.name}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full flex-1 dark:bg-dark bg-lightLayout">
-        <div className="text-white py-3 border-b dark:bg-black/20 dark:border-borderDark border-borderLight xl:px-12 sm:px-10 px-5 ">
-          <div className="flex items-center justify-between">
-            <FontAwesomeIcon
-              onClick={() => {
-                setIsTranslate(!isTranslate);
-              }}
-              className="text-2xl cursor-pointer xl:hidden! text-black dark:text-white"
-              icon={faBars}
-            />
-            <div className="flex justify-between xl:flex-1 items-center gap-3">
-              <div className="dark:text-white text-black uppercase max-sm:hidden">
-                admin dashboard management
-              </div>
-              <Link href="/logout">
-                <FontAwesomeIcon
-                  className="text-lg cursor-pointer dark:border-borderDark border-borderLight dark:bg-gray-500/70 bg-none dark:border-none border  py-3 px-5 text-center rounded-md dark:hover:bg-gray-800 hover:bg-gray-800 text-black dark:text-white hover:text-white transition"
-                  icon={faRightFromBracket}
-                />
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="xl:px-12 sm:px-10 px-5 mt-12">{children}</div>
-      </div>
-    </div>
+    path === href ||
+    (href !== "/dashboard" && Boolean(path?.startsWith(href + "/")))
   );
 }
 
-export default Dashboard;
+function AdminNavigation({
+  collapsed,
+  onNavigate,
+}: {
+  collapsed: boolean;
+  onNavigate?: () => void;
+}) {
+  const pathname = usePathname();
+  return (
+    <nav
+      aria-label="Admin navigation"
+      className="min-h-0 flex-1 space-y-6 overflow-y-auto px-3 py-5"
+    >
+      {sections.map((section) => (
+        <section key={section.title} aria-label={section.title}>
+          <h2
+            className={
+              collapsed
+                ? "sr-only"
+                : "mb-2 px-3 text-sm font-medium text-muted-foreground"
+            }
+          >
+            {section.title}
+          </h2>
+          <div className="space-y-1">
+            {section.links.map(({ title, href, icon: Icon }) => {
+              const active = isCurrent(pathname, href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  title={collapsed ? title : undefined}
+                  aria-current={active ? "page" : undefined}
+                  onClick={onNavigate}
+                  className={`flex min-h-11 items-center gap-3 rounded-md border px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${collapsed ? "justify-center" : ""} ${active ? "border-mainClr/15 bg-mainClr/10 text-mainClr dark:border-mainClrDark/15 dark:bg-mainClrDark/10 dark:text-mainClrDark" : "border-transparent text-muted-foreground hover:bg-lightLayout hover:text-lightText dark:hover:bg-hoverDark dark:hover:text-white"}`}
+                >
+                  <Icon aria-hidden="true" className="size-[18px] shrink-0" />
+                  <span className={collapsed ? "sr-only" : ""}>{title}</span>
+                  {active && !collapsed && (
+                    <ChevronRight
+                      aria-hidden="true"
+                      className="ml-auto size-4"
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </nav>
+  );
+}
+function AdminSidebar({
+  collapsed = false,
+  onCollapse,
+  onNavigate,
+  mobile = false,
+}: {
+  collapsed?: boolean;
+  onCollapse?: () => void;
+  onNavigate?: () => void;
+  mobile?: boolean;
+}) {
+  return (
+    <>
+      <div
+        className={`flex min-h-24 items-center border-b border-borderLight px-4 dark:border-borderDark ${collapsed ? "justify-center" : "justify-between gap-2"}`}
+      >
+        {collapsed ? (
+          <Link
+            href="/dashboard"
+            aria-label="Admin overview"
+            className="flex size-11 items-center justify-center rounded-md bg-mainClr/10 text-mainClr dark:bg-mainClrDark/10 dark:text-mainClrDark"
+          >
+            <LayoutDashboard aria-hidden="true" className="size-5" />
+          </Link>
+        ) : (
+          <div className="[&_a]:text-xl [&_svg]:size-8">
+            <PlatformBrand />
+          </div>
+        )}
+        {mobile ? (
+          <Dialog.Close
+            aria-label="Close admin navigation"
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-lightLayout dark:hover:bg-hoverDark"
+          >
+            <X aria-hidden="true" className="size-5" />
+          </Dialog.Close>
+        ) : null}
+      </div>
+      <AdminNavigation collapsed={collapsed} onNavigate={onNavigate} />
+      <div className="space-y-3 border-t border-borderLight p-3 dark:border-borderDark">
+        <Link
+          target="_blank"
+          href="/"
+          title={collapsed ? "View platform" : undefined}
+          className={`flex min-h-11 items-center gap-3 rounded-md px-3 text-sm text-muted-foreground transition hover:bg-lightLayout dark:hover:bg-hoverDark ${collapsed ? "justify-center" : ""}`}
+        >
+          <ArrowUpRight aria-hidden="true" className="size-[18px] shrink-0" />
+          <span className={collapsed ? "sr-only" : ""}>View platform</span>
+        </Link>
+        {!mobile && (
+          <button
+            type="button"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!collapsed}
+            onClick={onCollapse}
+            className={`flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-md border border-borderLight px-3 text-sm text-muted-foreground hover:bg-lightLayout dark:border-borderDark dark:hover:bg-hoverDark ${collapsed ? "justify-center" : ""}`}
+          >
+            {collapsed ? (
+              <PanelLeftOpen aria-hidden="true" className="size-[18px]" />
+            ) : (
+              <PanelLeftClose aria-hidden="true" className="size-[18px]" />
+            )}
+            <span className={collapsed ? "sr-only" : ""}>Collapse sidebar</span>
+          </button>
+        )}
+        {!collapsed && (
+          <p className="px-3 text-sm text-muted-foreground">
+            LearnQuest administration
+          </p>
+        )}
+      </div>
+    </>
+  );
+}
+
+export default function Dashboard({
+  children,
+  firstName = "Admin",
+  imageUrl = "",
+}: {
+  children: ReactNode;
+  firstName?: string;
+  imageUrl?: string;
+}) {
+  const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const close = () => {
+      if (media.matches) setMobileOpen(false);
+    };
+    media.addEventListener("change", close);
+    return () => media.removeEventListener("change", close);
+  }, []);
+  const current = sections
+    .flatMap((section) => section.links)
+    .find((link) => isCurrent(pathname, link.href));
+  const detail = pathname?.includes("/add")
+    ? "Create"
+    : pathname?.includes("/edit")
+      ? "Edit"
+      : null;
+  return (
+    <Dialog.Root open={mobileOpen} onOpenChange={setMobileOpen}>
+      <div className="flex min-h-dvh bg-lightLayout/60 text-lightText dark:bg-dark dark:text-white">
+        <a
+          href="#admin-content"
+          className="fixed top-3 left-3 z-[60] -translate-y-24 rounded-md bg-action px-5 py-3 text-sm text-action-foreground focus:translate-y-0"
+        >
+          Skip to admin content
+        </a>
+        <aside
+          aria-label="Admin sidebar"
+          className={`sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-borderLight bg-white dark:border-borderDark dark:bg-lightDark/30 lg:flex ${collapsed ? "w-20" : "w-[264px]"}`}
+        >
+          <AdminSidebar
+            collapsed={collapsed}
+            onCollapse={() => setCollapsed((value) => !value)}
+          />
+        </aside>
+        <div className="min-w-0 flex-1">
+          <header className="border-b border-borderLight bg-white dark:border-borderDark dark:bg-dark">
+            <div className="mx-auto flex min-h-24 max-w-[1600px] items-center justify-between gap-3 px-5 md:px-8">
+              <div className="flex min-w-0 items-center gap-3">
+                <Dialog.Trigger
+                  aria-label="Open admin navigation"
+                  className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md border border-input text-muted-foreground lg:hidden"
+                >
+                  <Menu aria-hidden="true" className="size-5" />
+                </Dialog.Trigger>
+                <nav
+                  aria-label="Breadcrumb"
+                  className="flex min-w-0 items-center gap-2 text-sm"
+                >
+                  <span className="hidden text-muted-foreground sm:inline">
+                    Administration
+                  </span>
+                  <ChevronRight
+                    aria-hidden="true"
+                    className="hidden size-3.5 shrink-0 text-muted-foreground sm:inline"
+                  />
+                  <span className="truncate font-medium">
+                    {current?.title ?? "Dashboard"}
+                  </span>
+                  {detail && (
+                    <>
+                      <ChevronRight
+                        aria-hidden="true"
+                        className="size-3.5 shrink-0 text-muted-foreground"
+                      />
+                      <span className="text-muted-foreground">{detail}</span>
+                    </>
+                  )}
+                </nav>
+              </div>
+              <div className="flex shrink-0 items-center gap-4">
+                <span className="hidden items-center gap-2 border-r border-borderLight pr-5 text-sm text-muted-foreground dark:border-borderDark xl:flex">
+                  <ShieldCheck
+                    aria-hidden="true"
+                    className="size-4 text-mainClr dark:text-mainClrDark"
+                  />
+                  Admin workspace
+                </span>
+                <UserStatus
+                  isStudent={false}
+                  isLoggedIn
+                  first_name={firstName}
+                  role="admin"
+                  image_url={imageUrl}
+                />
+              </div>
+            </div>
+          </header>
+          <main
+            id="admin-content"
+            className="mx-auto min-h-[75dvh] max-w-[1600px] px-5 py-8 md:px-8 lg:py-10"
+          >
+            {children}
+          </main>
+          <footer className="mx-auto flex max-w-[1600px] flex-wrap justify-between gap-3 border-t border-borderLight px-5 py-6 text-sm text-muted-foreground dark:border-borderDark md:px-8">
+            <span>LearnQuest administration</span>
+            <span>Build better learning experiences.</span>
+          </footer>
+        </div>
+      </div>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 lg:hidden" />
+        <Dialog.Content className="fixed inset-y-0 left-0 z-50 flex h-dvh w-[min(300px,90vw)] flex-col border-r border-borderLight bg-white text-lightText shadow-xl outline-none dark:border-borderDark dark:bg-dark dark:text-white lg:hidden">
+          <Dialog.Title className="sr-only">Admin navigation</Dialog.Title>
+          <Dialog.Description className="sr-only">
+            Choose a section of the LearnQuest admin workspace.
+          </Dialog.Description>
+          <AdminSidebar mobile onNavigate={() => setMobileOpen(false)} />
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
